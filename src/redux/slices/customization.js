@@ -36,6 +36,12 @@ const slice = createSlice({
 
     removecart: (state) => {
       state.customization = null;
+      state.materialCustomization = null;
+      state.productInfo = {};
+      state.priceArray = {};
+      state.filterOption = {};
+      state.materialList = [];
+      state.stepsArray = {};
     },
     
 

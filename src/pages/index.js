@@ -194,6 +194,10 @@ export default function ProductPage(props) {
 
   const { state } = useAuthContext();
   const { cookies } = state;
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { t: translate } = useTranslation();
+  const { slug } = props;
 
   // store thumbs swiper instance
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -226,6 +230,7 @@ export default function ProductPage(props) {
   const scanner = useSelector((state) => state.scanner.value);
   const fonts = useSelector((state) => state.font);
   const locale = "uae-en";
+  const modalData = useSelector((state) => state.customization.ModalData);
 
   // const getStep = async () => {
   //   if (!selectedModalData) return;
@@ -279,11 +284,11 @@ export default function ProductPage(props) {
       }
 
       const newImageUrls = itemGallary?.map((item) => item.SLI_IMAGE_PATH);
-      setImageUrls((prevImages) => [...prevImages, ...newImageUrls]);
-    } catch (error) {
+      setImageUrls(["/360v.jpg",...newImageUrls]);
+    } catch (error) { 
       console.error("Error fetching gallery data:", error);
     }
-  }, [stepsArray["MATERIAL_SELECTION"]]);
+  }, [stepsArray["MATERIAL_SELECTION"],modalData]);
 
   const setSelectedImage = useCallback(async () => {
     try {
@@ -304,11 +309,11 @@ export default function ProductPage(props) {
 
   useEffect(() => {
     setImage();
-  }, [setImage]);
+  }, [setImage,modalData]);
 
   useEffect(() => {
     setSelectedImage();
-  }, [setSelectedImage]);
+  }, [setSelectedImage,modalData]);
 
   useEffect(() => {
     console.log("stepCount", stepCount);
@@ -316,10 +321,7 @@ export default function ProductPage(props) {
 
   console.log("get step data", props);
 
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { t: translate } = useTranslation();
-  const { slug } = props;
+  
   const {
     SC_LINK_URL,
     getFilterKeysValuesData,
