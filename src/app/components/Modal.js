@@ -93,6 +93,7 @@ const Modal = () => {
   const handleChange = (link) => {
     if (selectedModalData !== link) {
       dispatch(updateSelectedModal(link));
+      dispatch(removecart());
     }
   };
 
