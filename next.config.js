@@ -98,37 +98,14 @@ const nextConfig = {
   sentry: {
     hideSourceMaps: true,
     allowUrls: [/https?:\/\/((api|www)\.)?sedarglobal\.com/],
-    // See the sections below for information on the following options:
-    //   'Configure Source Maps':
-    //     - disableServerWebpackPlugin
-    //     - disableClientWebpackPlugin
-    //     - hideSourceMaps
-    //     - widenClientFileUpload
-    //   'Configure Legacy Browser Support':
-    //     - transpileClientSDK
-    //   'Configure Serverside Auto-instrumentation':
-    //     - autoInstrumentServerFunctions
-    //     - excludeServerRoutes
-    //   'Configure Tunneling to avoid Ad-Blockers':
-    //     - tunnelRoute
-
-    // Upload a larger set of source maps for prettier stack traces (increases build time)
     widenClientFileUpload: true,
-
-    // Transpiles SDK to be compatible with IE11 (increases bundle size)
     transpileClientSDK: true,
-
-    // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
-    //tunnelRoute: "/monitoring",
-
-    // Automatically tree-shake Sentry logger statements to reduce bundle size
     disableLogger: true,
-
-    // Enables automatic instrumentation of Vercel Cron Monitors.
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
     automaticVercelMonitors: true,
+  },
+  transpilePackages: ["mui-tel-input"],
+  experimental: {
+    esmExternals: true,
   },
   swcMinify: true,
 };
