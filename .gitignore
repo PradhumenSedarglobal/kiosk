@@ -1,2 +1,2 @@
-node_module/
-.next/
+.next
+node_modules

@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import ImageCard from "@/app/components/ImageCard";
 import MainHeading from "@/app/components/MainHeading";
 import {
-  resetCustomizationExceptSelection,
+
   setCustomization,
   setMaterialCustomization,
   updateSelectedModal,
@@ -46,7 +46,7 @@ const Modal = ({ data, formik, elem }) => {
     console.log("customizationRes", customizationRes);
 
     if (customizationRes) {
-      dispatch(resetCustomizationExceptSelection(customizationRes));
+   
       console.log("customizationResssssss1", customization);
 
       dispatch(setCustomization(customizationRes));

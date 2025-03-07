@@ -239,7 +239,7 @@ export default function ProductPage(props) {
   //   console.log("customizationRes", customizationRes);
 
   //   if (customizationRes) {
-  //     dispatch(resetCustomizationExceptSelection(customizationRes));
+
   //     console.log("customizationResssssss1", customization);
 
   //     dispatch(setCustomization(customizationRes));
