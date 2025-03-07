@@ -200,12 +200,17 @@ export default function ProductPage(props) {
 
   const stepCount = useSelector((state) => state.step.value);
   const {
+    isCustomizationLoading,
     SelectedCategory,
     SelectedModal,
     stepsArray,
     customization,
     materialList,
   } = useSelector((state) => state.customization);
+
+  useEffect(()=>{
+    console.log("isCustomizationLoading",isCustomizationLoading);
+  },[isCustomizationLoading])
 
   const selectedItemCode = stepsArray?.MATERIAL_SELECTION?.material_info
     ?.SII_ITEM_ID
@@ -606,11 +611,31 @@ export default function ProductPage(props) {
                         ></Typography>
                       )}
 
-                      {stepCount !== 0 && stepCount !== 1 && (
-                        <SceneCanvas3D
-                          {...(data2 && data2.length > 0 ? data2[0] : {})}
-                        />
+                      {stepCount !== 0 &&
+                        stepCount !== 1 && isCustomizationLoading && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "calc(100vh - 240px)",
+                          }}
+                        >
+                          <img
+                            src="/loadernew.gif"
+                            style={{ objectFit: "cover", height: "100px" }}
+                            alt="Loading..."
+                          />
+                        </Box>
                       )}
+
+                      {stepCount !== 0 &&
+                        stepCount !== 1 &&
+                        !isCustomizationLoading && (
+                          <SceneCanvas3D
+                            {...(data2 && data2.length > 0 ? data2[0] : {})}
+                          />
+                        )}
                     </>
                   ) : (
                     <img
@@ -633,7 +658,7 @@ export default function ProductPage(props) {
             </Swiper>
 
             {/* Thumbs Swiper -> store swiper instance */}
-            
+
             <Swiper
               modules={[Thumbs]}
               watchSlidesProgress
@@ -692,7 +717,7 @@ export default function ProductPage(props) {
         {/* Input Container */}
         <Grid
           item
-          xs={12}
+          xs={6}
           md={5}
           sx={{
             display: "flex",
@@ -720,7 +745,7 @@ export default function ProductPage(props) {
                   xs: "sticky",
                   xxs: "sticky",
                 },
-                
+
                 bottom: 0,
                 pb: 0,
               }}
@@ -772,7 +797,6 @@ export default function ProductPage(props) {
                         paddingRight: "10px",
                         paddingLeft: "10px",
                         paddingBottom: "5px",
-                     
                       }}
                     >
                       <Grid

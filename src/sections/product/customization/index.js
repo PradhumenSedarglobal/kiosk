@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import { NextFillImage } from "@/components/image";
 import useResponsive from "@/hooks/useResponsive";
@@ -15,6 +15,7 @@ import { useTranslation } from "next-i18next";
 import { CustomLink } from "@/components/link";
 import { useRouter } from "next/router";
 import { useAuthContext } from "@/auth/useAuthContext";
+import { useDispatch } from "react-redux";
 
 // @mui
 const SceneCanvas3D = dynamic(() => import("./sceneCanvas3D"), {
@@ -38,6 +39,12 @@ const CustomizationSection = () => {
   const { t: translate } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(startCustomizationLoaded());
+  },5000);
 
   const formik = useFormik({
     initialValues: {

@@ -76,11 +76,7 @@ const ImageCard = ({
           }}
         />
         <ImageListItemBar 
-          title={
-            name.length > 15 
-              ? name.substring(0, name.lastIndexOf(" ", 15)) + "..." 
-              : name
-          } 
+          title={name}
         />
       </ImageListItem>
     </ImageList>

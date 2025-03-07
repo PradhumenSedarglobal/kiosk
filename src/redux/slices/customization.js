@@ -5,7 +5,7 @@ const qs = require("qs");
 // ----------------------------------------------------------------------
 
 const initialState = {
-  isCustomizationLoading: false,
+  isCustomizationLoading: true,
   isMaterialCustomizationLoading: false,
   customizationError: null,
   materialCustomizationError: null,
@@ -29,6 +29,10 @@ const slice = createSlice({
   initialState,
   reducers: {
 
+
+    loadingfalse(state){
+      state.isCustomizationLoading = false;
+    },
 
     removecart: (state) => {
       state.customization = null;
@@ -70,7 +74,7 @@ const slice = createSlice({
 
    // GET Faqs DATA
    setCustomization(state, action) {
-    state.isCustomizationLoading = false;
+    
     let customizationObject = state.customization;
     if (action?.payload && action?.payload?.result) {
       action?.payload?.result &&
@@ -230,7 +234,8 @@ export const {
   updateSelectedModal,
   setMaterialCustomization,
   updateModalData,
-  removecart
+  removecart,
+  loadingfalse,
  
 } = slice.actions;
 

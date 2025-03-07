@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
+import { useDispatch } from "react-redux";
+import { loadingfalse } from "@/redux/slices/customization";
 
 const importView = (subreddit) =>
   dynamic(
@@ -11,6 +13,7 @@ const DisplayComponent = ({ data, formik, tabChange, setTabChange }) => {
   const [views, setViews] = useState([]);
   const [loading, setLoading] = useState(false);
   console.log(data, 'data13');
+  const dispatch = useDispatch();
   useEffect(() => {
     function loadComponent() {
       const importChild = data?.CHILD_STEP?.map((subData, index) => {
@@ -30,6 +33,10 @@ const DisplayComponent = ({ data, formik, tabChange, setTabChange }) => {
       Promise.all(importChild).then(setViews, setLoading(false));
     }
     loadComponent();
+    setTimeout(()=>{
+      dispatch(loadingfalse("test"));
+    },5000);
+   
     setLoading(false);
   }, []);
 
