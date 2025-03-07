@@ -1,0 +1,524 @@
+{
+  "redirects": [
+    {
+      "source": "/uae-en/uae-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-en/ksa-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-en/omn-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-en/bhr-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-en/qat-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-en/egy-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-en/global-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-en/uae-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-en/ksa-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-en/omn-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-en/bhr-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-en/qat-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-en/egy-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-en/global-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-en/uae-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-en/ksa-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-en/omn-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-en/bhr-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-en/qat-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-en/egy-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-en/global-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-en/uae-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-en/ksa-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-en/omn-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-en/bhr-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-en/qat-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-en/egy-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-en/global-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-en/uae-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-en/ksa-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-en/omn-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-en/bhr-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-en/qat-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-en/egy-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-en/global-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-en/uae-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-en/ksa-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-en/omn-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-en/bhr-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-en/qat-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-en/egy-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-en/global-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-en/uae-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-en/ksa-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-en/omn-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-en/bhr-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-en/qat-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-en/egy-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-en/global-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-ar/uae-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-ar/uae-en/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-ar/ksa-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-ar/omn-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-ar/bhr-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-ar/qat-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-ar/egy-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/uae-ar/global-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-ar/uae-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-ar/ksa-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-ar/omn-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-ar/bhr-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-ar/qat-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-ar/egy-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ksa-ar/global-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-ar/uae-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-ar/ksa-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-ar/omn-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-ar/bhr-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-ar/qat-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-ar/egy-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/omn-ar/global-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-ar/uae-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-ar/ksa-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-ar/omn-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-ar/bhr-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-ar/qat-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-ar/egy-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/bhr-ar/global-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-ar/uae-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-ar/ksa-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-ar/omn-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-ar/bhr-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-ar/qat-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-ar/egy-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/qat-ar/global-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-ar/uae-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-ar/ksa-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-ar/omn-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-ar/bhr-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-ar/qat-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-ar/egy-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/egy-ar/global-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-ar/uae-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-ar/ksa-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-ar/omn-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-ar/bhr-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-ar/qat-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-ar/egy-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/global-ar/global-ar/:path",
+      "destination": "https://uat.sedarglobal.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:locale/product/smart-home/voice-control-curtains",
+      "destination": "/:locale/curtains-and-drapes",
+      "statusCode": 301
+    },
+    {
+      "source": "/:locale/product/smart-home/motorized-curtains",
+      "destination": "/:locale/curtains-and-drapes",
+      "statusCode": 301
+    },
+    {
+      "source": "/:locale/product/smart-home/automatic-curtains",
+      "destination": "/:locale/curtains-and-drapes",
+      "statusCode": 301
+    },
+    {
+      "source": "/:locale/product/smart-home/remote-control-curtains",
+      "destination": "/:locale/curtains-and-drapes",
+      "statusCode": 301
+    }
+  ],
+  "functions": {
+    "pages/**/*.js": {
+      "maxDuration": 10
+    }
+  }
+}

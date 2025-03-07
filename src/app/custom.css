@@ -1,0 +1,100 @@
+/* styles/custom.css */
+body {
+  font-family: Nunito, sans-serif;
+  margin: 0;
+  background-color: #fff;
+}
+
+.test {
+  background: #000;
+}
+
+::-webkit-scrollbar {
+  width: .4em;
+}
+
+::-webkit-scrollbar-thumb, ::-webkit-scrollbar-track {
+  display: none;
+}
+
+
+
+.css-1vrr3d1-MuiGrid-root > .MuiGrid-item {
+  padding-left: 0 !important;
+}
+
+.css-y9sd33-MuiGrid-root > .MuiGrid-item {
+  padding-top: 0 !important;
+}
+
+/* Default height for larger screens */
+.swiper-image {
+  height: calc(100vh - 130px); 
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Smaller screens (sm, xs) */
+@media (max-width: 768px) {
+  .swiper-image {
+    height: calc(100vh - 240px);
+  }
+
+  #CanvasId3D canvas {
+    width: 100vw !important; 
+    height: calc(100vh - 100px) !important; 
+  }
+}
+
+@media (max-width: 768px) {
+  .swiper-image {
+    height: calc(100vh - 400px); 
+  }
+
+  #CanvasId3D canvas {
+    width: 100vw !important;
+    height: calc(100vh - 400px) !important; 
+  }
+
+  .previewImage{
+    height: calc(100vh - 390px);
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 768px) {
+  .swiper-image {
+    height: calc(100vh - 400px);
+  }
+
+  #CanvasId3D canvas {
+    width: 100vw !important;
+    height: calc(100vh - 400px) !important;
+  }
+
+  .previewImage {
+    height: calc(100vh - 390px);
+  }
+
+  .bigipads{
+    height: calc(100vh - 40px) !important;
+  }
+
+  .resetbutton{
+    right:385px !important;
+  }
+}
+
+
+
+
+
+.error {
+  color: red;
+  font-size: smaller;
+}
+
+#CanvasId3D{
+  margin-bottom: 3px;
+}
+
+

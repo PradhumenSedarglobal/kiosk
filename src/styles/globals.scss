@@ -1,0 +1,77 @@
+@import "./AboutHomepage.scss";
+@import "swiper/css";
+@import "swiper/css/pagination";
+@import "swiper/css/navigation";
+@import "swiper/css/effect-creative";
+@import "swiper/css/thumbs";
+
+
+
+.ProductListThumbSlider {
+  position: relative;
+
+  #thumbs {
+    padding: 5px 0;
+    cursor: pointer;
+  }
+
+  .swiper-button-prev:after,
+  .swiper-button-next:after {
+    color: #fff;
+    font-size: 20px;
+  }
+
+  .swiper-initialized-thumbs {
+    img {
+      max-width: 88px;
+    }
+  }
+}
+
+.panel {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.notistack-SnackbarContainer.z-alert {
+  z-index: 10000 !important;
+}
+
+.z-snackbar-alert {
+  z-index: 10000 !important;
+}
+
+.gm-style .gm-style-iw-c {
+  max-width: 250px !important;
+  width: 100%;
+}
+
+.gm-style .gm-style-iw-d {
+  overflow: hidden !important;
+}
+
+// #CanvasId3D {
+// canvas {
+//   height: 326px !important;
+// }
+
+// }
+
+// #CanvasId3D {
+//   canvas {
+
+//   }
+// }
+
+
+@media only screen and (min-width: 0px) and (max-width: 768px) {
+
+  //Put your CSS here for 200px to 767px width devices (cover all width between 200px to 767px //
+  #CanvasId3D {
+    canvas {
+      height: 50vh !important;
+      /* For screens with a max height of 800px, adjust the height to 80% of the viewport */
+    }
+  }
+}

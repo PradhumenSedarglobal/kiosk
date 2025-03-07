@@ -1,0 +1,97 @@
+{
+  "sedarGeo": "AE",
+  "siteDetails": {
+    "show_ccy_symbol": "د.إ",
+    "show_ccy_code": "AED",
+    "conv_exch_rate": "1",
+    "price_exc_rate": "1",
+    "price_ccy_code": "AED",
+    "decimals": "0",
+    "show_decimals": "0",
+    "primary_cn_iso": "UAE",
+    "primary_ref_cn_iso": "AE",
+    "cn_iso": "UAE",
+    "primary_lang_code": "en",
+    "direct_price_yn": "Y",
+    "offer_price_app_yn": "N",
+    "SCN_REF_CN_ISO": "AE",
+    "SCN_ISO": "UAE",
+    "PRICE_CCY_CODE": "AED"
+  },
+  "CCYDECIMALS": "0",
+  "CCYCODE": "AED",
+  "i18next": "en",
+  "defaultCountry": "uae",
+  "cniso": "AE",
+  "countryName": "uae",
+  "detect_country": "AE",
+  "langName": "en",
+  "USER_ID": "100045301",
+  "visitorId": "dLZslHnXO",
+  "site": "100001",
+  "locale": "uae-en",
+  "themeDirection": "ltr",
+  "modificationUser": null,
+  "JWTAuthToken": "$2y$10$Db9B2rHYcO9uw5jO40RUiO7wG7ry.vqqThXW0g2LnPg5SyH41MXo.",
+  "user": {
+    "cust_id": "100045301",
+    "cust_user_id": "bilal@gmail.com",
+    "cust_email_id": "bilal@gmail.com",
+    "cust_mobile_no": "+919351864756",
+    "cust_first_name": "bilal",
+    "cust_last_name": "mansuri",
+    "cust_photo": "",
+    "cust_title": "Mr",
+    "cust_cr_uid": "FIRST-USER-LOGIN",
+    "cust_phone_no": "+919351864756",
+    "cust_type": "E"
+  },
+  "languageDropDown": [
+    {
+      "label": "Qatar",
+      "value": "qat-en",
+      "icon": "/assets/header/languages/qat.png"
+    },
+    {
+      "label": "UAE",
+      "value": "uae-en",
+      "icon": "/assets/header/languages/uae.png"
+    },
+    {
+      "label": "Bahrain",
+      "value": "bhr-en",
+      "icon": "/assets/header/languages/bhr.png"
+    },
+    {
+      "label": "Global",
+      "value": "global-en",
+      "icon": "/assets/header/languages/global.png"
+    },
+    {
+      "label": "Saudi Arabia",
+      "value": "ksa-en",
+      "icon": "/assets/header/languages/ksa.png"
+    },
+    {
+      "label": "Oman",
+      "value": "omn-en",
+      "icon": "/assets/header/languages/omn.png"
+    },
+    {
+      "label": "Egypt",
+      "value": "egy-en",
+      "icon": "/assets/header/languages/eg.png"
+    },
+    {
+      "label": "Kuwait",
+      "value": "kwt-en",
+      "icon": "/assets/header/languages/kw.jpg"
+    }
+  ],
+  "currentLang": {
+    "label": "UAE",
+    "value": "uae-en",
+    "icon": "/assets/header/languages/uae.png"
+  },
+  "isGuestUser": false
+}
