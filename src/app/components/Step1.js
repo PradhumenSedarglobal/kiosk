@@ -8,7 +8,7 @@ import React, {
 import { Box, Modal, Typography, Grid } from "@mui/material";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { updateSelectedCategory } from "@/redux/slices/customization";
+import { removecart, updateSelectedCategory } from "@/redux/slices/customization";
 
 // Custom Components
 import MainHeading from "./MainHeading";
@@ -41,10 +41,10 @@ const Step1 = ({ successValue, stepcount }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (hasFetched.current) return; 
+    if (hasFetched.current) return;
 
     const cancelToken = axios.CancelToken.source();
-    setLoading(true); 
+    setLoading(true);
 
     fetchCategory(cancelToken.token)
       .then((data) => {
@@ -53,11 +53,12 @@ const Step1 = ({ successValue, stepcount }) => {
         if (data.result.length > 0) {
           const firstCategory = data.result[0].link_url;
           setSelectedCategory(firstCategory);
+          dispatch(removecart());
           dispatch(updateSelectedCategory(firstCategory));
         }
       })
       .catch(setError)
-      .finally(() => setLoading(false)); 
+      .finally(() => setLoading(false));
 
     return () => cancelToken.cancel();
   }, [dispatch]);
@@ -65,6 +66,7 @@ const Step1 = ({ successValue, stepcount }) => {
   const handleChange = useCallback(
     (link) => {
       setSelectedCategory(link);
+      dispatch(removecart());
       dispatch(updateSelectedCategory(link));
     },
     [dispatch]
@@ -81,7 +83,25 @@ const Step1 = ({ successValue, stepcount }) => {
   const categoryList = useMemo(
     () =>
       category.map((item, index) => (
-        <Grid item xs={12} sm={6} md={4} key={item.id}>
+        <Grid
+          item
+          xs={6}
+          sm={6}
+          md={4}
+          key={item.id}
+          sx={{
+            flex: "0 0 50%", // Default for mobile-first approach
+            "@media (min-width: 992px)": {
+              flex: "0 0 calc(100% / 3)", // Ensures correct width for larger screens
+            },
+            "@media (min-width: 768px) and (max-width: 991px)": {
+              flex: "0 0 calc(100% / 4)", // Ensures correct width for larger screens
+            },
+            "@media (max-width: 575px)": {
+              flex: "0 0 calc(100% / 2)", // Adjusting to full width for smaller screens if needed
+            },
+          }}
+        >
           <ImageCard
             category={selectedCategory}
             index={index}
@@ -104,22 +124,27 @@ const Step1 = ({ successValue, stepcount }) => {
         </Modal>
       )}
 
-      {loading ? ( 
+      {loading ? (
         <Box
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "calc(100vh - 240px)", 
+            height: "calc(100vh - 240px)",
           }}
         >
-          <img src="/loadernew.gif" style={{objectFit:"cover",height:"100px"}} alt="Loading..." />
+          <img
+            src="/loadernew.gif"
+            style={{ objectFit: "cover", height: "100px" }}
+            alt="Loading..."
+          />
         </Box>
       ) : (
         <Box sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
-          <MainHeading sx={{ mb: 2 }} title="Category Selection" />
-          <Box sx={{ height: { lg: "calc(100vh - 240px)" }, overflow: "auto" }}>
+         <MainHeading  title="Category Selection" />
+          <Box sx={{height: { lg: "calc(100vh - 240px)" }, overflow: "auto",pt:"20px" }}>
             <Grid
+              className="tester"
               container
               spacing={2}
               sx={{ px: 2, pb: { sm: 20, xs: 20, md: 5, lg: 5 } }}

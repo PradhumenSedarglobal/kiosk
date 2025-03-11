@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
+import { Card, CardMedia, CardContent, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const ImageCard = ({
   functionname,
@@ -12,74 +13,65 @@ const ImageCard = ({
   link,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const fonts = useSelector((state) => state.font);
 
   return (
-    <ImageList
+    <Card
+      ref={refName}
+      onClick={() => functionname(link)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       sx={{
-        width: "auto",
-        height: "auto",
-        pb: 3,
-        pt: 3,
-        m: 0,
-        gap: 12,
-        height: "auto",
-        display: "flex", 
-        overflow: "hidden", 
-        "&::-webkit-scrollbar": { display: "none" }, 
-        "-ms-overflow-style": "none", 
-        "scrollbar-width": "none", 
+        borderRadius: "12px",
+        transition:
+          "transform 0.3s cubic-bezier(0.45, 0.05, 0.55, 0.95), box-shadow 0.3s cubic-bezier(0.45, 0.05, 0.55, 0.95)",
+        backgroundColor: "#fff",
+        overflow: "hidden",
+        cursor: "pointer",
+        height:"100% !important",
+        border:
+          selected || category === index
+            ? "4px solid #ef9c00"
+            : isHovered
+            ? "0px 4px 12px rgba(86, 80, 75, 0.4)"
+            : "0px 2px 5px rgba(0, 0, 0, 0.1)",
+        "&:hover": {
+          transform: "translateY(-5px)", // Lift effect
+        },
+        "&:active": {
+          transform: "scale(0.98)", // Click press effect
+          boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.2)",
+        },
       }}
     >
-      <ImageListItem
-        ref={refName}
-        onClick={() => functionname(link)}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+      <CardMedia
+        component="img"
+        image={img || "/notfound.jpg"}
+        alt={name}
+        loading="lazy"
         sx={{
-          borderRadius: "12px",
           width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          transition: "transform 0.3s cubic-bezier(0.45, 0.05, 0.55, 0.95), box-shadow 0.3s cubic-bezier(0.45, 0.05, 0.55, 0.95)",
-          backgroundColor: "#fff",
-          overflow: "hidden",
-          cursor: "pointer",
-
-          boxShadow:
-            selected || category === index
-              ? "0 0 0 3px #ef9c00" 
-              : isHovered
-              ? "0px 4px 12px rgba(86, 80, 75, 0.4)" 
-              : "0px 2px 5px rgba(0, 0, 0, 0.1)", 
-
-          "&:hover": {
-            transform: "translateY(-5px)", // Lift effect
-          },
-          "&:active": {
-            transform: "scale(0.98)", // Click press effect
-            boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.2)",
-          },
-          "@media (max-width: 768px)": {
-            width: "100%",
-          },
+          height: "120px",
+          objectFit: "cover",
+        }}
+      />
+      <CardContent
+        sx={{
+          padding: "16px",
         }}
       >
-        <img
-          src={img || "/notfound.jpg"}
-          alt={name}
-          loading="lazy"
-          style={{
-            width: {xs:"200px !important",sm:"300px !important",md:"auto"},
-            height: "150px",
-            objectFit: "cover",
+        <Typography
+          variant="p"
+          sx={{
+            fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+            fontSize: "14px !important",
+           
           }}
-        />
-        <ImageListItemBar 
-          title={name}
-        />
-      </ImageListItem>
-    </ImageList>
+        >
+          {name.charAt(0).toUpperCase() + name.slice(1)}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 };
 

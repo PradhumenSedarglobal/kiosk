@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState,useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { debounce } from "lodash";
 import {
   removecart,
   setCustomization,
   setHeaderResponse,
   setMaterialCustomization,
+  startCustomizationLoading,
   updateModalData,
   updateSelectedModal,
 } from "@/redux/slices/customization";
@@ -16,127 +18,138 @@ import axios from "axios";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 
 const Modal = () => {
-  const dispatch = useDispatch();
-  const fonts = useSelector((state) => state.font);
-  const selectedCategory = useSelector(
-    (state) => state.customization.SelectedCategory
+ const dispatch = useDispatch();
+   const fonts = useSelector((state) => state.font);
+   const selectedCategory = useSelector(
+     (state) => state.customization.SelectedCategory
+   );
+   const selectedModalData = useSelector(
+     (state) => state.customization.SelectedModal
+   );
+   const modalData = useSelector((state) => state.customization.ModalData);
+ 
+   const debouncedRemoveCart = useCallback(
+    debounce(() => {
+      dispatch(removecart());
+      dispatch(startCustomizationLoading());
+    }, 300), // Delay of 300ms
+    [dispatch]
   );
-  const selectedModalData = useSelector(
-    (state) => state.customization.SelectedModal
-  );
-  const modalData = useSelector((state) => state.customization.ModalData);
-
-  useEffect(()=>{
-    dispatch(removecart());
-  },[modalData])
-
-  const [selectedModal, setSelectedModal] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const selectModalRef = useRef();
-
-  const fetchModal = async (cancelToken) => {
-    try {
-      const response = await axios.get(
-        `https://migapi.sedarglobal.com/kiosk/categories?category=${selectedCategory}`,
-        { cancelToken }
-      );
-      return response.data;
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.log("Request canceled:", error.message);
-      } else {
-        console.error("Error fetching categories:", error);
-      }
-      throw error;
-    }
-  };
-
+  
   useEffect(() => {
-    const source = axios.CancelToken.source();
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchModal(source.token);
-        console.log("selectedCategory", selectedCategory);
-        console.log("selectedCategory", data.result.model);
-        
-
-        dispatch(updateModalData(data.result));
-
-
-        if (data?.result?.model?.length > 0) {
-          const firstModal = data.result.model[0].SPI_LINK_URL;
-          setSelectedModal(firstModal);
-          selectModalRef.current = firstModal;
-          dispatch(updateSelectedModal(firstModal));
-        }
-      } catch (error) {
-        if (!axios.isCancel(error)) {
-          setError(error);
-          console.error("Failed to fetch categories:", error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      source.cancel("Component unmounted, request canceled");
-    };
-  }, [selectedCategory, dispatch]);
-
-  const handleChange = (link) => {
+    if (modalData && modalData.length > 0) {
+      debouncedRemoveCart();
+    }
+  }, [modalData, debouncedRemoveCart]);
+ 
+   const [selectedModal, setSelectedModal] = useState(null);
+   const [error, setError] = useState(null);
+   const [loading, setLoading] = useState(true);
+ 
+   const selectModalRef = useRef();
+ 
+   const fetchModal = async (cancelToken) => {
+     try {
+       const response = await axios.get(
+         `https://migapi.sedarglobal.com/kiosk/categories?category=${selectedCategory}`,
+         { cancelToken }
+       );
+       return response.data;
+     } catch (error) {
+       if (axios.isCancel(error)) {
+         console.log("Request canceled:", error.message);
+       } else {
+         console.error("Error fetching categories:", error);
+       }
+       throw error;
+     }
+   };
+ 
+   useEffect(() => {
+     const source = axios.CancelToken.source();
+ 
+     const fetchData = async () => {
+       try {
+         setLoading(true);
+         const data = await fetchModal(source.token);
+         
+ 
+         dispatch(updateModalData(data.result));
+ 
+ 
+         if (data?.result?.model?.length > 0) {
+           const firstModal = data.result.model[0].SPI_LINK_URL;
+           setSelectedModal(firstModal);
+           selectModalRef.current = firstModal;
+           dispatch(updateSelectedModal(firstModal));
+         }
+       } catch (error) {
+         if (!axios.isCancel(error)) {
+           setError(error);
+           console.error("Failed to fetch categories:", error);
+         }
+       } finally {
+         setLoading(false);
+       }
+     };
+ 
+     fetchData();
+ 
+     return () => {
+       source.cancel("Component unmounted, request canceled");
+     };
+   }, [selectedCategory, dispatch]);
+ 
+   const handleChange = (link) => {
     if (selectedModalData !== link) {
       dispatch(updateSelectedModal(link));
-      dispatch(removecart());
+      if (Object.keys(selectedModalData).length > 0) {
+        dispatch(removecart());
+      }
     }
   };
-
-  const getStep = async () => {
-    if (!selectedModalData) return;
-
-    const customizationRes = await apiSSRV2DataService.getAll({
-      path: `kiosk/get_steps`,
-      param: {
-        content: "customization",
-        slug_url: selectedModalData,
-        category: selectedCategory,
-        sys_id: 0,
-      },
-      locale: "uae-en",
-    });
-
-    const header_response = await apiSSRV2DataService.getAll({
-      path: `v2/getHeaderData`,
-      param: {
-        content: "Contact Info",
-        column_name: "SH_LINK_URL",
-        column_value: "tel:",
-      },
-      //cookies: GET_ALL_COOKIES,
-      locale: "uae-en",
-    });
-
-    console.log("customizationRes", customizationRes);
-
-    if (customizationRes) {
-      dispatch(setCustomization(customizationRes));
-      dispatch(setHeaderResponse(header_response));
-    }
-  };
-
-  useEffect(() => {
-    dispatch(setMaterialCustomization(null));
-    getStep();
-  }, [selectedModalData, selectedCategory, dispatch]);
-
-  console.log("modalData", modalData?.model);
-
+  
+ 
+   const getStep = async () => {
+     if (!selectedModalData) return;
+ 
+     const customizationRes = await apiSSRV2DataService.getAll({
+       path: `kiosk/get_steps`,
+       param: {
+         content: "customization",
+         slug_url: selectedModalData,
+         category: selectedCategory,
+         sys_id: 0,
+       },
+       locale: "uae-en",
+     });
+ 
+     const header_response = await apiSSRV2DataService.getAll({
+       path: `v2/getHeaderData`,
+       param: {
+         content: "Contact Info",
+         column_name: "SH_LINK_URL",
+         column_value: "tel:",
+       },
+       //cookies: GET_ALL_COOKIES,
+       locale: "uae-en",
+     });
+ 
+     console.log("customizationRes", customizationRes);
+ 
+     if (customizationRes) {
+       dispatch(setCustomization(customizationRes));
+       dispatch(setHeaderResponse(header_response));
+     }
+   };
+ 
+   useEffect(() => {
+     dispatch(setMaterialCustomization(null));
+     getStep();
+   }, [selectedModalData, selectedCategory, dispatch]);
+ 
+   console.log("modalData", modalData?.model);
+ 
   return (
     <>
       {loading ? (
@@ -221,7 +234,25 @@ const Modal = () => {
                 </Box>
               ) : (
                 modalData?.model?.map((item, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={item.SPI_LINK_TITLE}>
+                  <Grid
+                    item
+                    xs={6}
+                    sm={6}
+                    md={4}
+                    key={item.id || item.SPI_LINK_URL || index}
+                    sx={{
+                      flex: "0 0 50%", // Default for mobile-first approach
+                      "@media (min-width: 992px)": {
+                        flex: "0 0 calc(100% / 3)", // Ensures correct width for larger screens
+                      },
+                      "@media (min-width: 768px) and (max-width: 991px)": {
+                        flex: "0 0 calc(100% / 4)", // Ensures correct width for larger screens
+                      },
+                      "@media (max-width: 575px)": {
+                        flex: "0 0 calc(100% / 2)", // Adjusting to full width for smaller screens if needed
+                      },
+                    }}
+                  >
                     <ImageCard
                       category={selectedCategory}
                       refName={selectModalRef}

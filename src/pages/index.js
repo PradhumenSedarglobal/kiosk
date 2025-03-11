@@ -78,14 +78,7 @@ const TabinationStepsSection = dynamic(
 
 export const getServerSideProps = async (context) => {
   const { locale, query, res, req } = context;
-  const { cookies } = req;
 
-  // res.setHeader(
-  //   "Cache-Control",
-  //   `public, s-maxage=10, stale-while-revalidate=${process.env.NEXT_PUBLIC_COOKIE_MAX_AGE_TEN_MINUTES || 9
-  //   }`
-  // );
-  //const { slug } = query;
   const category = "curtains-and-drapes";
   const sub_category = "fabric-curtain-ripple-fold";
   const product = "fabric-curtain-ripple-fold";
@@ -111,18 +104,6 @@ export const getServerSideProps = async (context) => {
   const sys_id = 0; //slug && slug?.length === 7 ? slug[6] : 0;
   const customization_slug_url = product;
 
-  // CUSTOMIZATION END QUERY
-
-  // const customizationRes = await apiSSRV2DataService.getAll({
-  //   path: `kiosk/get_steps`,
-  //   param: {
-  //     content: "customization",
-  //     slug_url: customization_slug_url,
-  //     sys_id: sys_id,
-  //   },
-  //   //cookies: GET_ALL_COOKIES,
-  //   locale: locale,
-  // });
 
   const header_response = await apiSSRV2DataService.getAll({
     path: `v2/getHeaderData`,
@@ -135,25 +116,6 @@ export const getServerSideProps = async (context) => {
     locale: locale,
   });
 
-  // if (
-  //   customizationRes?.result?.COMPONENT[0]?.PARENT.CHILD?.return_status == "-1"
-  // ) {
-  //   if (locale == "default") {
-  //     return {
-  //       redirect: {
-  //         destination: `/`,
-  //         statusCode: 301,
-  //       },
-  //     };
-  //   } else {
-  //     return {
-  //       redirect: {
-  //         destination: `/${locale}`,
-  //         statusCode: 301,
-  //       },
-  //     };
-  //   }
-  // }
 
   return {
     props: {
@@ -194,27 +156,20 @@ export default function ProductPage(props) {
 
   const { state } = useAuthContext();
   const { cookies } = state;
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { t: translate } = useTranslation();
-  const { slug } = props;
 
   // store thumbs swiper instance
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const stepCount = useSelector((state) => state.step.value);
+  
   const {
-    isCustomizationLoading,
+    customerSystemId,
     SelectedCategory,
     SelectedModal,
     stepsArray,
     customization,
     materialList,
   } = useSelector((state) => state.customization);
-
-  useEffect(()=>{
-    console.log("isCustomizationLoading",isCustomizationLoading);
-  },[isCustomizationLoading])
 
   const selectedItemCode = stepsArray?.MATERIAL_SELECTION?.material_info
     ?.SII_ITEM_ID
@@ -230,33 +185,8 @@ export default function ProductPage(props) {
   const scanner = useSelector((state) => state.scanner.value);
   const fonts = useSelector((state) => state.font);
   const locale = "uae-en";
-  const modalData = useSelector((state) => state.customization.ModalData);
 
-  // const getStep = async () => {
-  //   if (!selectedModalData) return;
-
-  //   const customizationRes = await apiSSRV2DataService.getAll({
-  //     path: `kiosk/get_steps`,
-  //     param: {
-  //       content: "customization",
-  //       slug_url: selectedModalData,
-  //       category: selectedCategory,
-  //       sys_id: 0,
-  //     },
-  //     locale: "uae-en",
-  //   });
-
-  //   console.log("customizationRes", customizationRes);
-
-  //   if (customizationRes) {
-
-  //     console.log("customizationResssssss1", customization);
-
-  //     dispatch(setCustomization(customizationRes));
-  //     console.log("customizationResssssss2", customization);
-  //   }
-  // };
-
+ 
   const formik = useFormik({
     initialValues: {
       qtys: "1",
@@ -275,53 +205,54 @@ export default function ProductPage(props) {
     },
   });
 
-  const setImage = useCallback(async () => {
+  const setImage = useCallback(() => {
     try {
-      const itemGallary = materialList[0]?.items?.[0]?.gallery;
-
-      if (!itemGallary) {
-        throw new Error("Gallery data not found");
+      if (!materialList?.length) return;
+  
+      const selectedMaterial =
+        materialList.find((item) => item.SFI_DESC === selectedItemCode?.[0]) ||
+        materialList[0];
+  
+      if (!selectedMaterial?.items?.length) return;
+  
+      const selectedItem =
+        selectedMaterial.items.find(
+          (item) => item.SII_ITEM_ID === selectedItemCode2
+        ) || selectedMaterial.items[0];
+  
+      if (!selectedItem?.gallery?.length) return;
+  
+      const newImageUrls = selectedItem.gallery.map(
+        (item) => item.SLI_IMAGE_PATH
+      );
+  
+      // Avoid unnecessary state updates
+      const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
+      const updatedImageUrls = [firstImage, ...newImageUrls];
+  
+      if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
+        setImageUrls(updatedImageUrls);
       }
-
-      const newImageUrls = itemGallary?.map((item) => item.SLI_IMAGE_PATH);
-      setImageUrls(["/360v.jpg",...newImageUrls]);
-    } catch (error) { 
-      console.error("Error fetching gallery data:", error);
-    }
-  }, [stepsArray["MATERIAL_SELECTION"],modalData]);
-
-  const setSelectedImage = useCallback(async () => {
-    try {
-      const mdata = materialList.find(
-        (item) => item.SFI_DESC === selectedItemCode[0]
-      );
-      const mdata2 = mdata?.items.find(
-        (item) => item.SII_ITEM_ID === selectedItemCode2
-      );
-      let itemGallary = mdata2.gallery;
-      const newImageUrls = itemGallary.map((item) => item.SLI_IMAGE_PATH);
-      const fImage = imageUrls[0];
-      setImageUrls([fImage, ...newImageUrls]);
     } catch (error) {
-      console.error("Error fetching selected gallery data:", error);
+      console.error("Error fetching gallery data:", error.message);
     }
-  }, [stepsArray["MATERIAL_SELECTION"]]);
+  }, [materialList, selectedItemCode, selectedItemCode2]); // Removed imageUrls to prevent infinite loop
+  
+  // useEffect(() => {
+  //   setImage();
+  // }, [setImage]); 
+  
 
-  useEffect(() => {
-    setImage();
-  }, [setImage,modalData]);
-
-  useEffect(() => {
-    setSelectedImage();
-  }, [setSelectedImage,modalData]);
-
-  useEffect(() => {
-    console.log("stepCount", stepCount);
-  }, [stepCount]);
+  // useEffect(() => {
+  //   console.log("stepCount", stepCount);
+  // }, [stepCount]);
 
   console.log("get step data", props);
 
-  
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { t: translate } = useTranslation();
+  const { slug } = props;
   const {
     SC_LINK_URL,
     getFilterKeysValuesData,
@@ -335,16 +266,10 @@ export default function ProductPage(props) {
     headerResponse,
   } = props;
 
-  // React.useEffect(() => {
-  //   if (customizationRes) {
-  //     dispatch(setCustomization(customizationRes));
-  //     dispatch(setHeaderResponse(headerResponse));
-  //   }
-  // }, [customizationRes, slug,]);
 
-  React.useEffect(() => {
-    setClientSideReduxCookie({ dispatch: dispatch, router: router });
-  }, [slug, router]);
+  // React.useEffect(() => {
+  //   setClientSideReduxCookie({ dispatch: dispatch, router: router });
+  // }, [slug, router]);
 
   const { result = {} } = productFilter || {};
   const filters = result.FILTERS || [];
@@ -488,6 +413,8 @@ export default function ProductPage(props) {
     }
   };
 
+  
+
   return (
     <>
       <Head>
@@ -613,31 +540,11 @@ export default function ProductPage(props) {
                         ></Typography>
                       )}
 
-                      {stepCount !== 0 &&
-                        stepCount !== 1 && isCustomizationLoading && (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "calc(100vh - 240px)",
-                          }}
-                        >
-                          <img
-                            src="/loadernew.gif"
-                            style={{ objectFit: "cover", height: "100px" }}
-                            alt="Loading..."
-                          />
-                        </Box>
+                      {stepCount !== 0 && stepCount !== 1 && (
+                        <SceneCanvas3D
+                          {...(data2 && data2.length > 0 ? data2[0] : {})}
+                        />
                       )}
-
-                      {stepCount !== 0 &&
-                        stepCount !== 1 &&
-                        !isCustomizationLoading && (
-                          <SceneCanvas3D
-                            {...(data2 && data2.length > 0 ? data2[0] : {})}
-                          />
-                        )}
                     </>
                   ) : (
                     <img
@@ -660,7 +567,7 @@ export default function ProductPage(props) {
             </Swiper>
 
             {/* Thumbs Swiper -> store swiper instance */}
-
+            
             <Swiper
               modules={[Thumbs]}
               watchSlidesProgress
@@ -719,7 +626,7 @@ export default function ProductPage(props) {
         {/* Input Container */}
         <Grid
           item
-          xs={6}
+          xs={12}
           md={5}
           sx={{
             display: "flex",
@@ -747,7 +654,7 @@ export default function ProductPage(props) {
                   xs: "sticky",
                   xxs: "sticky",
                 },
-
+                
                 bottom: 0,
                 pb: 0,
               }}
@@ -799,6 +706,7 @@ export default function ProductPage(props) {
                         paddingRight: "10px",
                         paddingLeft: "10px",
                         paddingBottom: "5px",
+                     
                       }}
                     >
                       <Grid
