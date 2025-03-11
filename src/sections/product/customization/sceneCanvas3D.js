@@ -2029,8 +2029,8 @@ const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") => {
   }
   let url =
     editStepData.line_result && editStepData.line_result.SOL_SYS_ID
-      ? "v2/cart/update/" + editStepData.line_result.SOL_SYS_ID
-      : "v2/cart";
+      ? "kiosk/cart/update/" + editStepData.line_result.SOL_SYS_ID
+      : "kiosk/cart";
   let post_data = {
     ...productInfo,
     STEPS: stepsArray,

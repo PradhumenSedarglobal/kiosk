@@ -238,9 +238,9 @@ export default function ProductPage(props) {
     }
   }, [materialList, selectedItemCode, selectedItemCode2]); // Removed imageUrls to prevent infinite loop
   
-  // useEffect(() => {
-  //   setImage();
-  // }, [setImage]); 
+  useEffect(() => {
+    setImage();
+  }, [setImage]); 
   
 
   // useEffect(() => {

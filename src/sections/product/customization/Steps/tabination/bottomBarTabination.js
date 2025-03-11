@@ -16,7 +16,7 @@ import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PopupModal from "@/app/components/PopupModal";
 
 const BottomBarTabination = ({
@@ -42,6 +42,10 @@ const BottomBarTabination = ({
 
 
   console.log("priceArray", priceArray);
+
+  useEffect(()=>{
+    console.log('priceArray.SOL_PRICE',priceArray.SOL_VALUE);
+  },[priceArray.SOL_VALUE])
 
   const fonts = useSelector((state) => state.font);
 
@@ -160,7 +164,7 @@ const BottomBarTabination = ({
               component="div"
             >
               {translate("Total")} {translate(productInfo?.CCY_CODE)}{" "}
-              {priceArray?.SOL_VALUE ? priceArray?.SOL_VALUE : 0}
+              {priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0}
             </Typography>
           </Grid>
         </Grid>
