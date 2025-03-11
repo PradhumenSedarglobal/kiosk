@@ -523,7 +523,7 @@ const SceneCanvas3D = (props) => {
     <div ref={ref}>
       <Box component="div" id="CanvasId3D"></Box>
 
-      {!isDownxs ? (
+      {/* {!isDownxs ? (
         <Box
           sx={{
             position: "absolute",
@@ -689,7 +689,7 @@ const SceneCanvas3D = (props) => {
             objectFit="contain"
           />
         </Box>
-      )}
+      )} */}
     </div>
   );
 };

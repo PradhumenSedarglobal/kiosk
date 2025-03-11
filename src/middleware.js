@@ -37,7 +37,7 @@ export async function middleware(request) {
     let firstGeoData = null;
     try {
       const geoResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`
+        `${process.env.LIVE_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`
       );
       firstGeoData = await geoResponse.json();
     } catch (error) {

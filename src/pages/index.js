@@ -508,34 +508,10 @@ export default function ProductPage(props) {
                               ? "calc(100vh - 510px)"
                               : isMobile
                               ? "calc(100vh - 340px)"
-                              : "calc(100vh - 130px)",
+                              : "calc(100vh - 5px)",
                             position: "relative",
 
-                            "&::before": {
-                              content:
-                                '"Select a category to start customizing"',
-                              display: "inline-block",
-                              animation: "fadeInOut 1.5s infinite",
-                            },
-
-                            "&::after": {
-                              content: '""',
-                              display: "inline-block",
-                              animation: "dotsAnimation 10s infinite",
-                            },
-
-                            "@keyframes dotsAnimation": {
-                              "0%": { content: '"."' },
-                              "33%": { content: '".."' },
-                              "66%": { content: '"..."' },
-                              "100%": { content: '"...."' },
-                            },
-
-                            "@keyframes fadeInOut": {
-                              "0%": { opacity: 0.3 },
-                              "50%": { opacity: 1 },
-                              "100%": { opacity: 0.3 },
-                            },
+                            
                           }}
                         ></Typography>
                       )}
@@ -567,8 +543,7 @@ export default function ProductPage(props) {
             </Swiper>
 
             {/* Thumbs Swiper -> store swiper instance */}
-            
-            <Swiper
+            {stepCount !== 0 && stepCount !== 1 && ( <Swiper
               modules={[Thumbs]}
               watchSlidesProgress
               onSwiper={setThumbsSwiper}
@@ -618,7 +593,8 @@ export default function ProductPage(props) {
                   />
                 </SwiperSlide>
               ))}
-            </Swiper>
+            </Swiper>)}
+           
           </main>
           {/* Swiper Slider with 3d Rendor Section End */}
         </Grid>
@@ -635,13 +611,10 @@ export default function ProductPage(props) {
           }}
         >
           <Box sx={{ width: "100%" }}>
-            <CartManager
-              open={open}
-              handleDrawerOpen={handleDrawerOpen}
-              handleDrawerClose={handleDrawerClose}
-            />
+            
 
             {renderStep()}
+
 
             <Box
               sx={{
@@ -788,8 +761,19 @@ export default function ProductPage(props) {
               </Box>
             </Box>
           </Box>
+
+          
         </Grid>
+       
       </Grid>
+      <CartManager
+              sx={{
+                overflow:"hidden"
+              }}
+              open={open}
+              handleDrawerOpen={handleDrawerOpen}
+              handleDrawerClose={handleDrawerClose}
+            />
     </>
   );
 }

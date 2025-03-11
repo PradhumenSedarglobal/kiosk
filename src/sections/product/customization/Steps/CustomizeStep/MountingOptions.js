@@ -11,7 +11,7 @@ const MountingOptions = ({ data, formik, elem }) => {
   const { stepsArray } = useSelector((state) => state.customization);
 
   return (
-    <Box>
+    <Box  px={3}>
       <Box>
         <Typography
           sx={(theme) => ({

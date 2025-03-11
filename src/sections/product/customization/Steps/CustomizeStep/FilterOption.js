@@ -141,7 +141,9 @@ const FilterOption = ({ data }) => {
   };
 
   return (
-    <Box>
+    <Box sx={{
+      display:"none"
+    }}>
       <Box mb={1}>
         <Typography
           sx={(theme) => ({

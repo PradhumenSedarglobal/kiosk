@@ -41,7 +41,7 @@ const MotorPosition = ({ data }) => {
     }, []);
 
     return (
-        <Box>
+        <Box >
             <Box>
                 <Typography
                     sx={(theme) => ({

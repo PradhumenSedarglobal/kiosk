@@ -53,7 +53,7 @@ const SummarySteps = ({ data, setTabChange }) => {
   return (
     <Box
       sx={{
-        borderBottom: (theme) => `1px dashed ${theme.palette.grey[2800]}`,
+        // borderBottom: (theme) => `1px dashed ${theme.palette.grey[2800]}`,
         padding: "0px 0px 10px 0px",
         margin: "0px 0px 10px 0px",
       }}
@@ -77,7 +77,7 @@ const SummarySteps = ({ data, setTabChange }) => {
           return false;
         } else if (step_name == 'MATERIAL_SELECTION' || step_name == 'TYPE_OF_REMOTE') {
           return (
-            <Grid container key={index} py={1} spacing={2}>
+            <Grid container key={index} px={3} py={1} spacing={2}>
               <Grid item md={6} sm={6} xs={6} xxs={6}>
                 <Typography
                   sx={(theme) => ({
@@ -118,7 +118,7 @@ const SummarySteps = ({ data, setTabChange }) => {
         } else if (step_name == 'MEASUREMENT') {
           return (
 
-            <Grid container key={index} py={1} spacing={2}>
+            <Grid container key={index} px={3} py={1} spacing={2}>
               <Grid item md={6} sm={6} xs={6} xxs={6}>
                 <Typography
                   sx={(theme) => ({
@@ -159,7 +159,7 @@ const SummarySteps = ({ data, setTabChange }) => {
         } else if (step_name == 'QUANTITY') {
           return (
 
-            <Grid container key={index} py={1} spacing={2}>
+            <Grid container key={index} px={3} py={1} spacing={2}>
               <Grid item md={6} sm={6} xs={6} xxs={6}>
                 <Typography
                   sx={(theme) => ({
@@ -200,7 +200,7 @@ const SummarySteps = ({ data, setTabChange }) => {
         } else if (step_name == 'LENGTH_OF_WIRE') {
           return (
 
-            <Grid container key={index} py={1} spacing={2}>
+            <Grid container key={index} px={3} py={1} spacing={2}>
               <Grid item md={6} sm={6} xs={6} xxs={6}>
                 <Typography
                   sx={(theme) => ({
@@ -241,7 +241,7 @@ const SummarySteps = ({ data, setTabChange }) => {
         } else if (step_name == 'ITEM_LABEL') {
           return (
 
-            <Grid container key={index} py={1} spacing={2}>
+            <Grid container key={index} px={3} py={1} spacing={2}>
               <Grid item md={6} sm={6} xs={6} xxs={6}>
                 <Typography
                   sx={(theme) => ({
@@ -322,7 +322,7 @@ const SummarySteps = ({ data, setTabChange }) => {
         } else {
           return (
 
-            <Grid container key={index} py={1} spacing={2}>
+            <Grid container key={index} px={3} py={1} spacing={2}>
               <Grid item md={6} sm={6} xs={6} xxs={6}>
                 <Typography
                   sx={(theme) => ({

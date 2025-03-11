@@ -21,17 +21,19 @@ const initialState = {
   ShowformModal: false,
   SelectedCategory: null,
   SelectedModal: null,
-  ModalData:[]
+  ModalData: [],
 };
 
 const slice = createSlice({
   name: "customization",
   initialState,
   reducers: {
-
-
-    loadingfalse(state){
+    loadingfalse(state) {
       state.isCustomizationLoading = false;
+    },
+
+    setCustomerSystemId(state, action) {
+      state.customerSystemId = action.payload;
     },
 
     removecart: (state) => {
@@ -43,11 +45,10 @@ const slice = createSlice({
       state.materialList = [];
       state.stepsArray = {};
     },
-    
 
-    updateModalData(state,action) {
+    updateModalData(state, action) {
       state.ModalData = action.payload;
-    },    
+    },
 
     updateFormModal(state, action) {
       state.ShowformModal = action.payload;
@@ -58,7 +59,7 @@ const slice = createSlice({
     },
 
     updateSelectedModal(state, action) {
-      state.SelectedModal = action.payload; 
+      state.SelectedModal = action.payload;
     },
     // START Faqs
     startCustomizationLoading(state) {
@@ -78,137 +79,135 @@ const slice = createSlice({
       state.materialCustomizationError = action.payload;
     },
 
-   // GET Faqs DATA
-   setCustomization(state, action) {
-    
-    let customizationObject = state.customization;
-    if (action?.payload && action?.payload?.result) {
-      action?.payload?.result &&
-        action?.payload?.result?.COMPONENT &&
-        action?.payload?.result?.COMPONENT?.length > 0 &&
-        action?.payload?.result?.COMPONENT.forEach((item) => {
-          if (
-            item?.PARENT?.component_url ===
-            "Component/Customization/CustomizationProduct"
-          ) {
-            customizationObject = item?.PARENT;
-          }
-        });
-      state.customization = customizationObject;
-      state.editStepData =
-        customizationObject.CHILD &&
+    // GET Faqs DATA
+    setCustomization(state, action) {
+      let customizationObject = state.customization;
+      if (action?.payload && action?.payload?.result) {
+        action?.payload?.result &&
+          action?.payload?.result?.COMPONENT &&
+          action?.payload?.result?.COMPONENT?.length > 0 &&
+          action?.payload?.result?.COMPONENT.forEach((item) => {
+            if (
+              item?.PARENT?.component_url ===
+              "Component/Customization/CustomizationProduct"
+            ) {
+              customizationObject = item?.PARENT;
+            }
+          });
+        state.customization = customizationObject;
+        state.editStepData =
+          customizationObject.CHILD &&
           customizationObject.CHILD[3] &&
           customizationObject.CHILD[3]["info_result"]
-          ? customizationObject.CHILD[3]
-          : [];
-      state.productInfo = customizationObject.CHILD[2];
-    }
-  },
-  // GET Faqs DATA
-  setMaterialCustomization(state, action) {
-    state.isMaterialCustomizationLoading = false;
-    state.materialCustomization = action.payload ?? null;
-
-if (!action.payload || !action.payload.result) {
-  state.materialList = []; 
-  state.materialCustomization = null; 
-  return;
-}
-  
-    let sfi_code = state.materialList.filter(
-      (e) =>
-        action.payload.result.length > 0 &&
-        e.SFI_DESC === action.payload.result[0]["SFI_DESC"]
-    );
-  
-    if (sfi_code.length === 0) {
-      state.materialList = [...state.materialList, ...action.payload.result];
-    }
-  },
-  
-  setMaterialSearchFun(state, action) {
-    state.isMaterialCustomizationLoading = false;
-    state.materialCustomization = action.payload;
-    state.materialList = action.payload.result;
-  },
-  setCustomCustomization(state, action) {
-    state.customization = action.payload;
-  },
-  setCustomizationFun(state, action) {
-   
-    let option_info = action.payload;
-
-    if (option_info && option_info.SS_CODE_NAME) {
-      state.stepsArray[option_info.SS_CODE_NAME] = option_info;
-
-      state.productInfo = state.productInfo;
-
-      // state.productInfo['component_type'] = option_info.SS_CODE_NAME;
-
-      if (option_info.SS_CODE_NAME === "MEASUREMENT") {
-        state.productInfo["m_width"] =
-          state.stepsArray["MEASUREMENT"] &&
-            state.stepsArray["MEASUREMENT"]["m_width"]
-            ? state.stepsArray["MEASUREMENT"]["m_width"]
-            : 0;
-        state.productInfo["m_height"] =
-          state.stepsArray["MEASUREMENT"] &&
-            state.stepsArray["MEASUREMENT"]["m_height"]
-            ? state.stepsArray["MEASUREMENT"]["m_height"]
-            : 0;
-      } else if (option_info.SS_CODE_NAME === "ROLL_CALCULATION") {
-        state.productInfo["m_width"] =
-          state.stepsArray["ROLL_CALCULATION"] &&
-            state.stepsArray["ROLL_CALCULATION"]["m_width"]
-            ? state.stepsArray["ROLL_CALCULATION"]["m_width"]
-            : 0;
-        state.productInfo["m_height"] =
-          state.stepsArray["ROLL_CALCULATION"] &&
-            state.stepsArray["ROLL_CALCULATION"]["m_height"]
-            ? state.stepsArray["ROLL_CALCULATION"]["m_height"]
-            : 0;
-      } else if (option_info.SS_CODE_NAME === "MATERIAL_SELECTION") {
-        state.productInfo["code"] =
-          state.stepsArray["MATERIAL_SELECTION"] &&
-            state.stepsArray["MATERIAL_SELECTION"]["material_info"]["SII_CODE"]
-            ? state.stepsArray["MATERIAL_SELECTION"]["material_info"][
-            "SII_CODE"
-            ]
-            : 0;
-        state.productInfo["PRICE"] =
-          state.stepsArray["MATERIAL_SELECTION"] &&
-            state.stepsArray["MATERIAL_SELECTION"]["material_info"]["PRICE"]
-            ? state.stepsArray["MATERIAL_SELECTION"]["material_info"]["PRICE"]
-            : 0;
-      } else if (option_info.SS_CODE_NAME === "QUANTITY") {
-        state.productInfo["count"] =
-          state.stepsArray && state.stepsArray.QUANTITY
-            ? state.stepsArray.QUANTITY.QTY
-            : 1;
-        let p =
-          state.productInfo && state.productInfo.PRICE > 1
-            ? state.productInfo.PRICE
-            : 1;
-        state.productInfo["VALUE"] = p * state.productInfo["count"];
+            ? customizationObject.CHILD[3]
+            : [];
+        state.productInfo = customizationObject.CHILD[2];
       }
-      //addToCartFunScene(initialState);
-    }
-  },
-  setCustomizationPriceFun(state, action) {
-    state.priceArray = action.payload;
-  },
-  deleteCustomizationStep(state, action) {
-    for (let i = 0; i < action.payload.length; i++) {
-      let step_name = action.payload[i];
-      delete state.stepsArray[step_name];
-    }
-  },
-  setFilterOptionValuesFun(state, action) {
-    state.filterOption = action.payload;
-  },
-  setHeaderResponse(state, action) {
-    state.headerData = action.payload;
-  },
+    },
+    // GET Faqs DATA
+    setMaterialCustomization(state, action) {
+      state.isMaterialCustomizationLoading = false;
+      state.materialCustomization = action.payload ?? null;
+
+      if (!action.payload || !action.payload.result) {
+        state.materialList = [];
+        state.materialCustomization = null;
+        return;
+      }
+
+      let sfi_code = state.materialList.filter(
+        (e) =>
+          action.payload.result.length > 0 &&
+          e.SFI_DESC === action.payload.result[0]["SFI_DESC"]
+      );
+
+      if (sfi_code.length === 0) {
+        state.materialList = [...state.materialList, ...action.payload.result];
+      }
+    },
+
+    setMaterialSearchFun(state, action) {
+      state.isMaterialCustomizationLoading = false;
+      state.materialCustomization = action.payload;
+      state.materialList = action.payload.result;
+    },
+    setCustomCustomization(state, action) {
+      state.customization = action.payload;
+    },
+    setCustomizationFun(state, action) {
+      let option_info = action.payload;
+
+      if (option_info && option_info.SS_CODE_NAME) {
+        state.stepsArray[option_info.SS_CODE_NAME] = option_info;
+
+        state.productInfo = state.productInfo;
+
+        // state.productInfo['component_type'] = option_info.SS_CODE_NAME;
+
+        if (option_info.SS_CODE_NAME === "MEASUREMENT") {
+          state.productInfo["m_width"] =
+            state.stepsArray["MEASUREMENT"] &&
+            state.stepsArray["MEASUREMENT"]["m_width"]
+              ? state.stepsArray["MEASUREMENT"]["m_width"]
+              : 0;
+          state.productInfo["m_height"] =
+            state.stepsArray["MEASUREMENT"] &&
+            state.stepsArray["MEASUREMENT"]["m_height"]
+              ? state.stepsArray["MEASUREMENT"]["m_height"]
+              : 0;
+        } else if (option_info.SS_CODE_NAME === "ROLL_CALCULATION") {
+          state.productInfo["m_width"] =
+            state.stepsArray["ROLL_CALCULATION"] &&
+            state.stepsArray["ROLL_CALCULATION"]["m_width"]
+              ? state.stepsArray["ROLL_CALCULATION"]["m_width"]
+              : 0;
+          state.productInfo["m_height"] =
+            state.stepsArray["ROLL_CALCULATION"] &&
+            state.stepsArray["ROLL_CALCULATION"]["m_height"]
+              ? state.stepsArray["ROLL_CALCULATION"]["m_height"]
+              : 0;
+        } else if (option_info.SS_CODE_NAME === "MATERIAL_SELECTION") {
+          state.productInfo["code"] =
+            state.stepsArray["MATERIAL_SELECTION"] &&
+            state.stepsArray["MATERIAL_SELECTION"]["material_info"]["SII_CODE"]
+              ? state.stepsArray["MATERIAL_SELECTION"]["material_info"][
+                  "SII_CODE"
+                ]
+              : 0;
+          state.productInfo["PRICE"] =
+            state.stepsArray["MATERIAL_SELECTION"] &&
+            state.stepsArray["MATERIAL_SELECTION"]["material_info"]["PRICE"]
+              ? state.stepsArray["MATERIAL_SELECTION"]["material_info"]["PRICE"]
+              : 0;
+        } else if (option_info.SS_CODE_NAME === "QUANTITY") {
+          state.productInfo["count"] =
+            state.stepsArray && state.stepsArray.QUANTITY
+              ? state.stepsArray.QUANTITY.QTY
+              : 1;
+          let p =
+            state.productInfo && state.productInfo.PRICE > 1
+              ? state.productInfo.PRICE
+              : 1;
+          state.productInfo["VALUE"] = p * state.productInfo["count"];
+        }
+        //addToCartFunScene(initialState);
+      }
+    },
+    setCustomizationPriceFun(state, action) {
+      state.priceArray = action.payload;
+    },
+    deleteCustomizationStep(state, action) {
+      for (let i = 0; i < action.payload.length; i++) {
+        let step_name = action.payload[i];
+        delete state.stepsArray[step_name];
+      }
+    },
+    setFilterOptionValuesFun(state, action) {
+      state.filterOption = action.payload;
+    },
+    setHeaderResponse(state, action) {
+      state.headerData = action.payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -242,7 +241,7 @@ export const {
   updateModalData,
   removecart,
   loadingfalse,
- 
+  setCustomerSystemId
 } = slice.actions;
 
 // GET Faqs PAGE DATA
@@ -282,5 +281,26 @@ export function getMaterialCustomization({ params = {}, paramsId = {} }) {
     }
   };
 }
+
+export function updateAddToCart(props){
+  const { SOL_SYS_ID, values } = props;
+  return async (dispatch) => {
+    // dispatch(actions.startAddToCartLoading());
+    try {
+      const response = await dispatch(
+        apiDataService.post(`kiosk/cart/update/${SOL_SYS_ID}`, values)
+      );
+      const data = response?.data;
+      if (data.error_message == "Success" && data.return_status == 0) {
+        await dispatch(actions.setOrderCart(data));
+        return response;
+      } else {
+        dispatch(actions.hasAddToCartError(data));
+      }
+    } catch (error) {
+      dispatch(actions.hasAddToCartError(error));
+    }
+  };
+};
 
 //   -----------------------------------------

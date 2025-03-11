@@ -196,7 +196,7 @@ const MaterialSelection = ({ data, formik, elem }) => {
         </Typography>
       </Box> */}
       <MainHeading sx={{ mb: 2 }} title={data?.SPS_DESC} />
-      <Box py={2}>
+      <Box px={3} py={2}>
         <Grid
           container
           spacing={1}

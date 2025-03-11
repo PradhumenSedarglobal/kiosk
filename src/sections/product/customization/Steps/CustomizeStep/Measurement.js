@@ -251,7 +251,7 @@ const Measurement = ({ data }) => {
       </Box> */}
        <MainHeading sx={{ mb: 2 }} title={data?.SPS_DESC} />
 
-      <Box py={2} sx={{ overflow: "hidden"}}>
+      <Box  px={3} py={2} sx={{ overflow: "hidden"}}>
         {" "}
         {/* Hide overflow here */}
 
@@ -312,7 +312,7 @@ const Measurement = ({ data }) => {
         />
       </Box>
 
-      <Box py={2} sx={{ overflow: "hidden" }}>
+      <Box  px={3} py={2} sx={{ overflow: "hidden" }}>
         {" "}
         {/* Hide overflow here */}
         <Typography

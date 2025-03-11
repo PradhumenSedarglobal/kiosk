@@ -40,12 +40,12 @@ const BottomBarTabination = ({
   const { cookies } = state;
   const { langName } = cookies || {};
 
-
   console.log("priceArray", priceArray);
+  console.log("productInfo?.CCY_CODE", productInfo?.CCY_CODE);
 
-  useEffect(()=>{
-    console.log('priceArray.SOL_PRICE',priceArray.SOL_VALUE);
-  },[priceArray.SOL_VALUE])
+  useEffect(() => {
+    console.log("priceArray.SOL_PRICE", priceArray.SOL_VALUE);
+  }, [priceArray.SOL_VALUE]);
 
   const fonts = useSelector((state) => state.font);
 
@@ -56,7 +56,6 @@ const BottomBarTabination = ({
     dispatch(decrementStep(0));
   };
 
- 
   const nextStep = () => {};
 
   return (
@@ -91,7 +90,7 @@ const BottomBarTabination = ({
           left: 0,
           zIndex: 1000,
           boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
-          pb:"10px"
+          pb: "10px",
         }}
       >
         <Grid
@@ -104,7 +103,6 @@ const BottomBarTabination = ({
             boxShadow: "0 7px 11px -3px rgba(0, 0, 0, 0)",
             paddingRight: "10px",
             paddingLeft: "10px",
-           
           }}
         >
           <Grid item xs={7} pt={"0 !important"}>
@@ -116,11 +114,11 @@ const BottomBarTabination = ({
                     color: "#010101",
                     paddingTop: "25px",
                     textAlign: "start",
-                    fontSize: "small",
+                    fontSize: '16px !important'
                     // paddingLeft: "20px",
                   }}
                   gutterBottom
-                  variant="h6"
+                  variant="p"
                   component="div"
                 >
                   {stepsArray?.MATERIAL_SELECTION?.material_info?.SII_ITEM_ID?.split(
@@ -135,11 +133,11 @@ const BottomBarTabination = ({
                     fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
                     color: "#010101",
                     textAlign: "start",
-                    fontSize: "medium",
+                    fontSize: '16px !important'
                     // paddingLeft: "20px",
                   }}
                   gutterBottom
-                  variant="h6"
+                  variant="p"
                   component="div"
                 >
                   {productInfo && productInfo.SPI_TOOLTIP
@@ -150,17 +148,17 @@ const BottomBarTabination = ({
             )}
           </Grid>
 
-          <Grid item xs={5}  pt={"0 !important"}>
+          <Grid item xs={5} pt={"0 !important"}>
             <Typography
               sx={{
                 fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
                 color: "#010101",
                 paddingTop: "25px",
                 textAlign: "end",
-                fontSize: "medium",
+                fontSize: '16px !important'
               }}
               gutterBottom
-              variant="h6"
+              variant="p"
               component="div"
             >
               {translate("Total")} {translate(productInfo?.CCY_CODE)}{" "}
@@ -190,16 +188,25 @@ const BottomBarTabination = ({
             }}
           >
             {tabChange != "0" && (
-              <Button size="large" variant="outlined" onClick={() => {
-                onPreviousHandle("PREV");
-              }} startIcon={<ArrowCircleLeftIcon color="black" />}>
+              <Button
+                size="large"
+                variant="outlined"
+                onClick={() => {
+                  onPreviousHandle("PREV");
+                }}
+                startIcon={<ArrowCircleLeftIcon color="black" />}
+              >
                 Previous
               </Button>
             )}
 
             {tabChange == "0" && (
-              
-              <Button size="large" variant="outlined" onClick={handleHome} startIcon={<ArrowCircleLeftIcon color="black" />}>
+              <Button
+                size="large"
+                variant="outlined"
+                onClick={handleHome}
+                startIcon={<ArrowCircleLeftIcon color="black" />}
+              >
                 Home
               </Button>
             )}
@@ -214,35 +221,30 @@ const BottomBarTabination = ({
             }}
           >
             {tabChange != "5" && (
-              <Button size="large" variant="outlined" onClick={() => {
-                onNextHandle("NEXT");
-              }} endIcon={<ArrowCircleRightIcon color="black" />}>
-              Continue
+              <Button
+                size="large"
+                variant="outlined"
+                onClick={() => {
+                  onNextHandle("NEXT");
+                }}
+                endIcon={<ArrowCircleRightIcon color="black" />}
+              >
+                Continue
               </Button>
             )}
 
             {tabChange == "5" && priceArray.SOL_VALUE > 0 && (
               <Button
-                sx={{
-                  display: "flex",
-                  backgroundColor: "#ef9c00",
-                  color: "#f5ece0",
-                  fontFamily: fonts.Helvetica_Neue_Regular.style.fontFamily,
-                  fontWeight: "700",
-                  justifyContent: "flex-end",
-                  alignItems: "end",
-                }}
-                onClick={() => handleAddToCart() }
-                size="larage"
-                variant="contained"
-                endIcon={<LocalMallIcon />}
+                size="large"
+                variant="outlined"
+                onClick={() => handleAddToCart()}
+                startIcon={<LocalMallIcon color="black" />}
               >
                 Add To Cart
               </Button>
             )}
           </Grid>
         </Grid>
-
       </Box>
     </Box>
   );
