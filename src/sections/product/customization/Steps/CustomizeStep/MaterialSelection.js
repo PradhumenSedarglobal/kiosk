@@ -75,9 +75,10 @@ const MaterialSelection = ({ data, formik, elem }) => {
     ? productInfo.SPI_PR_ITEM_CODE
     : 0;
 
-    console.log("productInfo111",productInfo);
+   
     console.log("SPI_PR_ITEM_CODE",SPI_PR_ITEM_CODE);
     console.log("SPI_PR_ITEM_CODE111111",materialList);
+
 
 
   const updateTextureFun = async (val) => {
@@ -130,9 +131,21 @@ const MaterialSelection = ({ data, formik, elem }) => {
       }
     }
   };
-  useEffect(() => {
-    getMaterialListFun();
-  }, []);
+ 
+  useEffect(()=>{
+     console.log("this called you can check");
+     if(materialList.length > 0){
+      let elem =
+      materialList[0]["items"] &&
+        materialList[0]["items"][0] &&
+        materialList[0]["items"][0]["texture_info"]
+        ? materialList[0]["items"][0]["texture_info"]
+        : {};
+
+      updateTextureFun(elem);
+     }
+  
+  },[productInfo?.code === "0" || productInfo?.code === 0])
 
   useEffect(() => {
     console.log('called');
