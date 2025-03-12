@@ -62,7 +62,7 @@ const Quantity = ({ data, formik }) => {
   }, [selected]);
 
   return (
-    <Box py={2}>
+    <Box px={3} py={2}>
       <Box>
         <Typography
           sx={(theme) => ({

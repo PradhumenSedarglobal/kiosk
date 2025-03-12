@@ -444,7 +444,9 @@ export default function ProductPage(props) {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             margin: 0,
+            
           }}
+         
         >
           {/* Burger Menu Icon Start */}
           <Fab
@@ -604,10 +606,12 @@ export default function ProductPage(props) {
           item
           xs={12}
           md={5}
+          mt={2}
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            display:"block"
           }}
         >
           <Box sx={{ width: "100%" }}>
@@ -618,7 +622,7 @@ export default function ProductPage(props) {
 
             <Box
               sx={{
-                height: "100%",
+                // height: "100%",
                 zIndex: 4,
                 position: {
                   lg: "relative",
