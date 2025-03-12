@@ -84,6 +84,7 @@ const Step1 = ({ successValue, stepcount }) => {
     () =>
       category.map((item, index) => (
         <Grid
+
           item
           xs={6}
           sm={6}
@@ -140,7 +141,7 @@ const Step1 = ({ successValue, stepcount }) => {
           />
         </Box>
       ) : (
-        <Box sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
+        <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
          <MainHeading  title="Category Selection" />
           <Box sx={{height: { lg: "calc(100vh - 240px)" }, overflow: "auto",pt:"20px" }}>
             <Grid

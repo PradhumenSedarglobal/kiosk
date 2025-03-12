@@ -168,7 +168,7 @@ const Modal = () => {
           />
         </Box>
       ) : (
-        <Box sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
+        <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
           <MainHeading sx={{ mb: 2 }} title="Modal Selection" />
 
           <Box
