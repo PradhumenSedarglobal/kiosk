@@ -8,12 +8,13 @@ import React, {
 import { Box, Modal, Typography, Grid } from "@mui/material";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { removecart, updateSelectedCategory } from "@/redux/slices/customization";
+import { removecart, setIp, updateSelectedCategory } from "@/redux/slices/customization";
 
 // Custom Components
 import MainHeading from "./MainHeading";
 import ImageCard from "./ImageCard";
 import { useAuthContext } from "@/auth/useAuthContext";
+import { NextResponse } from "next/server";
 
 const fetchCategory = async (cancelToken) => {
   try {
@@ -32,7 +33,12 @@ const fetchCategory = async (cancelToken) => {
   }
 };
 
+
+
 const Step1 = ({ successValue, stepcount }) => {
+
+
+ 
   const { state } = useAuthContext();
   const { cookies } = state;
   const [category, setCategory] = useState([]);
@@ -42,8 +48,17 @@ const Step1 = ({ successValue, stepcount }) => {
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
+  const response = NextResponse.next();
+  
+  const getIpAddress = async () => {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    dispatch(setIp(data.ip));
+    console.log('Your IP:', data.ip);
+  };
 
-  console.log("cookies",cookies);
+  console.log("cookies", cookies);
+
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -64,6 +79,9 @@ const Step1 = ({ successValue, stepcount }) => {
       })
       .catch(setError)
       .finally(() => setLoading(false));
+
+      getIpAddress();
+
 
     return () => cancelToken.cancel();
   }, [dispatch]);
@@ -89,7 +107,6 @@ const Step1 = ({ successValue, stepcount }) => {
     () =>
       category.map((item, index) => (
         <Grid
-
           item
           xs={6}
           sm={6}
@@ -147,8 +164,8 @@ const Step1 = ({ successValue, stepcount }) => {
         </Box>
       ) : (
         <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
-         <MainHeading  title="Category Selection" />
-          <Box sx={{height: { lg: "calc(100vh - 240px)" }, overflow: "auto",pt:"20px" }}>
+          <MainHeading title="Category Selection" />
+          <Box sx={{ height: { lg: "calc(100vh - 240px)" }, overflow: "auto", pt: "20px" }}>
             <Grid
               className="tester"
               container

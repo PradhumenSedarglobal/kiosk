@@ -42,6 +42,7 @@ const BottomBarTabination = ({
 
   console.log("priceArray", priceArray);
   console.log("productInfo?.CCY_CODE", productInfo?.CCY_CODE);
+  console.log("productInfoooo", productInfo);
 
   useEffect(() => {
     console.log("priceArray.SOL_PRICE", priceArray.SOL_VALUE);

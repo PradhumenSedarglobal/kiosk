@@ -26,6 +26,8 @@ const Measurement = ({ data }) => {
   const { state } = useAuthContext();
   const { cookies } = state;
 
+  console.log("customization_info111",customization_info);
+
   const { stepsArray, editStepData, productInfo } = customization_info;
 
   let [me_width, setMe_width] = useState();

@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PhoneInput from "react-phone-input-2";
 import axios from "axios";
 import "react-phone-input-2/lib/style.css";
-import { setCustomerSystemId } from "@/redux/slices/customization";
+import { setCustomerSysId, setCustomerSystemId, setGeoLocationDetails } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import axiosInstance from "@/utils/axios";
 
@@ -145,6 +145,9 @@ export function addToCartFunScene2(state, dispatch, cart_status = "INCOMPLETE") 
 
 
 
+
+
+
 const genrateVisitorId = () => {
  const timestamp = Date.now();
  const uniqueId = shortid.generate();
@@ -169,6 +172,100 @@ export default function PopupModal() {
   const customization = useSelector(
       (state) => state.customization.customization
     );
+
+
+
+  const ip = customization_info.ip;
+  const geoDetails = customization_info.geoLocationDetails;
+
+
+  
+
+  const getCountry = async(val) => {
+    try{
+   
+  
+      const response = await axios.get(
+        `https://api.sedarglobal.com/geolocation?geo=&client_ip=${ip}&locale=${locale}`,
+        {
+          headers:{
+              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
+              "Accept": "application/json",
+              "Access-Control-Allow-Origin": "*", 
+          }
+        }
+      );
+
+      dispatch(setGeoLocationDetails(response.data));
+  
+      return response.data;
+  
+    } catch(error) {
+        console.log(error);
+        throw error
+    } finally {
+      console.log("order head done");
+    }
+  }
+
+  
+  const postOrderHead = async () => {
+    try {
+      // Ensure geoDetails, cookies, and ip are defined to prevent undefined errors
+      if (!geoDetails || !cookies || !ip) throw new Error("Missing required data");
+  
+      // Access site_details[0] safely
+      const siteDetails = geoDetails?.site_details?.[0] || {};
+  
+      const formData = new URLSearchParams();
+      formData.append("showRoomVal", "");
+      formData.append("deliveryType", "DO02");
+      formData.append("cart_remark_desc", "");
+      formData.append("userId",customerSystemId);
+      formData.append("soh_sys_id", "");
+      formData.append("site", "100001");
+      formData.append("lang","en");
+      formData.append("country","uae");
+      formData.append("visitorId", cookies?.visitorId || "");
+      formData.append("currency","AED");
+      formData.append("ccy_decimal", "0");
+      formData.append("cn_iso","AE");
+      formData.append("detect_country", "");
+      formData.append("client_ip","217.165.59.84");
+  
+      console.log("Sending formData:", JSON.stringify(Object.fromEntries(formData)));
+  
+      const response = await axios.post(
+        "https://migapi.sedarglobal.com/order/cart/orderHead",
+        formData,
+        {
+          headers: {
+            "Content-type":
+            "application/x-www-form-urlencoded;multipart/form-data; charset=UTF-8",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "X-Requested-With",
+            "Access-Control-Allow-Methods": "GET, POST, PUT",
+            Accept: "multipart/form-data",
+          },
+          withCredentials: true, // Allow cookies in cross-origin requests
+        }
+      );
+  
+      console.log("Order Head Response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error posting order head:",
+        error.response?.data || error.message
+      );
+      throw error;
+    } finally {
+      console.log("Order head done");
+    }
+  };
+  
+  
+  
 
 
   console.log("cookies",cookies);
@@ -207,6 +304,9 @@ export default function PopupModal() {
   useEffect(()=>{
 
     console.log("test");
+    getCountry();
+
+
   },[customerSystemId]);
 
   const handlePhoneChange = (newValue) => {
@@ -239,6 +339,8 @@ export default function PopupModal() {
           withCredentials: false, 
         }
       );
+
+      dispatch(setCustomerSysId(response.data.cust_sys_id));
   
       console.log("API Response:", response);
       console.log("response.data.cust_sys_id2",response.data.cust_sys_id);
@@ -250,7 +352,8 @@ export default function PopupModal() {
         );
         setErrorOpen(true);
       } else {
-        // setSuccessOpen(true);
+        setSuccessOpen(true);
+        handleClose();
         console.log("customization",customization);
         dispatch(setCustomerSystemId(response.data.cust_sys_id));
 
@@ -259,6 +362,12 @@ export default function PopupModal() {
             { ...cookies, ...customization_info, locale: locale,customerSysIdnew: response.data.cust_sys_id},
             dispatch
           );
+
+          console.log("customization_info",customization_info);
+          
+          setTimeout(()=>{
+            postOrderHead();
+          },10000);
         }
        
 

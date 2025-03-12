@@ -22,14 +22,30 @@ const initialState = {
   SelectedCategory: null,
   SelectedModal: null,
   ModalData: [],
+  ip:null,
+  geoLocationDetails:null,
+  customerSysId:null,
 };
 
 const slice = createSlice({
   name: "customization",
   initialState,
   reducers: {
+
+    setCustomerSysId(state,action){
+      state.customerSysId = action.payload;
+    },
+
+    setGeoLocationDetails(state,action){
+      state.geoLocationDetails = action.payload;
+    },
+
     loadingfalse(state) {
       state.isCustomizationLoading = false;
+    },
+
+    setIp(state,action) {
+      state.ip = action.payload;
     },
 
     setCustomerSystemId(state, action) {
@@ -241,7 +257,10 @@ export const {
   updateModalData,
   removecart,
   loadingfalse,
-  setCustomerSystemId
+  setCustomerSystemId,
+  setIp,
+  setGeoLocationDetails,
+  setCustomerSysId
 } = slice.actions;
 
 // GET Faqs PAGE DATA
