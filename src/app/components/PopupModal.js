@@ -58,7 +58,7 @@ export function addToCartFunScene2(state, dispatch, cart_status = "INCOMPLETE") 
 
   // Assign COMPLETE status if customerSysIdnew is provided
   if (state.customerSysIdnew !== null) {
-    cart_status = "COMPLETE";
+    cart_status = "COMPLETED";
   }
 
   console.log("cart_status2",cart_status);
@@ -171,7 +171,7 @@ export default function PopupModal() {
     );
 
 
-  console.log("cookies",cookies.visitorId);
+  console.log("cookies",cookies);
 
 
   const {

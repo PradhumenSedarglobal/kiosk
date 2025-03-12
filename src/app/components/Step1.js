@@ -13,6 +13,7 @@ import { removecart, updateSelectedCategory } from "@/redux/slices/customization
 // Custom Components
 import MainHeading from "./MainHeading";
 import ImageCard from "./ImageCard";
+import { useAuthContext } from "@/auth/useAuthContext";
 
 const fetchCategory = async (cancelToken) => {
   try {
@@ -32,6 +33,8 @@ const fetchCategory = async (cancelToken) => {
 };
 
 const Step1 = ({ successValue, stepcount }) => {
+  const { state } = useAuthContext();
+  const { cookies } = state;
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [error, setError] = useState(null);
@@ -39,6 +42,8 @@ const Step1 = ({ successValue, stepcount }) => {
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
+
+  console.log("cookies",cookies);
 
   useEffect(() => {
     if (hasFetched.current) return;
