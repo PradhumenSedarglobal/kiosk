@@ -169,9 +169,9 @@ export default function PopupModal() {
   const customization = useSelector(
       (state) => state.customization.customization
     );
-  const visitorId = genrateVisitorId();
 
-  console.log("visitorId",visitorId);
+
+  console.log("cookies",cookies.visitorId);
 
 
   const {
@@ -223,7 +223,7 @@ export default function PopupModal() {
       formData.append("cust_mobile_no", phone);
       formData.append("cust_first_name", data.customerName);
       formData.append("salesman", data.styleConsultantId);
-      formData.append("visitorId", visitorId);
+      formData.append("visitorId", cookies.visitorId);
   
       console.log("Submitting FormData:", Object.fromEntries(formData));
   
