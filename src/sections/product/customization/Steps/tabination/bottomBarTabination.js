@@ -18,6 +18,7 @@ import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import { useEffect, useState } from "react";
 import PopupModal from "@/app/components/PopupModal";
+import { removecart, resetState } from "@/redux/slices/customization";
 
 const BottomBarTabination = ({
   setTabChange,
@@ -40,9 +41,9 @@ const BottomBarTabination = ({
   const { cookies } = state;
   const { langName } = cookies || {};
 
-  console.log("priceArray", priceArray);
-  console.log("productInfo?.CCY_CODE", productInfo?.CCY_CODE);
-  console.log("productInfoooo", productInfo);
+  
+
+  console.log("tabChangetabChange1",tabChange);
 
   useEffect(() => {
     console.log("priceArray.SOL_PRICE", priceArray.SOL_VALUE);
@@ -57,25 +58,34 @@ const BottomBarTabination = ({
     dispatch(decrementStep(0));
   };
 
-  const nextStep = () => {};
 
   return (
     <Box
       sx={{
-        height: "100%",
-        zIndex: 4,
-        position: {
-          lg: "relative",
-          md: "relative",
-          sm: "sticky",
-          xs: "sticky",
-          xxs: "sticky",
+        height: "auto",
+        width: {
+          lg: "42vw",
+          md: "42vw",
+          sm: "100%",
+          xs: "100%",
         },
+        "@media (min-width:290px) and (max-width:599px)": {
+          width: "100vw",
+        },
+        backgroundColor: "#fff",
+        position: "fixed",
         bottom: 0,
-        pb: 0,
+        zIndex: 1000,
+        // boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
+        padding: "10px",
+        display: "flex",
+        justifyContent: "space-between", // Center buttons
+        gap: "8px",
+        flexWrap: "nowrap", // Prevent wrapping
+        overflowX: "auto", // Allow horizontal scroll if needed
       }}
     >
-      <Box
+       <Box
         sx={{
           width: "100%",
           backgroundColor: "#fff",
@@ -90,7 +100,7 @@ const BottomBarTabination = ({
           bottom: { xs: 0, md: 0, sm: 0 },
           left: 0,
           zIndex: 1000,
-          boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
+          // boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
           pb: "10px",
         }}
       >
@@ -101,7 +111,6 @@ const BottomBarTabination = ({
           alignItems="center"
           sx={{
             backgroundColor: "white",
-            boxShadow: "0 7px 11px -3px rgba(0, 0, 0, 0)",
             paddingRight: "10px",
             paddingLeft: "10px",
           }}
@@ -193,8 +202,15 @@ const BottomBarTabination = ({
                 size="large"
                 variant="outlined"
                 onClick={() => {
+                  if (tabChange === "1") {
+                    console.log("tabChangetabChange",tabChange);
+                    dispatch(removecart());
+                  }
+                  
+                  // ✅ Ensure this fires correctly after dispatch
                   onPreviousHandle("PREV");
                 }}
+                
                 startIcon={<ArrowCircleLeftIcon color="black" />}
               >
                 Previous

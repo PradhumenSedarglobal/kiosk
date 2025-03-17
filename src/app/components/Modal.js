@@ -158,7 +158,7 @@ const Modal = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "calc(100vh - 240px)",
+            height: "calc(100vh - 130px)",
           }}
         >
           <img
@@ -173,7 +173,7 @@ const Modal = () => {
 
           <Box
             className="bigipads"
-            sx={{ height: { lg: "calc(100vh - 240px)" }, overflow: "auto" }}
+            sx={{ height: { lg: "calc(100vh - 130px)" }, overflow: "auto" }}
           >
             <Grid
               container

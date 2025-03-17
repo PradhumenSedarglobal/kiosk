@@ -4,6 +4,7 @@ import PlpSchema from "@/modules/PlpSchema";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 
 import {
+  resetState,
   setCustomization,
   setHeaderResponse,
 } from "@/redux/slices/customization";
@@ -172,10 +173,10 @@ export default function ProductPage(props) {
   } = useSelector((state) => state.customization);
 
   const selectedItemCode = stepsArray?.MATERIAL_SELECTION?.material_info
-    ?.SII_ITEM_ID
-    ? stepsArray.MATERIAL_SELECTION.material_info.SII_ITEM_ID.split("-").splice(
-        1
-      )
+    ?.SII_CODE
+
+    ? stepsArray.MATERIAL_SELECTION.material_info.SII_CODE
+
     : null;
 
   const selectedItemCode2 =
@@ -208,21 +209,28 @@ export default function ProductPage(props) {
   const setImage = useCallback(() => {
     try {
       if (!materialList?.length) return;
+
+      const subChild = [];
+
+      materialList.map((item)=>{
+        item.items.map((item2)=>{
+          subChild.push(item2);
+        })
+      });
   
       const selectedMaterial =
-        materialList.find((item) => item.SFI_DESC === selectedItemCode?.[0]) ||
-        materialList[0];
+      subChild.find((item) => item.SII_CODE === selectedItemCode);
+
+      
+      console.log("selectedMaterialList",materialList);
+      console.log("subChild",subChild);
+      console.log("selectedMaterial",selectedMaterial);
+      console.log("selectedItemCode",selectedItemCode);
+      console.log("selectedInfo",stepsArray?.MATERIAL_SELECTION?.material_info);
   
-      if (!selectedMaterial?.items?.length) return;
   
-      const selectedItem =
-        selectedMaterial.items.find(
-          (item) => item.SII_ITEM_ID === selectedItemCode2
-        ) || selectedMaterial.items[0];
   
-      if (!selectedItem?.gallery?.length) return;
-  
-      const newImageUrls = selectedItem.gallery.map(
+      const newImageUrls = selectedMaterial.gallery.map(
         (item) => item.SLI_IMAGE_PATH
       );
   
@@ -369,6 +377,7 @@ export default function ProductPage(props) {
   const previousStep = () => {
     setLastPage(stepCount);
     if (stepCount > 0) {
+      dispatch(resetState());
       dispatch(decrementStep(0));
     }
   };
@@ -602,172 +611,91 @@ export default function ProductPage(props) {
         </Grid>
 
         {/* Input Container */}
-        <Grid
-          item
-          xs={12}
-          md={5}
-          mt={2}
-          sx={{
+      <Grid item xs={12} md={5} sm={12}  sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            display:"block"
+            display:"block",
+          }}
+         
+          >
+        {renderStep()}
+  
+        {/* Bottom Bar */}
+        {stepCount != 2 && (
+        <Box
+          sx={{
+            height:"auto",
+            width: {
+              lg:"42vw",
+              md:"42vw",
+              sm:"100%",
+              xs:"100%"
+            },
+            '@media (min-width:290px) and (max-width:599px)': {
+              width: '100vw',
+            },
+            backgroundColor: "#fff",
+            position: "fixed",
+            bottom: 0,
+            zIndex: 1000,
+         
+            padding: "10px",
+            display: "flex",
+            justifyContent: "space-between", // Center buttons
+            gap: "8px",
+            flexWrap: "nowrap", // Prevent wrapping
+            overflowX: "auto", // Allow horizontal scroll if needed
           }}
         >
-          <Box sx={{ width: "100%" }}>
-            
-
-            {renderStep()}
-
-
-            <Box
-              sx={{
-                // height: "100%",
-                zIndex: 4,
-                position: {
-                  lg: "relative",
-                  md: "relative",
-                  sm: "sticky",
-                  xs: "sticky",
-                  xxs: "sticky",
-                },
-                
-                bottom: 0,
-                pb: 0,
-              }}
+          {/* Previous/Home Button */}
+          {stepCount > 0 ? (
+            <Button
+              size="large"
+              variant="outlined"
+              onClick={previousStep}
+              startIcon={<ArrowCircleLeftIcon />}
             >
-              <Box
-                sx={{
-                  width: "100%",
-                  backgroundColor: "#fff",
-                  position: {
-                    lg: "unset",
-                    xl: "unset",
-                    xs: "fixed",
-                    md: "fixed",
-                    sm: "fixed",
-                  },
-                  overflow: "hidden",
-                  bottom: { xs: 0, md: 0, sm: 0 },
-                  left: 0,
-                  zIndex: 1000,
-                  boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                {stepCount != 2 && (
-                  <Box
-                    sx={{
-                      width: "100%",
-                      backgroundColor: "#fff",
-                      position: {
-                        lg: "unset",
-                        xl: "unset",
-                        xs: "fixed",
-                        md: "fixed",
-                        sm: "fixed",
-                      },
-                      overflow: "hidden",
-                      bottom: { xs: 0, md: 0, sm: 0 },
-                      left: 0,
-                      zIndex: 1000,
-                      boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
-                    }}
-                  >
-                    <Grid
-                      container
-                      spacing={2} // Adds space between child Grid items
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{
-                        paddingTop: "20px",
-                        paddingRight: "10px",
-                        paddingLeft: "10px",
-                        paddingBottom: "5px",
-                     
-                      }}
-                    >
-                      <Grid
-                        item
-                        xs={6}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-start",
-                          alignItems: "start",
-                        }}
-                      >
-                        {stepCount > 0 && (
-                          <Button
-                            size="large"
-                            variant="outlined"
-                            onClick={() => previousStep()}
-                            startIcon={<ArrowCircleLeftIcon color="black" />}
-                          >
-                            Previous
-                          </Button>
-                        )}
-
-                        {stepCount === 0 && (
-                          <Button
-                            size="large"
-                            variant="outlined"
-                            onClick={handleHome}
-                            startIcon={<ArrowCircleLeftIcon color="black" />}
-                          >
-                            Home
-                          </Button>
-                        )}
-                      </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          alignItems: "end",
-                        }}
-                      >
-                        {stepCount < 5 && (
-                          <Button
-                            size="large"
-                            variant="outlined"
-                            onClick={() =>
-                              dispatch(incrementStep(stepCount + 1))
-                            }
-                            endIcon={<ArrowCircleRightIcon color="black" />}
-                          >
-                            Continue
-                          </Button>
-                        )}
-
-                        {stepCount === 5 && (
-                          <Button
-                            sx={{
-                              display: "flex",
-                              backgroundColor: "#ef9c00",
-                              color: "#f5ece0",
-                              fontFamily:
-                                fonts.Helvetica_Neue_Regular.style.fontFamily,
-                              justifyContent: "flex-end",
-                              alignItems: "end",
-                            }}
-                            onClick={() => addToCart()}
-                            size="larage"
-                            variant="contained"
-                            endIcon={<LocalMallIcon />}
-                          >
-                            Add To Cart
-                          </Button>
-                        )}
-                      </Grid>
-                    </Grid>
-                  </Box>
-                )}
-              </Box>
-            </Box>
-          </Box>
-
-          
-        </Grid>
+              Previous
+            </Button>
+          ) : (
+            <Button
+              size="large"
+              variant="outlined"
+              onClick={handleHome}
+              startIcon={<ArrowCircleLeftIcon />}
+            >
+              Home
+            </Button>
+          )}
+  
+          {/* Continue/Add to Cart Button */}
+          {stepCount < 5 ? (
+            <Button
+              size="large"
+              variant="outlined"
+              onClick={() => dispatch(incrementStep(stepCount + 1))}
+              endIcon={<ArrowCircleRightIcon />}
+            >
+              Continue
+            </Button>
+          ) : (
+            <Button
+              sx={{
+                backgroundColor: "#ef9c00",
+                color: "#f5ece0",
+              }}
+              onClick={addToCart}
+              size="large"
+              variant="contained"
+              endIcon={<LocalMallIcon />}
+            >
+              Add To Cart
+            </Button>
+          )}
+        </Box>
+         )}
+      </Grid>
        
       </Grid>
       <CartManager

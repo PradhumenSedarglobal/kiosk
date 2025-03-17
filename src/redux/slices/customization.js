@@ -25,6 +25,7 @@ const initialState = {
   ip:null,
   geoLocationDetails:null,
   customerSysId:null,
+  
 };
 
 const slice = createSlice({
@@ -49,7 +50,7 @@ const slice = createSlice({
     },
 
     setCustomerSystemId(state, action) {
-      state.customerSystemId = action.payload;
+      state.customerSysId = action.payload;
     },
 
     removecart: (state) => {
@@ -61,6 +62,8 @@ const slice = createSlice({
       state.materialList = [];
       state.stepsArray = {};
     },
+
+    resetState:() => initialState,
 
     updateModalData(state, action) {
       state.ModalData = action.payload;
@@ -260,7 +263,8 @@ export const {
   setCustomerSystemId,
   setIp,
   setGeoLocationDetails,
-  setCustomerSysId
+  setCustomerSysId,
+  resetState
 } = slice.actions;
 
 // GET Faqs PAGE DATA

@@ -153,7 +153,7 @@ const Step1 = ({ successValue, stepcount }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "calc(100vh - 240px)",
+            height: "calc(100vh - 130px)",
           }}
         >
           <img
@@ -165,7 +165,7 @@ const Step1 = ({ successValue, stepcount }) => {
       ) : (
         <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
           <MainHeading title="Category Selection" />
-          <Box sx={{ height: { lg: "calc(100vh - 240px)" }, overflow: "auto", pt: "20px" }}>
+          <Box sx={{ height: { lg: "calc(100vh - 130px)" }, overflow: "auto", pt: "20px" }}>
             <Grid
               className="tester"
               container

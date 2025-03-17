@@ -264,7 +264,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
             <Box
               className="bigipads"
               sx={{
-                height: { lg: "calc(100vh - 240px)", overflow: "auto" },
+                height: { lg: "calc(100vh - 170px)", overflow: "auto" },
               }}
             >
               {data &&

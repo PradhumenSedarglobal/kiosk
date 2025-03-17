@@ -82,17 +82,24 @@ const MaterialSelection = ({ data, formik, elem }) => {
 
 
   const updateTextureFun = async (val) => {
+
+
+    console.log("this function invok",val);
+
     let material_data = {
       ...data,
       ITEM_CODE: val.SII_CODE,
       material_info: val,
     };
+
     await updateTextureImg(val);
     val.light_info && val.light_info.length > 0
       ? addLights(val.light_info, val.SIO_LIGHT_INTENSITY)
       : "";
 
     material_data["SUB_CHILD"] = "";
+
+    
 
     dispatch(setCustomizationFun(material_data));
   };
