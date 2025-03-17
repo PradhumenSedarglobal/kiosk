@@ -1,11 +1,18 @@
 import React from "react";
-import { Grid, Box, Drawer, Divider, List, styled, useTheme } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Drawer,
+  Divider,
+  List,
+  styled,
+  useTheme,
+} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -18,9 +25,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const drawerWidth = 400;
 
-const CartManager = ({open,handleDrawerClose}) => {
-    const theme = useTheme();
+const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
+  const theme = useTheme();
   const fonts = useSelector((state) => state.font);
+
+ 
   return (
     <Drawer
       sx={{
@@ -60,12 +69,19 @@ const CartManager = ({open,handleDrawerClose}) => {
       </DrawerHeader>
       <Divider />
       <List>
-        <Grid container sx={{ padding: "10px" }} justifyContent="space-between">
+  {cartData !== null &&
+    cartData.complete.map((item, index) => (
+      <React.Fragment key={item.SOL_SYS_ID || index}>
+        <Grid
+          container
+          sx={{ padding: "10px" }}
+          justifyContent="space-between"
+        >
           <Grid item xs={4} sm={3} md={3}>
             <img
               height={100}
               width={100}
-              src="https://api.sedarglobal.com/uploads/100001/item/laptop/1708146524_d97c7cc07e26fd5ba93d.webp?imwidth=1920"
+              src={item.SOL_IMAGE_PATH ? item.SOL_IMAGE_PATH : "https://api.sedarglobal.com/uploads/100001/item/laptop/1708146524_d97c7cc07e26fd5ba93d.webp?imwidth=1920" }
               alt="Product"
             />
           </Grid>
@@ -83,7 +99,7 @@ const CartManager = ({open,handleDrawerClose}) => {
               noWrap
               component="div"
             >
-              Item Code : HNTB10-13
+              Item Code: {item?.info_data?.MEASUREMENT?.SOI_ITEM_CODE}
             </Typography>
             <Typography
               noWrap
@@ -100,7 +116,7 @@ const CartManager = ({open,handleDrawerClose}) => {
               variant="h6"
               component="div"
             >
-              Blackout Curtain - Pinch Pleat
+              {item?.info_data?.MEASUREMENT?.SFP_TITLE}
             </Typography>
             <Box sx={{ display: "flex", marginTop: "8px" }}>
               <Typography
@@ -122,7 +138,7 @@ const CartManager = ({open,handleDrawerClose}) => {
                 variant="body2"
                 component="div"
               >
-                1
+                {item?.SOL_QTY}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", marginTop: "8px" }}>
@@ -147,103 +163,16 @@ const CartManager = ({open,handleDrawerClose}) => {
                 variant="body2"
                 component="div"
               >
-                AED 326
+                {item?.SOL_CCY_CODE+" "+item?.SOL_VALUE}
               </Typography>
             </Box>
           </Grid>
         </Grid>
         <Divider />
-        <Grid container sx={{ padding: "10px" }} justifyContent="space-between">
-          <Grid item xs={4} sm={3} md={3}>
-            <img
-              height={100}
-              width={100}
-              src="https://api.sedarglobal.com/uploads/100001/item/laptop/1708146524_d97c7cc07e26fd5ba93d.webp?imwidth=1920"
-              alt="Product"
-            />
-          </Grid>
-          <Grid sx={{ paddingLeft: "20px" }} item xs={8} sm={9} md={9}>
-            <Typography
-              sx={{
-                fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily,
-                fontWeight: "500",
-                letterSpacing: "0.00938em",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-              variant="body2"
-              noWrap
-              component="div"
-            >
-              Item Code : HNTB10-13
-            </Typography>
-            <Typography
-              sx={{
-                fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily,
-                fontWeight: "700",
-                fontSize: "1rem", // Medium size
-                letterSpacing: "0.00938em",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-              variant="h6"
-              component="div"
-            >
-              Blackout Curtain - Pinch Pleat
-            </Typography>
-            <Box sx={{ display: "flex", marginTop: "8px" }}>
-              <Typography
-                sx={{
-                  fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily,
-                  fontWeight: "500",
-                }}
-                variant="body2"
-                component="div"
-              >
-                QTY:
-              </Typography>
-              <Typography
-                sx={{
-                  fontFamily: fonts.Helvetica_Neue_Thin.style.fontFamily,
-                  fontWeight: "700",
-                  marginLeft: "5px",
-                }}
-                variant="body2"
-                component="div"
-              >
-                1
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", marginTop: "8px" }}>
-              <Typography
-                sx={{
-                  fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily,
-                  fontWeight: "500",
-                  letterSpacing: "0.00938em",
-                }}
-                variant="body2"
-                component="div"
-              >
-                Value:
-              </Typography>
-              <Typography
-                sx={{
-                  fontFamily: fonts.Helvetica_Neue_Thin.style.fontFamily,
-                  fontWeight: "700",
-                  letterSpacing: "0.00938em",
-                  marginLeft: "5px",
-                }}
-                variant="body2"
-                component="div"
-              >
-                AED 326
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </List>
+      </React.Fragment>
+    ))}
+</List>
+
     </Drawer>
   );
 };

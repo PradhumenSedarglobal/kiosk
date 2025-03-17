@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PhoneInput from "react-phone-input-2";
 import axios from "axios";
 import "react-phone-input-2/lib/style.css";
-import { setCustomerSysId, setCustomerSystemId, setGeoLocationDetails } from "@/redux/slices/customization";
+import { setCustomerSysId, setCustomerSystemId, setGeoLocationDetails, setOrderList } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import axiosInstance from "@/utils/axios";
 
@@ -208,66 +208,6 @@ export default function PopupModal() {
     }
   }
 
-  
-  const postOrderHead = async () => {
-    try {
-      // Ensure geoDetails, cookies, and ip are defined to prevent undefined errors
-      if (!geoDetails || !cookies || !ip) throw new Error("Missing required data");
-  
-      // Access site_details[0] safely
-      const siteDetails = geoDetails?.site_details?.[0] || {};
-  
-      const formData = new URLSearchParams();
-      formData.append("showRoomVal", "");
-      formData.append("deliveryType", "DO02");
-      formData.append("cart_remark_desc", "");
-      formData.append("userId",customerSystemId);
-      formData.append("soh_sys_id", "");
-      formData.append("site", "100001");
-      formData.append("lang","en");
-      formData.append("country","uae");
-      formData.append("visitorId", cookies?.visitorId || "");
-      formData.append("currency","AED");
-      formData.append("ccy_decimal", "0");
-      formData.append("cn_iso","AE");
-      formData.append("detect_country", "");
-      formData.append("client_ip","217.165.59.84");
-  
-      console.log("Sending formData:", JSON.stringify(Object.fromEntries(formData)));
-  
-      const response = await axios.post(
-        "https://migapi.sedarglobal.com/order/cart/orderHead",
-        formData,
-        {
-          headers: {
-            "Content-type":
-            "application/x-www-form-urlencoded;multipart/form-data; charset=UTF-8",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "X-Requested-With",
-            "Access-Control-Allow-Methods": "GET, POST, PUT",
-            Accept: "multipart/form-data",
-          },
-          withCredentials: true, // Allow cookies in cross-origin requests
-        }
-      );
-  
-      console.log("Order Head Response:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Error posting order head:",
-        error.response?.data || error.message
-      );
-      throw error;
-    } finally {
-      console.log("Order head done");
-    }
-  };
-  
-  
-  
-
-
   console.log("cookies",cookies);
 
 
@@ -282,22 +222,43 @@ export default function PopupModal() {
   const handleSuccessClose = () => setSuccessOpen(false);
   const handleErrorClose = () => setErrorOpen(false);
 
-  //  const fetchModal = async (cancelToken) => {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://migapi.sedarglobal.com/kiosk/categories?category=${selectedCategory}`,
-  //         { cancelToken }
-  //       );
-  //       return response.data;
-  //     } catch (error) {
-  //       if (axios.isCancel(error)) {
-  //         console.log("Request canceled:", error.message);
-  //       } else {
-  //         console.error("Error fetching categories:", error);
-  //       }
-  //       throw error;
-  //     }
-  //   };
+
+  const fetchOrderList = async (customerId,userId) => {
+      try{
+
+       
+
+        const response = await axios.get(
+          `https://migapi.sedarglobal.com/order/orderList?lang=en&site=100001&country=uae&visitorId=${customerId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=`,
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
+              "Accept": "application/json",
+              "Access-Control-Allow-Origin": "*", 
+            },
+            withCredentials: false, 
+          }
+        );
+
+
+        if(response){
+
+          
+          dispatch(
+            setOrderList({
+              complete: response.data.complete, 
+              cart_count: response.data.cart_count,
+              total_price: response.data.total_price,
+              total_price: response.data.total_price,
+            })
+          );
+        }
+
+        console.log("API Response OrderList:", response);
+      } catch {
+
+      }
+  }
   
  
 
@@ -340,6 +301,10 @@ export default function PopupModal() {
         }
       );
 
+      console.log("cus,VIS",cookies.visitorId,response.data.cust_sys_id);
+
+      fetchOrderList(cookies.visitorId,response.data.cust_sys_id);
+
       dispatch(setCustomerSysId(response.data.cust_sys_id));
   
       console.log("API Response:", response);
@@ -366,7 +331,7 @@ export default function PopupModal() {
           console.log("customization_info",customization_info);
           
           setTimeout(()=>{
-            postOrderHead();
+            // postOrderHead();
           },10000);
         }
        

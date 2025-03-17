@@ -25,6 +25,7 @@ const initialState = {
   ip:null,
   geoLocationDetails:null,
   customerSysId:null,
+  orderList:null
   
 };
 
@@ -32,6 +33,10 @@ const slice = createSlice({
   name: "customization",
   initialState,
   reducers: {
+
+    setOrderList(state,action){
+      state.orderList = action.payload;
+    },
 
     setCustomerSysId(state,action){
       state.customerSysId = action.payload;
@@ -264,7 +269,8 @@ export const {
   setIp,
   setGeoLocationDetails,
   setCustomerSysId,
-  resetState
+  resetState,
+  setOrderList
 } = slice.actions;
 
 // GET Faqs PAGE DATA

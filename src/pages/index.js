@@ -105,7 +105,6 @@ export const getServerSideProps = async (context) => {
   const sys_id = 0; //slug && slug?.length === 7 ? slug[6] : 0;
   const customization_slug_url = product;
 
-
   const header_response = await apiSSRV2DataService.getAll({
     path: `v2/getHeaderData`,
     param: {
@@ -116,7 +115,6 @@ export const getServerSideProps = async (context) => {
     //cookies: GET_ALL_COOKIES,
     locale: locale,
   });
-
 
   return {
     props: {
@@ -162,7 +160,7 @@ export default function ProductPage(props) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const stepCount = useSelector((state) => state.step.value);
-  
+
   const {
     customerSystemId,
     SelectedCategory,
@@ -170,13 +168,16 @@ export default function ProductPage(props) {
     stepsArray,
     customization,
     materialList,
+    orderList,
   } = useSelector((state) => state.customization);
+
+  useEffect(() => {
+    console.log("orderListnew", orderList);
+  }, [orderList]);
 
   const selectedItemCode = stepsArray?.MATERIAL_SELECTION?.material_info
     ?.SII_CODE
-
     ? stepsArray.MATERIAL_SELECTION.material_info.SII_CODE
-
     : null;
 
   const selectedItemCode2 =
@@ -187,7 +188,6 @@ export default function ProductPage(props) {
   const fonts = useSelector((state) => state.font);
   const locale = "uae-en";
 
- 
   const formik = useFormik({
     initialValues: {
       qtys: "1",
@@ -210,46 +210,33 @@ export default function ProductPage(props) {
     try {
       if (!materialList?.length) return;
 
-      const subChild = [];
+      const subChild = materialList.flatMap((item) => item.items);
 
-      materialList.map((item)=>{
-        item.items.map((item2)=>{
-          subChild.push(item2);
-        })
-      });
-  
-      const selectedMaterial =
-      subChild.find((item) => item.SII_CODE === selectedItemCode);
+      const selectedMaterial = subChild.find(
+        (item) => item.SII_CODE === selectedItemCode
+      );
 
-      
-      console.log("selectedMaterialList",materialList);
-      console.log("subChild",subChild);
-      console.log("selectedMaterial",selectedMaterial);
-      console.log("selectedItemCode",selectedItemCode);
-      console.log("selectedInfo",stepsArray?.MATERIAL_SELECTION?.material_info);
-  
-  
-  
+      if (!selectedMaterial?.gallery?.length) return;
+
       const newImageUrls = selectedMaterial.gallery.map(
         (item) => item.SLI_IMAGE_PATH
       );
-  
+
       // Avoid unnecessary state updates
       const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
       const updatedImageUrls = [firstImage, ...newImageUrls];
-  
+
       if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
         setImageUrls(updatedImageUrls);
       }
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
-  }, [materialList, selectedItemCode, selectedItemCode2]); // Removed imageUrls to prevent infinite loop
-  
+  }, [materialList, selectedItemCode]);
+
   useEffect(() => {
     setImage();
-  }, [setImage]); 
-  
+  }, [setImage]);
 
   // useEffect(() => {
   //   console.log("stepCount", stepCount);
@@ -273,7 +260,6 @@ export default function ProductPage(props) {
     // customizationRes,
     headerResponse,
   } = props;
-
 
   // React.useEffect(() => {
   //   setClientSideReduxCookie({ dispatch: dispatch, router: router });
@@ -399,6 +385,8 @@ export default function ProductPage(props) {
     dispatch(manualStep(0));
   };
 
+  
+
   const renderStep = () => {
     switch (stepCount) {
       case 0:
@@ -421,8 +409,6 @@ export default function ProductPage(props) {
         return null;
     }
   };
-
-  
 
   return (
     <>
@@ -453,9 +439,7 @@ export default function ProductPage(props) {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             margin: 0,
-            
           }}
-         
         >
           {/* Burger Menu Icon Start */}
           <Fab
@@ -521,10 +505,8 @@ export default function ProductPage(props) {
                               ? "calc(100vh - 340px)"
                               : "calc(100vh - 5px)",
                             position: "relative",
-
-                            
                           }}
-                        ></Typography>
+                        />
                       )}
 
                       {stepCount !== 0 && stepCount !== 1 && (
@@ -545,8 +527,14 @@ export default function ProductPage(props) {
                           : isMobile
                           ? "calc(100vh - 340px)"
                           : "calc(100vh - 130px)",
+                        cursor: "pointer", // ✅ Add pointer cursor to indicate clickability
                       }}
                       alt={`Image ${index + 1}`}
+                      onClick={(e) => {
+                        e.stopPropagation(); // ✅ Prevent parent event interference
+                        console.log(`Image ${index + 1} clicked`);
+                        handleImageClick(src); // ✅ Trigger action or state update
+                      }}
                     />
                   )}
                 </SwiperSlide>
@@ -554,158 +542,164 @@ export default function ProductPage(props) {
             </Swiper>
 
             {/* Thumbs Swiper -> store swiper instance */}
-            {stepCount !== 0 && stepCount !== 1 && ( <Swiper
-              modules={[Thumbs]}
-              watchSlidesProgress
-              onSwiper={setThumbsSwiper}
-              // spaceBetween={5}
-              slidesPerView={6}
-              loop={false}
-              allowSlideNext={true}
-              slideToClickedSlide
-              style={{
-                marginLeft: "3px",
-              }}
-              breakpoints={{
-                320: { slidesPerView: 4, spaceBetween: 8 },
-                480: { slidesPerView: 4, spaceBetween: 10 },
-                768: { slidesPerView: 5, spaceBetween: 10 },
-                1024: { slidesPerView: 6, spaceBetween: 15 },
-              }}
-            >
-              {imageUrls.map((src, index) => (
-                <SwiperSlide key={index}>
-                  <img
-                    src={src}
-                    height={90}
-                    width={100}
-                    breakpoints={{
-                      320: {
-                        style: {
-                          height: 70,
-                          width: 70,
+            {stepCount !== 0 && stepCount !== 1 && (
+              <Swiper
+                modules={[Thumbs]}
+                watchSlidesProgress
+                onSwiper={setThumbsSwiper}
+                // spaceBetween={5}
+                slidesPerView={6}
+                loop={false}
+                allowSlideNext={true}
+                slideToClickedSlide
+                style={{
+                  marginLeft: "3px",
+                }}
+                breakpoints={{
+                  320: { slidesPerView: 4, spaceBetween: 8 },
+                  480: { slidesPerView: 4, spaceBetween: 10 },
+                  768: { slidesPerView: 5, spaceBetween: 10 },
+                  1024: { slidesPerView: 6, spaceBetween: 15 },
+                }}
+              >
+                {imageUrls.map((src, index) => (
+                  <SwiperSlide key={index}>
+                    <img
+                      src={src}
+                      height={90}
+                      width={100}
+                      breakpoints={{
+                        320: {
+                          style: {
+                            height: 70,
+                            width: 70,
+                          },
                         },
-                      },
-                    }}
-                    style={{
-                      border:
-                        index === 0
-                          ? "2px solid orange"
-                          : activeIndex === index
-                          ? "2px solid #010101"
-                          : "",
-                      marginTop: "1px",
-                    }}
-                    onClick={() => {
-                      handleThumbnailClick(index),
-                        index === 0 ? setShow3d(true) : setShow3d(false);
-                    }}
-                    alt={`Thumbnail ${index + 1}`}
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>)}
-           
+                      }}
+                      style={{
+                        border:
+                          index === 0
+                            ? "2px solid orange"
+                            : activeIndex === index
+                            ? "2px solid #010101"
+                            : "",
+                        marginTop: "1px",
+                      }}
+                      onClick={() => {
+                        handleThumbnailClick(index),
+                          index === 0 ? setShow3d(true) : setShow3d(false);
+                      }}
+                      alt={`Thumbnail ${index + 1}`}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )}
           </main>
           {/* Swiper Slider with 3d Rendor Section End */}
         </Grid>
 
         {/* Input Container */}
-      <Grid item xs={12} md={5} sm={12}  sx={{
+        <Grid
+          item
+          xs={12}
+          md={5}
+          sm={12}
+          sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            display:"block",
-          }}
-         
-          >
-        {renderStep()}
-  
-        {/* Bottom Bar */}
-        {stepCount != 2 && (
-        <Box
-          sx={{
-            height:"auto",
-            width: {
-              lg:"42vw",
-              md:"42vw",
-              sm:"100%",
-              xs:"100%"
-            },
-            '@media (min-width:290px) and (max-width:599px)': {
-              width: '100vw',
-            },
-            backgroundColor: "#fff",
-            position: "fixed",
-            bottom: 0,
-            zIndex: 1000,
-         
-            padding: "10px",
-            display: "flex",
-            justifyContent: "space-between", // Center buttons
-            gap: "8px",
-            flexWrap: "nowrap", // Prevent wrapping
-            overflowX: "auto", // Allow horizontal scroll if needed
+            display: "block",
           }}
         >
-          {/* Previous/Home Button */}
-          {stepCount > 0 ? (
-            <Button
-              size="large"
-              variant="outlined"
-              onClick={previousStep}
-              startIcon={<ArrowCircleLeftIcon />}
-            >
-              Previous
-            </Button>
-          ) : (
-            <Button
-              size="large"
-              variant="outlined"
-              onClick={handleHome}
-              startIcon={<ArrowCircleLeftIcon />}
-            >
-              Home
-            </Button>
-          )}
-  
-          {/* Continue/Add to Cart Button */}
-          {stepCount < 5 ? (
-            <Button
-              size="large"
-              variant="outlined"
-              onClick={() => dispatch(incrementStep(stepCount + 1))}
-              endIcon={<ArrowCircleRightIcon />}
-            >
-              Continue
-            </Button>
-          ) : (
-            <Button
+          {renderStep()}
+
+          {/* Bottom Bar */}
+          {stepCount != 2 && (
+            <Box
               sx={{
-                backgroundColor: "#ef9c00",
-                color: "#f5ece0",
+                height: "auto",
+                width: {
+                  lg: "42vw",
+                  md: "42vw",
+                  sm: "100%",
+                  xs: "100%",
+                },
+                "@media (min-width:290px) and (max-width:599px)": {
+                  width: "100vw",
+                },
+                backgroundColor: "#fff",
+                position: "fixed",
+                bottom: 0,
+                zIndex: 1000,
+
+                padding: "10px",
+                display: "flex",
+                justifyContent: "space-between", // Center buttons
+                gap: "8px",
+                flexWrap: "nowrap", // Prevent wrapping
+                overflowX: "auto", // Allow horizontal scroll if needed
               }}
-              onClick={addToCart}
-              size="large"
-              variant="contained"
-              endIcon={<LocalMallIcon />}
             >
-              Add To Cart
-            </Button>
+              {/* Previous/Home Button */}
+              {stepCount > 0 ? (
+                <Button
+                  size="large"
+                  variant="outlined"
+                  onClick={previousStep}
+                  startIcon={<ArrowCircleLeftIcon />}
+                >
+                  Previous
+                </Button>
+              ) : (
+                <Button
+                  size="large"
+                  variant="outlined"
+                  onClick={handleHome}
+                  startIcon={<ArrowCircleLeftIcon />}
+                >
+                  Home
+                </Button>
+              )}
+
+              {/* Continue/Add to Cart Button */}
+              {stepCount < 5 ? (
+                <Button
+                  size="large"
+                  variant="outlined"
+                  onClick={() => dispatch(incrementStep(stepCount + 1))}
+                  endIcon={<ArrowCircleRightIcon />}
+                >
+                  Continue
+                </Button>
+              ) : (
+                <Button
+                  sx={{
+                    backgroundColor: "#ef9c00",
+                    color: "#f5ece0",
+                  }}
+                  onClick={addToCart}
+                  size="large"
+                  variant="contained"
+                  endIcon={<LocalMallIcon />}
+                >
+                  Add To Cart
+                </Button>
+              )}
+            </Box>
           )}
-        </Box>
-         )}
+        </Grid>
       </Grid>
-       
-      </Grid>
+
       <CartManager
-              sx={{
-                overflow:"hidden"
-              }}
-              open={open}
-              handleDrawerOpen={handleDrawerOpen}
-              handleDrawerClose={handleDrawerClose}
-            />
+        sx={{
+          overflow: "hidden",
+        }}
+        open={open}
+        handleDrawerOpen={handleDrawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        cartData={orderList}
+      />
     </>
   );
 }
