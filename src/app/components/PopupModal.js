@@ -1,3 +1,4 @@
+"use Client"
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import shortid from "shortid";
@@ -18,6 +19,7 @@ import "react-phone-input-2/lib/style.css";
 import { setCustomerSysId, setCustomerSystemId, setGeoLocationDetails, setOrderList } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import axiosInstance from "@/utils/axios";
+const { addToCartFunScene } = require("@/sections/product/customization/sceneCanvas3D");
 
 
 let lat = 0;
@@ -323,7 +325,7 @@ export default function PopupModal() {
         dispatch(setCustomerSystemId(response.data.cust_sys_id));
 
         if(response.data.cust_sys_id){
-          addToCartFunScene2(
+          addToCartFunScene(
             { ...cookies, ...customization_info, locale: locale,customerSysIdnew: response.data.cust_sys_id},
             dispatch
           );
