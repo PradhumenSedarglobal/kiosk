@@ -42,9 +42,9 @@ const CustomizationSection = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(()=>{
-    dispatch(startCustomizationLoaded());
-  },5000);
+  // useEffect(()=>{
+  //   dispatch(startCustomizationLoaded());
+  // },5000);
 
   const formik = useFormik({
     initialValues: {
