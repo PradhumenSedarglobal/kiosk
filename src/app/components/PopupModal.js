@@ -19,7 +19,6 @@ import "react-phone-input-2/lib/style.css";
 import { setCustomerSysId, setCustomerSystemId, setGeoLocationDetails, setOrderList } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import axiosInstance from "@/utils/axios";
-
 const { addToCartFunScene } = require("@/sections/product/customization/sceneCanvas3D");
 
 
@@ -187,21 +186,19 @@ export default function PopupModal({setAddToCartShow}) {
   const getCountry = async(val) => {
     try{
    
-      const BASE_URL = process.env.LIVE_URL;
+      const BASE_URL = "https://api.sedarglobal.com";
 
   
       const response = await axios.get(
         `${BASE_URL}/geolocation?geo=&client_ip=${ip}&locale=${locale}`,
         {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
-            "Accept": "application/json",
-            "Access-Control-Allow-Origin": "*", 
-          },
-          withCredentials: true, // Enable credentials
+          headers:{
+              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
+              "Accept": "application/json",
+              "Access-Control-Allow-Origin": "*", 
+          }
         }
       );
-      
 
       dispatch(setGeoLocationDetails(response.data));
   
