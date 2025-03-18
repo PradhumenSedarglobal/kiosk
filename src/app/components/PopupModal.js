@@ -193,13 +193,15 @@ export default function PopupModal({setAddToCartShow}) {
       const response = await axios.get(
         `${BASE_URL}/geolocation?geo=&client_ip=${ip}&locale=${locale}`,
         {
-          headers:{
-              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
-              "Accept": "application/json",
-              "Access-Control-Allow-Origin": "*", 
-          }
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
+            "Accept": "application/json",
+            "Access-Control-Allow-Origin": "*", 
+          },
+          withCredentials: true, // Enable credentials
         }
       );
+      
 
       dispatch(setGeoLocationDetails(response.data));
   
