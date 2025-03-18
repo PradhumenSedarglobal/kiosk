@@ -32,6 +32,7 @@ const BottomBarTabination = ({
   handleSubmit,
   formClose,
   setFormClose,
+  setAddToCartShow
 }) => {
   const { t: translate } = useTranslation();
   const { locale, query } = useRouter();
@@ -79,10 +80,10 @@ const BottomBarTabination = ({
         // boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
         padding: "10px",
         display: "flex",
-        justifyContent: "space-between", // Center buttons
+        justifyContent: "space-between",
         gap: "8px",
-        flexWrap: "nowrap", // Prevent wrapping
-        overflowX: "auto", // Allow horizontal scroll if needed
+        flexWrap: "nowrap", 
+        overflowX: "auto", 
       }}
     >
        <Box
@@ -207,7 +208,6 @@ const BottomBarTabination = ({
                     dispatch(removecart());
                   }
                   
-                  // ✅ Ensure this fires correctly after dispatch
                   onPreviousHandle("PREV");
                 }}
                 

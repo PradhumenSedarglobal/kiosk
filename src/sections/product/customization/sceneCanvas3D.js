@@ -2007,6 +2007,10 @@ const getPrice = (state, dispatch, props) => {
 };
 
 const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") => {
+
+  console.log("check cart data",state, dispatch, cart_status);
+
+
   const { stepsArray, editStepData, productInfo } = state;
 
   if (cart_status == "INCOMPLETE") {

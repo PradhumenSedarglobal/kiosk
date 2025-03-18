@@ -32,118 +32,118 @@ let camera_near = 0.1;
 let camera_far = 1000;
 let zoom_slider = 0;
 
-export function canvasImg() {
-  lat = old_lat;
-  lon = old_lon;
-  if (camera && camera.isCamera) {
-    camera.fov = THREE.Math.clamp(camera_fov, 10, camera_fov);
-    camera.updateProjectionMatrix();
+// export function canvasImg() {
+//   lat = old_lat;
+//   lon = old_lon;
+//   if (camera && camera.isCamera) {
+//     camera.fov = THREE.Math.clamp(camera_fov, 10, camera_fov);
+//     camera.updateProjectionMatrix();
 
-    let phi = THREE.Math.degToRad(90 - lat);
-    let theta = THREE.Math.degToRad(lon);
-    camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
-    camera.target.y = 500 * Math.cos(phi);
-    camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
-    camera.lookAt(camera.target);
-    renderer.render(scene, camera);
+//     let phi = THREE.Math.degToRad(90 - lat);
+//     let theta = THREE.Math.degToRad(lon);
+//     camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+//     camera.target.y = 500 * Math.cos(phi);
+//     camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+//     camera.lookAt(camera.target);
+//     renderer.render(scene, camera);
 
-    return renderer.domElement.toDataURL("image/jpeg", 0.3);
-  }
-}
+//     return renderer.domElement.toDataURL("image/jpeg", 0.3);
+//   }
+// }
 
-export function addToCartFunScene2(state, dispatch, cart_status = "INCOMPLETE") {
+// export function addToCartFunScene2(state, dispatch, cart_status = "INCOMPLETE") {
 
-  const { stepsArray, editStepData, productInfo } = state;
+//   const { stepsArray, editStepData, productInfo } = state;
 
-  console.log("customerSysId",state);
-  console.log("cart_status",cart_status);
+//   console.log("customerSysId",state);
+//   console.log("cart_status",cart_status);
 
-  // Assign COMPLETE status if customerSysIdnew is provided
-  if (state.customerSysIdnew !== null) {
-    cart_status = "COMPLETED";
-  }
+//   // Assign COMPLETE status if customerSysIdnew is provided
+//   if (state.customerSysIdnew !== null) {
+//     cart_status = "COMPLETED";
+//   }
 
-  console.log("cart_status2",cart_status);
+//   console.log("cart_status2",cart_status);
 
-  if (cart_status == "INCOMPLETE") {
-    cart_status = editStepData.line_result && ["MODIFICATION", "COMPLETED"].indexOf(editStepData.line_result.SOL_CART_STATUS) >= 0 ? editStepData.line_result.SOL_CART_STATUS : "INCOMPLETE";
-  }
-  let userId = state.USER_ID;
-  let modify_cust_sys_id = "";
-  let SOL_SOH_SYS_ID = "";
-  let SOL_CAD_SYS_ID = "";
+//   if (cart_status == "INCOMPLETE") {
+//     cart_status = editStepData.line_result && ["MODIFICATION", "COMPLETED"].indexOf(editStepData.line_result.SOL_CART_STATUS) >= 0 ? editStepData.line_result.SOL_CART_STATUS : "INCOMPLETE";
+//   }
+//   let userId = state.USER_ID;
+//   let modify_cust_sys_id = "";
+//   let SOL_SOH_SYS_ID = "";
+//   let SOL_CAD_SYS_ID = "";
 
-  if (state.user && state.user.cust_id) {
-    userId = editStepData.line_result && state.user && state.user && state.user.cust_type == "ADMIN" ? editStepData.line_result.SOL_CUST_SYS_ID : state.user?.cust_id;
-    modify_cust_sys_id = state.user && state.user && state.user.cust_type == "ADMIN" ? state.user.cust_id : 0;
-    SOL_SOH_SYS_ID = editStepData.line_result && editStepData.line_result.SOL_SOH_SYS_ID > 0 ? editStepData.line_result.SOL_SOH_SYS_ID : "";
-    SOL_CAD_SYS_ID = editStepData.line_result && editStepData.line_result.SOL_CAD_SYS_ID > 0 ? editStepData.line_result.SOL_CAD_SYS_ID : "";
-  }
+//   if (state.user && state.user.cust_id) {
+//     userId = editStepData.line_result && state.user && state.user && state.user.cust_type == "ADMIN" ? editStepData.line_result.SOL_CUST_SYS_ID : state.user?.cust_id;
+//     modify_cust_sys_id = state.user && state.user && state.user.cust_type == "ADMIN" ? state.user.cust_id : 0;
+//     SOL_SOH_SYS_ID = editStepData.line_result && editStepData.line_result.SOL_SOH_SYS_ID > 0 ? editStepData.line_result.SOL_SOH_SYS_ID : "";
+//     SOL_CAD_SYS_ID = editStepData.line_result && editStepData.line_result.SOL_CAD_SYS_ID > 0 ? editStepData.line_result.SOL_CAD_SYS_ID : "";
+//   }
 
-  if (state.user && state.modificationUser && state.modificationUser.head_sys_id && state.user.cust_type == "ADMIN" && SOL_SOH_SYS_ID == '') {
-    SOL_SOH_SYS_ID = state.modificationUser.head_sys_id;
-  }
-  let url =
-  editStepData.line_result && editStepData.line_result.SOL_SYS_ID
-      ? "kiosk/cart/update/" + editStepData.line_result.SOL_SYS_ID
-      : "kiosk/cart";
+//   if (state.user && state.modificationUser && state.modificationUser.head_sys_id && state.user.cust_type == "ADMIN" && SOL_SOH_SYS_ID == '') {
+//     SOL_SOH_SYS_ID = state.modificationUser.head_sys_id;
+//   }
+//   let url =
+//   editStepData.line_result && editStepData.line_result.SOL_SYS_ID
+//       ? "kiosk/cart/update/" + editStepData.line_result.SOL_SYS_ID
+//       : "kiosk/cart";
 
-  let post_data = {
-    ...productInfo,
-    STEPS: stepsArray,
-    cart_status: cart_status,
-    url: url,
-    CUST_SYS_ID: state.customerSysIdnew ? state.customerSysIdnew : userId,
-    SOL_MODIFY_CUST_SYS_ID: modify_cust_sys_id,
-    SOL_SOH_SYS_ID: SOL_SOH_SYS_ID,
-    SOL_CAD_SYS_ID: SOL_CAD_SYS_ID,
-    canvasImg: canvasImg(),
-    visitorId: state.visitorId,
-    userId: userId,
-  };
+//   let post_data = {
+//     ...productInfo,
+//     STEPS: stepsArray,
+//     cart_status: cart_status,
+//     url: url,
+//     CUST_SYS_ID: state.customerSysIdnew ? state.customerSysIdnew : userId,
+//     SOL_MODIFY_CUST_SYS_ID: modify_cust_sys_id,
+//     SOL_SOH_SYS_ID: SOL_SOH_SYS_ID,
+//     SOL_CAD_SYS_ID: SOL_CAD_SYS_ID,
+//     canvasImg: canvasImg(),
+//     visitorId: state.visitorId,
+//     userId: userId,
+//   };
 
-  //locale=defaultLocalPath
-  let path_url =
-    post_data.url +
-    "?locale=uae-en&visitorId=" +
-    state.visitorId +
-    "&userId=" +
-    userId; //+ '&site=' + state.site + '&country=' + state.countryName  + '&currency=' + state.CCYCODE + '&ccy_decimal=' + state.CCYDECIMALS + '&cn_iso=' + state.cniso + '&detect_country=' + state.detect_country;
+//   //locale=defaultLocalPath
+//   let path_url =
+//     post_data.url +
+//     "?locale=uae-en&visitorId=" +
+//     state.visitorId +
+//     "&userId=" +
+//     userId; //+ '&site=' + state.site + '&country=' + state.countryName  + '&currency=' + state.CCYCODE + '&ccy_decimal=' + state.CCYDECIMALS + '&cn_iso=' + state.cniso + '&detect_country=' + state.detect_country;
 
-  if (
-    productInfo &&
-    productInfo.count > 0 &&
-    stepsArray &&
-    stepsArray?.MATERIAL_SELECTION &&
-    (stepsArray?.MEASUREMENT || stepsArray?.ROLL_CALCULATION)
-  ) {
+//   if (
+//     productInfo &&
+//     productInfo.count > 0 &&
+//     stepsArray &&
+//     stepsArray?.MATERIAL_SELECTION &&
+//     (stepsArray?.MEASUREMENT || stepsArray?.ROLL_CALCULATION)
+//   ) {
 
-    console.log(stepsArray, post_data, 'addToCartFunScene');
-    axiosInstance.post(path_url, post_data)
-      .then((response) => {
-        let res_data = response.data;
-        if ((res_data.error_message == "Success" || res_data.error_message == "SUCCESS") && res_data.return_status == 0) {
-          dispatch(setCustomizationPriceFun(res_data.result));
-        } else {
-          //setErrorMgs(res_data.error_message);
-          // alert(res_data.error_message);
-          res_data["subject"] = "Customization";
-          axiosInstance
-            .post("emailFun", res_data)
-            .then((response) => { console.log(response, 'response') })
-            .catch((e) => {
-              console.log(e, 'Error catch11')
-            });
-        }
-      })
-      .catch((e) => {
-        console.log(e, 'catch Error')
-        alert("catch");
-      });
-  } else {
-    console.log(post_data, "post_data", url);
-  }
-};
+//     console.log(stepsArray, post_data, 'addToCartFunScene');
+//     axiosInstance.post(path_url, post_data)
+//       .then((response) => {
+//         let res_data = response.data;
+//         if ((res_data.error_message == "Success" || res_data.error_message == "SUCCESS") && res_data.return_status == 0) {
+//           dispatch(setCustomizationPriceFun(res_data.result));
+//         } else {
+//           //setErrorMgs(res_data.error_message);
+//           // alert(res_data.error_message);
+//           res_data["subject"] = "Customization";
+//           axiosInstance
+//             .post("emailFun", res_data)
+//             .then((response) => { console.log(response, 'response') })
+//             .catch((e) => {
+//               console.log(e, 'Error catch11')
+//             });
+//         }
+//       })
+//       .catch((e) => {
+//         console.log(e, 'catch Error')
+//         alert("catch");
+//       });
+//   } else {
+//     console.log(post_data, "post_data", url);
+//   }
+// };
 
 
 
@@ -156,7 +156,7 @@ const genrateVisitorId = () => {
  return `${uniqueId}-${timestamp}`;
 }
 
-export default function PopupModal() {
+export default function PopupModal({setAddToCartShow}) {
   const { state } = useAuthContext();
   const { cookies } = state;
   const locale = 'uae-en';
@@ -220,16 +220,16 @@ export default function PopupModal() {
     formState: { errors },
   } = useForm();
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setAddToCartShow(false);
+  };
   const handleSuccessClose = () => setSuccessOpen(false);
   const handleErrorClose = () => setErrorOpen(false);
 
 
   const fetchOrderList = async (customerId,userId) => {
       try{
-
-       
-
         const response = await axios.get(
           `https://migapi.sedarglobal.com/order/orderList?lang=en&site=100001&country=uae&visitorId=${customerId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=`,
           {
@@ -305,8 +305,6 @@ export default function PopupModal() {
 
       console.log("cus,VIS",cookies.visitorId,response.data.cust_sys_id);
 
-      fetchOrderList(cookies.visitorId,response.data.cust_sys_id);
-
       dispatch(setCustomerSysId(response.data.cust_sys_id));
   
       console.log("API Response:", response);
@@ -321,20 +319,24 @@ export default function PopupModal() {
       } else {
         setSuccessOpen(true);
         handleClose();
+        // setAddToCartShow(false);
+        
         console.log("customization",customization);
         dispatch(setCustomerSystemId(response.data.cust_sys_id));
 
         if(response.data.cust_sys_id){
           addToCartFunScene(
             { ...cookies, ...customization_info, locale: locale,customerSysIdnew: response.data.cust_sys_id},
-            dispatch
+            dispatch,
+            "COMPLETED"
           );
+
+
+          fetchOrderList(cookies.visitorId,response.data.cust_sys_id);
 
           console.log("customization_info",customization_info);
           
-          setTimeout(()=>{
-            // postOrderHead();
-          },10000);
+     
         }
        
 
