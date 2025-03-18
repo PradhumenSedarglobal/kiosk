@@ -1,6 +1,6 @@
 import React from "react";
 import * as THREE from "three";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 import axiosInstance from "@/utils/axios";
 import { useDispatch, useSelector } from "@/redux/store";
 import Stack from "@mui/material/Stack";
