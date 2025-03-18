@@ -19,9 +19,8 @@ import "react-phone-input-2/lib/style.css";
 import { setCustomerSysId, setCustomerSystemId, setGeoLocationDetails, setOrderList } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import axiosInstance from "@/utils/axios";
-if (typeof window !== 'undefined') {
+
 const { addToCartFunScene } = require("@/sections/product/customization/sceneCanvas3D");
-}
 
 
 let lat = 0;
