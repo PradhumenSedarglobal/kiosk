@@ -186,9 +186,11 @@ export default function PopupModal({setAddToCartShow}) {
   const getCountry = async(val) => {
     try{
    
+      const BASE_URL = process.env.LIVE_URL;
+
   
       const response = await axios.get(
-        `https://api.sedarglobal.com/geolocation?geo=&client_ip=${ip}&locale=${locale}`,
+        `${BASE_URL}/geolocation?geo=&client_ip=${ip}&locale=${locale}`,
         {
           headers:{
               "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
