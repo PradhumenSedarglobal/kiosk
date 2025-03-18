@@ -169,6 +169,7 @@ export default function ProductPage(props) {
     customization,
     materialList,
     orderList,
+    isCustomizationLoading,
   } = useSelector((state) => state.customization);
 
   useEffect(() => {
@@ -206,38 +207,34 @@ export default function ProductPage(props) {
     },
   });
 
-  const setImage = useCallback(() => {
+  useEffect(() => {
     try {
       if (!materialList?.length) return;
-
+  
       const subChild = materialList.flatMap((item) => item.items);
-
+  
       const selectedMaterial = subChild.find(
         (item) => item.SII_CODE === selectedItemCode
       );
-
+  
       if (!selectedMaterial?.gallery?.length) return;
-
+  
       const newImageUrls = selectedMaterial.gallery.map(
         (item) => item.SLI_IMAGE_PATH
       );
-
+  
       // Avoid unnecessary state updates
       const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
       const updatedImageUrls = [firstImage, ...newImageUrls];
-
+  
       if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
         setImageUrls(updatedImageUrls);
       }
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
-  }, [materialList, selectedItemCode]);
-
-  useEffect(() => {
-    setImage();
-  }, [setImage]);
-
+  }, [materialList, selectedItemCode, imageUrls]);
+  
   // useEffect(() => {
   //   console.log("stepCount", stepCount);
   // }, [stepCount]);
@@ -385,7 +382,11 @@ export default function ProductPage(props) {
     dispatch(manualStep(0));
   };
 
-  
+  useEffect(() => {
+    console.log("steeeeep", stepCount);
+    console.log("testing", stepCount === 0 || stepCount === 1);
+    console.log("isCustomizationLoading", isCustomizationLoading);
+  }, [stepCount === 1]);
 
   const renderStep = () => {
     switch (stepCount) {
@@ -503,16 +504,36 @@ export default function ProductPage(props) {
                               ? "calc(100vh - 510px)"
                               : isMobile
                               ? "calc(100vh - 340px)"
-                              : "calc(100vh - 5px)",
+                              : "calc(100vh)",
                             position: "relative",
                           }}
                         />
                       )}
 
-                      {stepCount !== 0 && stepCount !== 1 && (
-                        <SceneCanvas3D
-                          {...(data2 && data2.length > 0 ? data2[0] : {})}
-                        />
+                      {stepCount !== 0 &&
+                        stepCount !== 1 &&
+                        !isCustomizationLoading && (
+                          <SceneCanvas3D
+                            {...(data2 && data2.length > 0 ? data2[0] : {})}
+                          />
+                        )}
+
+                      {stepCount !== 0 &&
+                        stepCount !== 1 && isCustomizationLoading && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "calc(100vh - 130px)",
+                          }}
+                        >
+                          <img
+                            src="/loadernew.gif"
+                            style={{ objectFit: "cover", height: "100px" }}
+                            alt="Loading..."
+                          />
+                        </Box>
                       )}
                     </>
                   ) : (

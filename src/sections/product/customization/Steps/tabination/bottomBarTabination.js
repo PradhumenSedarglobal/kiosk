@@ -18,7 +18,7 @@ import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import { useEffect, useState } from "react";
 import PopupModal from "@/app/components/PopupModal";
-import { removecart, resetState } from "@/redux/slices/customization";
+import { loadingfalse, removecart, resetState } from "@/redux/slices/customization";
 
 const BottomBarTabination = ({
   setTabChange,
@@ -206,6 +206,7 @@ const BottomBarTabination = ({
                   if (tabChange === "1") {
                     console.log("tabChangetabChange",tabChange);
                     dispatch(removecart());
+                    dispatch(loadingfalse(true));
                   }
                   
                   onPreviousHandle("PREV");

@@ -25,7 +25,7 @@ const initialState = {
   ip:null,
   geoLocationDetails:null,
   customerSysId:null,
-  orderList:null
+  orderList:null,
   
 };
 
@@ -66,6 +66,7 @@ const slice = createSlice({
       state.filterOption = {};
       state.materialList = [];
       state.stepsArray = {};
+      state.SelectedModal= null;
     },
 
     resetState:() => initialState,

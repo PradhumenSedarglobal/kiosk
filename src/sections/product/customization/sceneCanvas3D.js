@@ -1,6 +1,6 @@
 import React from "react";
 import * as THREE from "three";
-const { OBJLoader } = require("three/examples/jsm/loaders/OBJLoader");
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import axiosInstance from "@/utils/axios";
 import { useDispatch, useSelector } from "@/redux/store";
 import Stack from "@mui/material/Stack";
@@ -2008,15 +2008,19 @@ const getPrice = (state, dispatch, props) => {
 
 const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") => {
 
-  console.log("check cart data",state, dispatch, cart_status);
+  console.log("check cart data",state, dispatch, cart_status = "INCOMPLETE");
 
 
   const { stepsArray, editStepData, productInfo } = state;
 
+  if(state.cart_status == "COMPLETED"){
+    cart_status = "COMPLETED";
+  }
+
   if (cart_status == "INCOMPLETE") {
     cart_status = editStepData.line_result && ["MODIFICATION", "COMPLETED"].indexOf(editStepData.line_result.SOL_CART_STATUS) >= 0 ? editStepData.line_result.SOL_CART_STATUS : "INCOMPLETE";
   }
-  let userId = state.USER_ID;
+  let userId = state.customerSysIdnew ? state.customerSysIdnew : state.USER_ID;
   let modify_cust_sys_id = "";
   let SOL_SOH_SYS_ID = "";
   let SOL_CAD_SYS_ID = "";

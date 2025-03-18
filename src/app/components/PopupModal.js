@@ -16,10 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import PhoneInput from "react-phone-input-2";
 import axios from "axios";
 import "react-phone-input-2/lib/style.css";
-import { setCustomerSysId, setCustomerSystemId, setGeoLocationDetails, setOrderList } from "@/redux/slices/customization";
+import { removecart, setCustomerSysId, setCustomerSystemId, setGeoLocationDetails, setOrderList } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import axiosInstance from "@/utils/axios";
-const { addToCartFunScene } = require("@/sections/product/customization/sceneCanvas3D");
+import { decrementStep } from "@/redux/slices/stepSlice";
+//const { addToCartFunScene } = require("@/sections/product/customization/sceneCanvas3D");
+import { addToCartFunScene } from "@/sections/product/customization/sceneCanvas3D";
 
 
 let lat = 0;
@@ -186,11 +188,9 @@ export default function PopupModal({setAddToCartShow}) {
   const getCountry = async(val) => {
     try{
    
-      const BASE_URL = "https://api.sedarglobal.com";
-
   
       const response = await axios.get(
-        `${BASE_URL}/geolocation?geo=&client_ip=${ip}&locale=${locale}`,
+        `https://api.sedarglobal.com/geolocation?geo=&client_ip=${ip}&locale=${locale}`,
         {
           headers:{
               "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
@@ -305,12 +305,11 @@ export default function PopupModal({setAddToCartShow}) {
         }
       );
 
-      console.log("cus,VIS",cookies.visitorId,response.data.cust_sys_id);
+     
 
       dispatch(setCustomerSysId(response.data.cust_sys_id));
   
-      console.log("API Response:", response);
-      console.log("response.data.cust_sys_id2",response.data.cust_sys_id);
+ 
       if (response.data.return_status === "-111") {
         setErrorMessage(
           response.error_message +
@@ -324,18 +323,46 @@ export default function PopupModal({setAddToCartShow}) {
         // setAddToCartShow(false);
         
         console.log("customization",customization);
+        console.log("cookies",cookies);
+        console.log("locale",locale);
+        console.log("customization",customization);
         dispatch(setCustomerSystemId(response.data.cust_sys_id));
 
         if(response.data.cust_sys_id){
-          addToCartFunScene(
-            { ...cookies, ...customization_info, locale: locale,customerSysIdnew: response.data.cust_sys_id},
-            dispatch,
-            "COMPLETED"
-          );
 
+          const handleAddToCart = async () => {
+            try {
+              const result = await addToCartFunScene(
+                {
+                  ...cookies,
+                  ...customization_info,
+                  locale: locale,
+                  customerSysIdnew: response.data.cust_sys_id,
+                  cart_status: "COMPLETED",
+                },
+                dispatch
+              );
+              
+              console.log(result); 
+            } catch (error) {
+              console.error("Failed to add to cart:", error);
+            } finally {
+             
+              setTimeout(()=>{
+                fetchOrderList(cookies.visitorId,response.data.cust_sys_id);
 
-          fetchOrderList(cookies.visitorId,response.data.cust_sys_id);
+                dispatch(removecart());
+                dispatch(decrementStep(0));
+              },2000);
 
+             
+            }
+          };
+          
+          handleAddToCart();
+
+        
+        
           console.log("customization_info",customization_info);
           
      
