@@ -19,6 +19,7 @@ import {
   setcanvasImg,
   setCustomCustomization,
   setCustomizationPriceFun,
+  setresetSceanCanvas,
 } from "@/redux/slices/customization";
 import Box from "@mui/material/Box";
 
@@ -245,6 +246,8 @@ const SceneCanvas3D = (props) => {
             : "";
         }
 
+        dispatch(setresetSceanCanvas(resetScean));
+
         aluminium_texture = props.OBJ_BOTTOM_TEXTURE_PATH
           ? textureLoader.load(props.OBJ_BOTTOM_TEXTURE_PATH)
           : aluminium_texture;
@@ -425,6 +428,8 @@ const SceneCanvas3D = (props) => {
     lat = 0;
     lon = 180;
   };
+
+
   /* const goTocartPage = () => {
      customizeDispatch({ type: "ADD-TO-CART" });
      addToCartFunScene(customize_state, customizeDispatch, "COMPLETED");
@@ -528,6 +533,7 @@ const SceneCanvas3D = (props) => {
 
 
   dispatch(setcanvasImg(canvasImg()));
+ 
 
 
 

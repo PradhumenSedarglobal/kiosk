@@ -238,7 +238,7 @@ const BottomBarTabination = ({
               alignItems: "end",
             }}
           >
-            {tabChange != "5" && (
+            {tabChange != "5" && priceArray.SOL_VALUE > 0 && (
               <Button
                 size="large"
                 variant="outlined"

@@ -26,13 +26,19 @@ const initialState = {
   geoLocationDetails:null,
   customerSysId:null,
   orderList:null,
-  canvasImg: null
+  canvasImg: null,
+  resetScene: null,
+  resetCanvasScene:null
 };
 
 const slice = createSlice({
   name: "customization",
   initialState,
   reducers: {
+
+    setresetSceanCanvas(state,action){
+      state.resetCanvasScene = action.payload;
+    },
 
     setOrderList(state,action){
       state.orderList = null;
@@ -166,6 +172,7 @@ const slice = createSlice({
       state.materialList = action.payload.result;
     },
     setCustomCustomization(state, action) {
+      state.customization = null;
       state.customization = action.payload;
     },
     setCustomizationFun(state, action) {
@@ -281,7 +288,8 @@ export const {
   setCustomerSysId,
   resetState,
   setOrderList,
-  setcanvasImg
+  setcanvasImg,
+  setresetSceanCanvas
 } = slice.actions;
 
 // GET Faqs PAGE DATA

@@ -2,6 +2,7 @@ var validation_steps_type = ["TECH", "MATL", "MEASUREMENT", "ROLL_CALCULATION"];
 import PdpShema from "@/modules/PdpSchema";
 import PlpSchema from "@/modules/PlpSchema";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 
 import {
   resetState,
@@ -170,7 +171,12 @@ export default function ProductPage(props) {
     materialList,
     orderList,
     isCustomizationLoading,
+    resetCanvasScene
   } = useSelector((state) => state.customization);
+
+  console.log("resetCanvasScene",resetCanvasScene);
+
+ 
 
   useEffect(() => {
     console.log("orderListnew", orderList);
@@ -382,6 +388,14 @@ export default function ProductPage(props) {
     dispatch(manualStep(0));
   };
 
+  const handleResetThreed = () => {
+    dispatch(reset(true));
+
+    setTimeout(() => {
+      dispatch(reset(false));
+    }, 1000);
+  };
+
   useEffect(() => {
     console.log("steeeeep", stepCount);
     console.log("testing", stepCount === 0 || stepCount === 1);
@@ -463,6 +477,34 @@ export default function ProductPage(props) {
           </Fab>
           {/* Burger Menu End  */}
 
+          {/* Reset 3dModal Icon Start */}
+          { stepCount !== 0 && stepCount !== 1 && (
+            <Fab
+              onClick={() => {
+                resetCanvasScene();
+              }}
+              className="resetbutton"
+              sx={{
+                backgroundColor: "#ef9c00",
+                color: "#f5ece0",
+                fontFamily: fonts.Helvetica_Neue_Regular.style.fontFamily,
+                fontWeight: "700",
+                padding: "8px 16px",
+                position: "absolute",
+                zIndex: 999,
+                marginLeft: "5px",
+                top: "10px",
+                right: { xs: "20px", sm: "10px", lg: "570px" },
+              }}
+              color="warning"
+              aria-label="edit"
+            >
+              <SettingsBackupRestoreIcon />
+            </Fab>
+          )}
+
+          {/* Reset 3dModal Icon End  */}
+
           {/* Swiper Slider with 3d Rendor Section Start */}
           <main>
             {/* Main Swiper -> pass thumbs swiper instance */}
@@ -480,37 +522,36 @@ export default function ProductPage(props) {
               initialSlide={1}
               allowSlideNext={allowNextSlide}
             >
-
-              
               {imageUrls.map((src, index) => (
                 <SwiperSlide key={index}>
                   {index === 0 ? (
                     <>
-                      {(stepCount === 0 || stepCount === 1) && materialList !== null && (
-                        <Typography
-                          sx={{
-                            fontFamily: fonts.Helvetica_Neue_Bold.fontFamily,
-                            fontSize: "1rem",
-                            fontWeight: "bold",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "end",
-                            backgroundColor: "rgba(245, 175, 12, 0.5)",
-                            color: "#ef9c00",
-                            textShadow: "2px 2px 5px rgba(245, 186, 24, 0.5)",
-                            background:
-                              "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
-                            backgroundSize: "cover",
-                            backgroundRepeat: "no-repeat",
-                            height: isTablet
-                              ? "calc(100vh - 510px)"
-                              : isMobile
-                              ? "calc(100vh - 340px)"
-                              : "calc(99vh)",
-                            position: "relative",
-                          }}
-                        />
-                      )}
+                      {(stepCount === 0 || stepCount === 1) &&
+                        materialList !== null && (
+                          <Typography
+                            sx={{
+                              fontFamily: fonts.Helvetica_Neue_Bold.fontFamily,
+                              fontSize: "1rem",
+                              fontWeight: "bold",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "end",
+                              backgroundColor: "rgba(245, 175, 12, 0.5)",
+                              color: "#ef9c00",
+                              textShadow: "2px 2px 5px rgba(245, 186, 24, 0.5)",
+                              background:
+                                "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
+                              backgroundSize: "cover",
+                              backgroundRepeat: "no-repeat",
+                              height: isTablet
+                                ? "calc(100vh - 510px)"
+                                : isMobile
+                                ? "calc(100vh - 340px)"
+                                : "calc(99vh)",
+                              position: "relative",
+                            }}
+                          />
+                        )}
 
                       {stepCount !== 0 &&
                         stepCount !== 1 &&
