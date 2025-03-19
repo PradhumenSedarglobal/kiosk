@@ -22,6 +22,8 @@ const RollCalculationTool = ({ data }) => {
 
   const { stepsArray, editStepData, productInfo, priceArray } = customization_info;
 
+  const fonts = useSelector((state) => state.font);
+
 
   let [me_width, setMe_width] = useState();
   let [me_height, setMe_height] = useState();
@@ -130,7 +132,7 @@ const RollCalculationTool = ({ data }) => {
   }, [priceArray.ROLL_CALC]);
 
   return (
-    <Box>
+    <Box px={3}>
       <Box>
         <Typography
           sx={(theme) => ({
@@ -145,6 +147,11 @@ const RollCalculationTool = ({ data }) => {
       <Box py={2}>
 
         <Typography
+           sx={{
+            display: "flex",
+            marginBottom: "10px",
+            fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+          }}
           dangerouslySetInnerHTML={{
             __html: translate('width_with_val', { min: MIN_WIDTH, max: MAX_WIDTH })
           }}
@@ -153,7 +160,7 @@ const RollCalculationTool = ({ data }) => {
           fullWidth
           type="text"
           variant="outlined"
-          size="small"
+          size="large"
           name="product_width"
           value={me_width}
           onChange={(e) => { re.test(e.target.value) ? setMe_width(e.target.value) : setMe_width(''); re.test(e.target.value) && rollCalculationfun('product_width', e.target.value); }}
@@ -163,10 +170,10 @@ const RollCalculationTool = ({ data }) => {
           formControlSx={{
             mb: 0,
             px: 0,
-            borderRadius: 0,
+            borderRadius: "8px",
             backgroundColor: (theme) => theme.palette.common.white,
             "& .MuiOutlinedInput-notchedOutline": {
-              borderRadius: 0,
+              borderRadius: "8px",
             },
             "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: (theme) => theme.palette.common.black,
@@ -183,42 +190,59 @@ const RollCalculationTool = ({ data }) => {
       </Box>
       <Box py={2}>
         <Typography
+         sx={{
+          display: "flex",
+          marginBottom: "10px",
+          fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+        }}
+
           dangerouslySetInnerHTML={{
             __html: translate('height_with_val', { min: MIN_HEIGHT, max: MAX_HEIGHT })
           }}
         />
 
-        <TextBox
-          fullWidth
-          type="text"
-          size="small"
-          variant="outlined"
-          name="product_height"
-          value={me_height}
-          onChange={(e) => { re.test(e.target.value) ? setMe_height(e.target.value) : setMe_height(''); re.test(e.target.value) && rollCalculationfun('product_height', e.target.value) }}
-          helperText={
-            isvalid.product_height && translate('product_height_validation', { min_height: MIN_HEIGHT, max_height: MAX_HEIGHT })
-          }
-          formControlSx={{
-            mb: 0,
-            px: 0,
-            borderRadius: 0,
-            backgroundColor: (theme) => theme.palette.common.white,
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderRadius: 0,
-            },
-            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: (theme) => theme.palette.common.black,
-            },
-            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: (theme) => theme.palette.common.black,
-            },
-            "& .MuiOutlinedInput-input": {
-              fontFamily: (theme) => theme.typography.typography14,
-            },
-          }}
-          required
-        />
+<TextBox
+  fullWidth
+  type="text"
+  size="large" // Updated to large
+  variant="outlined"
+  name="product_height"
+  value={me_height}
+  onChange={(e) => {
+    re.test(e.target.value)
+      ? setMe_height(e.target.value)
+      : setMe_height('');
+    re.test(e.target.value) &&
+      rollCalculationfun('product_height', e.target.value); // Updated function name
+  }}
+  helperText={
+    isvalid.product_height &&
+    translate('product_height_validation', {
+      min_height: MIN_HEIGHT,
+      max_height: MAX_HEIGHT,
+    })
+  }
+  formControlSx={{
+    mb: 0,
+    px: 0,
+    borderRadius: "8px",
+    backgroundColor: (theme) => theme.palette.common.white,
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderRadius: "8px",
+    },
+    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: (theme) => theme.palette.common.black,
+    },
+    "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: (theme) => theme.palette.common.black,
+    },
+    "& .MuiOutlinedInput-input": {
+      fontFamily: (theme) => theme.typography.typography14,
+    },
+  }}
+  required
+/>
+
       </Box>
       <Box>
         {priceArray && priceArray.ROLL_CALC > 0 ?

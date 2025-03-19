@@ -210,23 +210,23 @@ export default function ProductPage(props) {
   useEffect(() => {
     try {
       if (!materialList?.length) return;
-  
+
       const subChild = materialList.flatMap((item) => item.items);
-  
+
       const selectedMaterial = subChild.find(
         (item) => item.SII_CODE === selectedItemCode
       );
-  
+
       if (!selectedMaterial?.gallery?.length) return;
-  
+
       const newImageUrls = selectedMaterial.gallery.map(
         (item) => item.SLI_IMAGE_PATH
       );
-  
+
       // Avoid unnecessary state updates
       const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
       const updatedImageUrls = [firstImage, ...newImageUrls];
-  
+
       if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
         setImageUrls(updatedImageUrls);
       }
@@ -234,7 +234,7 @@ export default function ProductPage(props) {
       console.error("Error fetching gallery data:", error.message);
     }
   }, [materialList, selectedItemCode, imageUrls]);
-  
+
   // useEffect(() => {
   //   console.log("stepCount", stepCount);
   // }, [stepCount]);
@@ -480,6 +480,51 @@ export default function ProductPage(props) {
               initialSlide={1}
               allowSlideNext={allowNextSlide}
             >
+                {stepCount !== 0 &&
+                        stepCount !== 1 &&
+                        isCustomizationLoading && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              height: "calc(100vh)",
+                              backgroundImage:
+                                "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                              backgroundRepeat: "no-repeat",
+                              position: "relative",
+                              "&::before": {
+                                content: '""',
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "rgba(0, 0, 0, 0.6)", 
+                                backdropFilter: "blur(5px)", 
+                                zIndex: 0,
+                              },
+                            }}
+                          >
+                            <img
+                              src="/loadernew.gif"
+                              style={{
+                                objectFit: "contain",
+                                height: "100px",
+                                zIndex: 1,
+                                position: "relative",
+                                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                                padding: "10px",
+                                borderRadius: "8px",
+                                boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                              }}
+                              alt="Loading..."
+                            />
+                          </Box>
+                        )}
+
               {imageUrls.map((src, index) => (
                 <SwiperSlide key={index}>
                   {index === 0 ? (
@@ -504,7 +549,7 @@ export default function ProductPage(props) {
                               ? "calc(100vh - 510px)"
                               : isMobile
                               ? "calc(100vh - 340px)"
-                              : "calc(100vh)",
+                              : "calc(99vh)",
                             position: "relative",
                           }}
                         />
@@ -518,23 +563,7 @@ export default function ProductPage(props) {
                           />
                         )}
 
-                      {stepCount !== 0 &&
-                        stepCount !== 1 && isCustomizationLoading && (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "calc(100vh - 130px)",
-                          }}
-                        >
-                          <img
-                            src="/loadernew.gif"
-                            style={{ objectFit: "cover", height: "100px" }}
-                            alt="Loading..."
-                          />
-                        </Box>
-                      )}
+                    
                     </>
                   ) : (
                     <img
@@ -548,13 +577,13 @@ export default function ProductPage(props) {
                           : isMobile
                           ? "calc(100vh - 340px)"
                           : "calc(100vh - 130px)",
-                        cursor: "pointer", // ✅ Add pointer cursor to indicate clickability
+                        cursor: "pointer",
                       }}
                       alt={`Image ${index + 1}`}
                       onClick={(e) => {
-                        e.stopPropagation(); // ✅ Prevent parent event interference
+                        e.stopPropagation();
                         console.log(`Image ${index + 1} clicked`);
-                        handleImageClick(src); // ✅ Trigger action or state update
+                        handleImageClick(src);
                       }}
                     />
                   )}
@@ -563,7 +592,7 @@ export default function ProductPage(props) {
             </Swiper>
 
             {/* Thumbs Swiper -> store swiper instance */}
-            {stepCount !== 0 && stepCount !== 1 && (
+            {stepCount !== 0 && stepCount !== 1 && !isCustomizationLoading && (
               <Swiper
                 modules={[Thumbs]}
                 watchSlidesProgress

@@ -26,7 +26,7 @@ const initialState = {
   geoLocationDetails:null,
   customerSysId:null,
   orderList:null,
-  
+  canvasImg: null
 };
 
 const slice = createSlice({
@@ -36,6 +36,9 @@ const slice = createSlice({
 
     setOrderList(state,action){
       state.orderList = action.payload;
+    },
+    setcanvasImg(state,action){
+      state.canvasImg = action.payload;
     },
 
     setCustomerSysId(state,action){
@@ -67,6 +70,7 @@ const slice = createSlice({
       state.materialList = [];
       state.stepsArray = {};
       state.SelectedModal= null;
+      state.orderList= null;
     },
 
     resetState:() => initialState,
@@ -271,7 +275,8 @@ export const {
   setGeoLocationDetails,
   setCustomerSysId,
   resetState,
-  setOrderList
+  setOrderList,
+  setcanvasImg
 } = slice.actions;
 
 // GET Faqs PAGE DATA

@@ -15,6 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Chip from '@mui/material/Chip';
+import { useAuthContext } from "@/auth/useAuthContext";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -30,15 +31,21 @@ const drawerWidth = 400;
 const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   const theme = useTheme();
   const fonts = useSelector((state) => state.font);
+  const { state } = useAuthContext();
+  const { cookies } = state;
+  const visitorId = cookies.visitorId;
+  const userId = useSelector((state) => state.customization.customerSysId)
 
   const handleClick = () => {
     console.info('You clicked the Chip.');
   };
 
-    const fetchOrderList = async (customerId,userId) => {
+    const removeCart = async (cartId) => {
+      console.log("removeCart",cartData,cartId,visitorId,userId);
+      return false;
         try{
           const response = await axios.get(
-            `https://migapi.sedarglobal.com/order/orderList?lang=en&site=100001&country=uae&visitorId=${customerId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=`,
+            `https://migapi.sedarglobal.com/kiosk/cart/${cartId}?lang=en&site=100001&country=uae&visitorId=${visitorId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=AE&locale=uae-en`,
             {
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
@@ -212,7 +219,7 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
                   mb:"5px"
                 }}
                 label="Remove"
-                onClick={handleClick}
+                onClick={()=> {removeCart(item.id,)}}
                 deleteIcon={<DeleteIcon />}
                 variant="outlined"
               />
