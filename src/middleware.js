@@ -16,9 +16,12 @@ import shortid from "shortid";
 const PUBLIC_FILE = /\.(.*)$/;
 
 export async function middleware(request) {
+
   const { nextUrl, headers } = request;
   const { locale, pathname, searchParams } = nextUrl;
   const url = nextUrl.clone();
+
+  console.log("this called ");
 
   // Skip next.js internals, API routes, and public files
   if (
@@ -36,10 +39,12 @@ export async function middleware(request) {
     // Fetch geo data if not already present in cookies
     let firstGeoData = null;
     try {
+      console.log("this called getAllCookies1");
       const geoResponse = await fetch(
         `${process.env.LIVE_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`
       );
       firstGeoData = await geoResponse.json();
+      console.log("firstGeoData",firstGeoData);
     } catch (error) {
       console.error("Failed to fetch geo data:", error);
     }
@@ -54,6 +59,8 @@ export async function middleware(request) {
       ? JSON.parse(requestGetAllCookies?.value)
       : {};
     const head_sys_id = searchParams.get("head_sys_id");
+
+    console.log("this called getAllCookies",getAllCookies);
 
     const parsedCookies = {
       ACCESS_TOKEN: getAllCookies?.JWTAuthToken

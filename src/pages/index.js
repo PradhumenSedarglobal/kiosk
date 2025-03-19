@@ -480,11 +480,13 @@ export default function ProductPage(props) {
               initialSlide={1}
               allowSlideNext={allowNextSlide}
             >
+
+              
               {imageUrls.map((src, index) => (
                 <SwiperSlide key={index}>
                   {index === 0 ? (
                     <>
-                      {(stepCount === 0 || stepCount === 1) && (
+                      {(stepCount === 0 || stepCount === 1) && materialList !== null && (
                         <Typography
                           sx={{
                             fontFamily: fonts.Helvetica_Neue_Bold.fontFamily,
