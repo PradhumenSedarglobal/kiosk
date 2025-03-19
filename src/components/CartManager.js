@@ -7,24 +7,27 @@ import {
   List,
   styled,
   useTheme,
+  IconButton,
+  Chip,
+  Typography,
 } from "@mui/material";
-import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
-import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Chip from "@mui/material/Chip";
 import { useAuthContext } from "@/auth/useAuthContext";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { setOrderList } from "@/redux/slices/customization";
+import { toast } from 'react-toastify';
+
+const WhiteDeleteIcon = styled(DeleteIcon)(({ theme }) => ({
+  color: "#fff", 
+}));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
+  padding: theme.spacing(1),
+  justifyContent: "space-between",
 }));
 
 const drawerWidth = 400;
@@ -50,6 +53,15 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
     });
 
     if (response.data.complete) {
+      
+      toast.success("Item successfully removed from cart!", {
+        position: "top-right",
+        style: {
+          background: 'linear-gradient(45deg, #d32f2f, #f44336)',
+          color: 'white',
+        },
+      });
+
       dispatch(
         setOrderList({
           complete: response.data.complete,
@@ -68,6 +80,7 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
         "& .MuiDrawer-paper": {
           width: { md: drawerWidth, sm: "100%", xs: "100%" },
           boxSizing: "border-box",
+          padding: theme.spacing(2),
         },
       }}
       variant="persistent"
@@ -75,145 +88,122 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
       open={open}
     >
       <DrawerHeader>
-        <Grid
-          container
-          sx={{ alignItems: "center" }}
-          justifyContent="space-between"
+        <Typography
+          sx={{
+            color: "#f39c12",
+            fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+            fontWeight: "700",
+            fontSize: "1.2rem",
+          }}
+          variant="h6"
         >
-          <Typography
-            sx={{
-              color: "rgb(239, 156, 0)",
-              fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-              fontWeight: "600",
-            }}
-            variant="h6"
-            noWrap
-            component="div"
-          >
-            Added to Your Cart!
-          </Typography>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? <CloseIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </Grid>
+          Added to Your Cart!
+        </Typography>
+        <IconButton onClick={handleDrawerClose}>
+          <CloseIcon />
+        </IconButton>
       </DrawerHeader>
-      <Divider />
+      <Divider sx={{ marginBottom: theme.spacing(2) }} />
       <List>
         {cartData !== null &&
           cartData.complete.map((item, index) => (
             <React.Fragment key={item.SOL_SYS_ID || index}>
-              <Grid
-                container
-                sx={{ padding: "10px" }}
-                justifyContent="space-between"
-              >
+              <Grid container spacing={2} sx={{ padding: "10px" }} justifyContent="space-between">
                 <Grid item xs={4} sm={3} md={3}>
                   <img
                     height={100}
                     width={100}
-                    src={
-                      item.SOL_IMAGE_PATH
-                        ? item.SOL_IMAGE_PATH
-                        : "https://api.sedarglobal.com/uploads/100001/item/laptop/1708146524_d97c7cc07e26fd5ba93d.webp?imwidth=1920"
-                    }
+                    src={item.SOL_IMAGE_PATH || "https://via.placeholder.com/100"}
                     alt="Product"
+                    style={{ objectFit: "cover", borderRadius: "8px" }}
                   />
                 </Grid>
-                <Grid sx={{ paddingLeft: "20px" }} item xs={8} sm={9} md={9}>
-                  <Typography
-                    sx={{
-                      fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily,
-                      fontWeight: "500",
-                      letterSpacing: "0.00938em",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    variant="body2"
-                    noWrap
-                    component="div"
-                  >
-                    Item Code: {item?.info_data?.MEASUREMENT?.SOI_ITEM_CODE}
-                  </Typography>
-                  <Typography
-                    noWrap
-                    sx={{
-                      wordBreak: "break-all",
-                      fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily,
-                      fontWeight: "700",
-                      fontSize: "1rem", // Medium size
-                      letterSpacing: "0.00938em",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                    variant="h6"
-                    component="div"
-                  >
-                    {item?.info_data?.MEASUREMENT?.SFP_TITLE}
-                  </Typography>
-                  <Box sx={{ display: "flex", marginTop: "8px" }}>
+                <Grid item xs={8} sm={9} md={9}>
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <Typography
-                      sx={{
-                        fontFamily:
-                          fonts.Helvetica_Neue_Medium.style.fontFamily,
-                        fontWeight: "500",
-                      }}
                       variant="body2"
-                      component="div"
-                    >
-                      QTY:
-                    </Typography>
-                    <Typography
                       sx={{
-                        fontFamily: fonts.Helvetica_Neue_Thin.style.fontFamily,
-                        fontWeight: "700",
-                        marginLeft: "5px",
+                        fontFamily: fonts.Helvetica_Neue.style.fontFamily,
+                        fontWeight: 700,
+                        fontSize: "0.9rem",
+                        color: "#2c3e50",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        marginBottom: "8px",
                       }}
-                      variant="body2"
-                      component="div"
                     >
-                      {item?.SOL_QTY}
+                      Item Code: {item?.info_data?.MEASUREMENT?.SOI_ITEM_CODE}
                     </Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", marginTop: "8px" }}>
-                    <Typography
-                      sx={{
-                        fontFamily:
-                          fonts.Helvetica_Neue_Medium.style.fontFamily,
-                        fontWeight: "500",
-                        letterSpacing: "0.00938em",
-                      }}
-                      variant="body2"
-                      component="div"
-                    >
-                      Value:
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontFamily: fonts.Helvetica_Neue_Thin.style.fontFamily,
-                        fontWeight: "700",
-                        letterSpacing: "0.00938em",
-                        marginLeft: "5px",
-                      }}
-                      variant="body2"
-                      component="div"
-                    >
-                      {item?.SOL_CCY_CODE + " " + item?.SOL_VALUE}
-                    </Typography>
+
+                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily,
+                          fontWeight: 700,
+                          fontSize: "1.1rem",
+                          color: "#34495e",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        {item?.info_data?.MEASUREMENT?.SFP_TITLE}
+                      </Typography>
+                      <Chip
+                        onClick={() => removeCart(item.SOL_SYS_ID)}
+                        icon={<DeleteIcon style={{ color: "#fff",marginRight: '-20px'}} />}
+                        sx={{
+                          backgroundColor: "#e74c3c",
+                          color: "#fff",
+                          borderRadius: "12px",
+                          fontWeight: "600",
+                    
+                          cursor: "pointer",
+                          "&:hover": {
+                            backgroundColor: "#c0392b",
+                          },
+                        }}
+                      />
+                    </Box>
+
+                    <Box sx={{ display: "flex", marginTop: "8px" }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        QTY:{" "}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 700,
+                          marginLeft: "5px",
+                          fontFamily: fonts.Helvetica_Neue_Thin.style.fontFamily,
+                        }}
+                      >
+                        {item?.SOL_QTY}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: "flex", marginTop: "8px" }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        Value:{" "}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 700,
+                          marginLeft: "5px",
+                          fontFamily: fonts.Helvetica_Neue_Thin.style.fontFamily,
+                        }}
+                      >
+                        {item?.SOL_CCY_CODE + " " + item?.SOL_VALUE}
+                      </Typography>
+                    </Box>
                   </Box>
                 </Grid>
               </Grid>
-              <Chip
-                sx={{
-                  mb: "5px",
-                }}
-                label="Remove"
-                onClick={() => removeCart(item.SOL_SYS_ID)}
-                deleteIcon={<DeleteIcon />}
-                variant="outlined"
-              />
-              <Divider />
+              <Divider sx={{ marginBottom: theme.spacing(2) }} />
             </React.Fragment>
           ))}
       </List>

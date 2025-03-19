@@ -80,7 +80,12 @@ const slice = createSlice({
       // state.orderList= null;
     },
 
-    resetState:() => initialState,
+    resetState:(state) => {
+      return{
+        ...initialState,
+        orderList: state.orderList
+      }
+    },
 
     updateModalData(state, action) {
       state.ModalData = action.payload;

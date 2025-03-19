@@ -23,6 +23,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 // import dynamic from "next/dynamic";
 import CartProvider from "@/provider/cart/cartProvider";
+import ToastProvider from "@/app/components/ToastProvider";
 // import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 // import { GTM_ID } from "./_document";
 
@@ -62,7 +63,9 @@ function App(data) {
                         {locale != "default" && <Dial />}
                         {/* <CookiePolicyPopup /> */}
                         <RTL>
+                        <ToastProvider>
                           <Component isRu={isRu} {...pageProps} />
+                          </ToastProvider>
                         </RTL>
                       </ProgressRouterProvider>
                     </ErrorBoundary>

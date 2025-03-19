@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import shortid from "shortid";
 import * as THREE from "three";
 import { getCookie, setCookie } from "cookies-next";
+import { toast } from 'react-toastify';
 
 import {
   Modal,
@@ -132,7 +133,18 @@ export default function PopupModal({setAddToCartShow}) {
 
         if(response){
 
-          
+         
+
+// Showing the success message and preventing it from auto-closing
+toast.success('Success! Item Added to cart Successfully!', {
+  position: "top-right",
+  style: {
+    background: 'linear-gradient(45deg, rgb(232 175 59), rgb(239 156 0))',
+    color: 'white',
+  },
+
+});
+
           dispatch(
             setOrderList({
               complete: response.data.complete, 
