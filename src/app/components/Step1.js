@@ -8,7 +8,13 @@ import React, {
 import { Box, Modal, Typography, Grid } from "@mui/material";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { removecart, setIp, updateSelectedCategory } from "@/redux/slices/customization";
+import {
+  removecart,
+  setIp,
+  updateSelectedCategory,
+  resetState,
+  loadingfalse,
+} from "@/redux/slices/customization";
 
 // Custom Components
 import MainHeading from "./MainHeading";
@@ -33,12 +39,7 @@ const fetchCategory = async (cancelToken) => {
   }
 };
 
-
-
 const Step1 = ({ successValue, stepcount }) => {
-
-
- 
   const { state } = useAuthContext();
   const { cookies } = state;
   const [category, setCategory] = useState([]);
@@ -48,17 +49,15 @@ const Step1 = ({ successValue, stepcount }) => {
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
+
   const response = NextResponse.next();
-  
+
   const getIpAddress = async () => {
-    const res = await fetch('https://api.ipify.org?format=json');
+    const res = await fetch("https://api.ipify.org?format=json");
     const data = await res.json();
     dispatch(setIp(data.ip));
-    console.log('Your IP:', data.ip);
+    console.log("Your IP:", data.ip);
   };
-
-  console.log("cookies", cookies);
-
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -80,17 +79,24 @@ const Step1 = ({ successValue, stepcount }) => {
       .catch(setError)
       .finally(() => setLoading(false));
 
-      getIpAddress();
-
+    getIpAddress();
 
     return () => cancelToken.cancel();
   }, [dispatch]);
 
   const handleChange = useCallback(
     (link) => {
+      // 👉 Dispatch resetState() first
+      dispatch(resetState());
+
+      // 👉 Dispatch loadingfalse(true) before loading new category
+      dispatch(loadingfalse(true));
+
       setSelectedCategory(link);
       dispatch(removecart());
       dispatch(updateSelectedCategory(link));
+
+      console.log("Category changed to:", link);
     },
     [dispatch]
   );
@@ -113,15 +119,15 @@ const Step1 = ({ successValue, stepcount }) => {
           md={4}
           key={item.id}
           sx={{
-            flex: "0 0 50%", // Default for mobile-first approach
+            flex: "0 0 50%",
             "@media (min-width: 992px)": {
-              flex: "0 0 calc(100% / 3)", // Ensures correct width for larger screens
+              flex: "0 0 calc(100% / 3)",
             },
             "@media (min-width: 768px) and (max-width: 991px)": {
-              flex: "0 0 calc(100% / 4)", // Ensures correct width for larger screens
+              flex: "0 0 calc(100% / 4)",
             },
             "@media (max-width: 575px)": {
-              flex: "0 0 calc(100% / 2)", // Adjusting to full width for smaller screens if needed
+              flex: "0 0 calc(100% / 2)",
             },
           }}
         >
@@ -165,7 +171,13 @@ const Step1 = ({ successValue, stepcount }) => {
       ) : (
         <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
           <MainHeading title="Category Selection" />
-          <Box sx={{ height: { lg: "calc(100vh - 130px)" }, overflow: "auto", pt: "20px" }}>
+          <Box
+            sx={{
+              height: { lg: "calc(100vh - 130px)" },
+              overflow: "auto",
+              pt: "20px",
+            }}
+          >
             <Grid
               className="tester"
               container

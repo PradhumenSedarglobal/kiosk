@@ -480,51 +480,6 @@ export default function ProductPage(props) {
               initialSlide={1}
               allowSlideNext={allowNextSlide}
             >
-                {stepCount !== 0 &&
-                        stepCount !== 1 &&
-                        isCustomizationLoading && (
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              height: "calc(100vh)",
-                              backgroundImage:
-                                "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
-                              backgroundRepeat: "no-repeat",
-                              position: "relative",
-                              "&::before": {
-                                content: '""',
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                backgroundColor: "rgba(0, 0, 0, 0.6)", 
-                                backdropFilter: "blur(5px)", 
-                                zIndex: 0,
-                              },
-                            }}
-                          >
-                            <img
-                              src="/loadernew.gif"
-                              style={{
-                                objectFit: "contain",
-                                height: "100px",
-                                zIndex: 1,
-                                position: "relative",
-                                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                padding: "10px",
-                                borderRadius: "8px",
-                                boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-                              }}
-                              alt="Loading..."
-                            />
-                          </Box>
-                        )}
-
               {imageUrls.map((src, index) => (
                 <SwiperSlide key={index}>
                   {index === 0 ? (
@@ -563,7 +518,50 @@ export default function ProductPage(props) {
                           />
                         )}
 
-                    
+                      {stepCount !== 0 &&
+                        stepCount !== 1 &&
+                        isCustomizationLoading && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              height: "calc(98vh)",
+                              backgroundImage:
+                                "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                              backgroundRepeat: "no-repeat",
+                              position: "relative",
+                              "&::before": {
+                                content: '""',
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "rgba(0, 0, 0, 0.6)", // Darker overlay for better contrast
+                                backdropFilter: "blur(5px)", // Subtle blur effect
+                                zIndex: 0,
+                              },
+                            }}
+                          >
+                            <img
+                              src="/loadernew.gif"
+                              style={{
+                                objectFit: "contain",
+                                height: "100px",
+                                zIndex: 1,
+                                position: "relative",
+                                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                                padding: "10px",
+                                borderRadius: "8px",
+                                boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                              }}
+                              alt="Loading..."
+                            />
+                          </Box>
+                        )}
                     </>
                   ) : (
                     <img

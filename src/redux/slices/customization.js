@@ -35,6 +35,7 @@ const slice = createSlice({
   reducers: {
 
     setOrderList(state,action){
+      state.orderList = null;
       state.orderList = action.payload;
     },
     setcanvasImg(state,action){
@@ -70,7 +71,7 @@ const slice = createSlice({
       state.materialList = [];
       state.stepsArray = {};
       state.SelectedModal= null;
-      state.orderList= null;
+      // state.orderList= null;
     },
 
     resetState:() => initialState,
@@ -84,11 +85,15 @@ const slice = createSlice({
     },
 
     updateSelectedCategory(state, action) {
-      state.SelectedCategory = action.payload;
+      if (state.SelectedCategory !== action.payload) {
+        state.SelectedCategory = action.payload;
+      }
     },
 
     updateSelectedModal(state, action) {
-      state.SelectedModal = action.payload;
+      if (state.SelectedModal !== action.payload) {
+        state.SelectedModal = action.payload;
+      }
     },
     // START Faqs
     startCustomizationLoading(state) {

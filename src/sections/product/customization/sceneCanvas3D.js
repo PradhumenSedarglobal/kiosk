@@ -179,6 +179,7 @@ const SceneCanvas3D = (props) => {
     group_obj = new THREE.Group();
   };
   const loadScene = () => {
+    dispatch(loadingfalse(true)); 
     const background3dImage = textureLoader.load(scene_path);
     var background_OCC_Img = props.SSC_OCC_IMAGE_PATH
       ? textureLoader.load(props.SSC_OCC_IMAGE_PATH)
@@ -371,8 +372,6 @@ const SceneCanvas3D = (props) => {
     camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
     camera.lookAt(camera.target);
     renderer.render(scene, camera);
-
-   
   };
 
   const onDocumentMouseDown = (event) => {
@@ -529,6 +528,8 @@ const SceneCanvas3D = (props) => {
 
 
   dispatch(setcanvasImg(canvasImg()));
+
+
 
   
   return (

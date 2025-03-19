@@ -48,6 +48,9 @@ const MaterialSelection = ({ data, formik, elem }) => {
 
 
   const customization_info = useSelector((state) => state.customization);
+
+  console.log("customization1111",customization_info);
+
   const { state } = useAuthContext();
   const { cookies } = state;
 

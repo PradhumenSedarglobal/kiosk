@@ -9,19 +9,20 @@ import {
   useTheme,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import DeleteIcon from '@mui/icons-material/Delete';
-import Chip from '@mui/material/Chip';
+import DeleteIcon from "@mui/icons-material/Delete";
+import Chip from "@mui/material/Chip";
 import { useAuthContext } from "@/auth/useAuthContext";
+import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
+import { setOrderList } from "@/redux/slices/customization";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: "flex-end",
 }));
@@ -34,40 +35,30 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   const { state } = useAuthContext();
   const { cookies } = state;
   const visitorId = cookies.visitorId;
-  const userId = useSelector((state) => state.customization.customerSysId)
+  const userId = useSelector((state) => state.customization.customerSysId);
 
-  const handleClick = () => {
-    console.info('You clicked the Chip.');
-  };
+  const dispatch = useDispatch();
 
-    const removeCart = async (cartId) => {
-      console.log("removeCart",cartData,cartId,visitorId,userId);
-      return false;
-        try{
-          const response = await axios.get(
-            `https://migapi.sedarglobal.com/kiosk/cart/${cartId}?lang=en&site=100001&country=uae&visitorId=${visitorId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=AE&locale=uae-en`,
-            {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
-                "Accept": "application/json",
-                "Access-Control-Allow-Origin": "*", 
-              },
-              withCredentials: false, 
-            }
-          );
-  
-  
-          if(response){
-  
-          }
-  
-          console.log("API Response OrderList:", response);
-        } catch {
-  
-        }
+  const removeCart = async (cartId) => {
+    const response = await apiSSRV2DataService.Delete({
+      path: `kiosk/cart/${cartId}`,
+      param: {
+        content: "customization",
+        sys_id: 0,
+      },
+      cookies: cookies,
+    });
+
+    if (response.data.complete) {
+      dispatch(
+        setOrderList({
+          complete: response.data.complete,
+          cart_count: response.data.cart_count,
+          total_price: response.data.total_price,
+        })
+      );
     }
-    
-
+  };
 
   return (
     <Drawer
@@ -211,15 +202,14 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
                       {item?.SOL_CCY_CODE + " " + item?.SOL_VALUE}
                     </Typography>
                   </Box>
-
                 </Grid>
               </Grid>
               <Chip
                 sx={{
-                  mb:"5px"
+                  mb: "5px",
                 }}
                 label="Remove"
-                onClick={()=> {removeCart(item.id,)}}
+                onClick={() => removeCart(item.SOL_SYS_ID)}
                 deleteIcon={<DeleteIcon />}
                 variant="outlined"
               />

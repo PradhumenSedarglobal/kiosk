@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState,useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
 import {
   removecart,
+  resetState,
   setCustomization,
   setHeaderResponse,
   setMaterialCustomization,
@@ -18,139 +19,132 @@ import axios from "axios";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 
 const Modal = () => {
- const dispatch = useDispatch();
-   const fonts = useSelector((state) => state.font);
-   const selectedCategory = useSelector(
-     (state) => state.customization.SelectedCategory
-   );
-   const selectedModalData = useSelector(
-     (state) => state.customization.SelectedModal
-   );
-   const modalData = useSelector((state) => state.customization.ModalData);
+  const dispatch = useDispatch();
+
+  const selectedCategory = useSelector(
+    (state) => state.customization.SelectedCategory
+  );
+  const selectedModalData = useSelector(
+    (state) => state.customization.SelectedModal
+  );
+  const modalData = useSelector((state) => state.customization.ModalData);
  
-   const debouncedRemoveCart = useCallback(
+
+ 
+  const [selectedModal, setSelectedModal] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Clear cart and start loading on category change
+  const debouncedRemoveCart = useCallback(
     debounce(() => {
       dispatch(removecart());
       dispatch(startCustomizationLoading());
-    }, 300), // Delay of 300ms
+    }, 300),
     [dispatch]
   );
-  
+
+  // ✅ Reset state when category changes
   useEffect(() => {
-    if (modalData && modalData.length > 0) {
-      debouncedRemoveCart();
-    }
-  }, [modalData, debouncedRemoveCart]);
- 
-   const [selectedModal, setSelectedModal] = useState(null);
-   const [error, setError] = useState(null);
-   const [loading, setLoading] = useState(true);
- 
-   const selectModalRef = useRef();
- 
-   const fetchModal = async (cancelToken) => {
-     try {
-       const response = await axios.get(
-         `https://migapi.sedarglobal.com/kiosk/categories?category=${selectedCategory}`,
-         { cancelToken }
-       );
-       return response.data;
-     } catch (error) {
-       if (axios.isCancel(error)) {
-         console.log("Request canceled:", error.message);
-       } else {
-         console.error("Error fetching categories:", error);
-       }
-       throw error;
-     }
-   };
- 
-   useEffect(() => {
-     const source = axios.CancelToken.source();
- 
-     const fetchData = async () => {
-       try {
-         setLoading(true);
-         const data = await fetchModal(source.token);
-         
- 
-         dispatch(updateModalData(data.result));
- 
- 
-         if (data?.result?.model?.length > 0) {
-           const firstModal = data.result.model[0].SPI_LINK_URL;
-           setSelectedModal(firstModal);
-           selectModalRef.current = firstModal;
-           dispatch(updateSelectedModal(firstModal));
-         }
-       } catch (error) {
-         if (!axios.isCancel(error)) {
-           setError(error);
-           console.error("Failed to fetch categories:", error);
-         }
-       } finally {
-         setLoading(false);
-       }
-     };
- 
-     fetchData();
- 
-     return () => {
-       source.cancel("Component unmounted, request canceled");
-     };
-   }, [selectedCategory, dispatch]);
- 
-   const handleChange = (link) => {
-    if (selectedModalData !== link) {
-      dispatch(updateSelectedModal(link));
-      if (selectedModalData && Object.keys(selectedModalData).length > 0) {
-        dispatch(removecart());
-        
+    dispatch(removecart());
+    dispatch(updateModalData([]));
+    dispatch(updateSelectedModal(null));
+    dispatch(setCustomization(null));
+    dispatch(setMaterialCustomization(null));
+    setSelectedModal(null);
+    setError(null);
+  }, [selectedCategory, dispatch]);
+
+  // ✅ Fetch modal data when category changes
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        debouncedRemoveCart();
+
+        const response = await axios.get(
+          `https://migapi.sedarglobal.com/kiosk/categories?category=${selectedCategory}`,
+          { cancelToken: source.token }
+        );
+
+        if (response?.data?.result?.model?.length > 0) {
+          dispatch(updateModalData(response.data.result));
+          const firstModal = response.data.result.model[0].SPI_LINK_URL;
+          setSelectedModal(firstModal);
+          dispatch(updateSelectedModal(firstModal));
+          await getStep(firstModal);
+        } else {
+          dispatch(updateModalData([]));
+        }
+      } catch (error) {
+        if (!axios.isCancel(error)) {
+          setError(error);
+          console.error("Failed to fetch categories:", error);
+        }
+      } finally {
+        setLoading(false);
       }
+    };
+
+    if (selectedCategory) {
+      fetchData();
+    }
+
+    return () => {
+      source.cancel("Component unmounted, request canceled");
+    };
+  }, [selectedCategory, dispatch, debouncedRemoveCart]);
+
+  // ✅ Fetch steps data for selected modal
+  const getStep = async (modalData) => {
+    if (!modalData) return;
+
+    try {
+      const customizationRes = await apiSSRV2DataService.getAll({
+        path: `kiosk/get_steps`,
+        param: {
+          content: "customization",
+          slug_url: modalData,
+          category: selectedCategory,
+          sys_id: 0,
+        },
+        locale: "uae-en",
+      });
+
+      const headerResponse = await apiSSRV2DataService.getAll({
+        path: `v2/getHeaderData`,
+        param: {
+          content: "Contact Info",
+          column_name: "SH_LINK_URL",
+          column_value: "tel:",
+        },
+        locale: "uae-en",
+      });
+
+      if (customizationRes) {
+        dispatch(setCustomization(customizationRes));
+        dispatch(setHeaderResponse(headerResponse));
+      }
+    } catch (error) {
+      console.error("Failed to fetch steps:", error);
+    }
+  };
+
+  // ✅ Handle modal change and state reset
+  const handleChange = async (link) => {
+    if (selectedModalData !== link) {
+  
+      // ✅ Set the new selected modal
+      dispatch(updateSelectedModal(link));
+  
+      // ✅ Fetch new steps AFTER resetting state
+      await getStep(link);
     }
   };
   
- 
-   const getStep = async () => {
-     if (!selectedModalData) return;
- 
-     const customizationRes = await apiSSRV2DataService.getAll({
-       path: `kiosk/get_steps`,
-       param: {
-         content: "customization",
-         slug_url: selectedModalData,
-         category: selectedCategory,
-         sys_id: 0,
-       },
-       locale: "uae-en",
-     });
- 
-     const header_response = await apiSSRV2DataService.getAll({
-       path: `v2/getHeaderData`,
-       param: {
-         content: "Contact Info",
-         column_name: "SH_LINK_URL",
-         column_value: "tel:",
-       },
-       //cookies: GET_ALL_COOKIES,
-       locale: "uae-en",
-     });
- 
-     console.log("customizationRes", customizationRes);
- 
-     if (customizationRes) {
-       dispatch(setCustomization(customizationRes));
-       dispatch(setHeaderResponse(header_response));
-     }
-   };
- 
-   useEffect(() => {
-     dispatch(setMaterialCustomization(null));
-     getStep();
-   }, [selectedModalData, selectedCategory, dispatch]);
- 
-   console.log("modalData", modalData?.model);
- 
+
   return (
     <>
       {loading ? (
@@ -180,29 +174,17 @@ const Modal = () => {
               container
               spacing={2}
               sx={{
-                alignItems: {
-                  xs: "center",
-                  sm: "center",
-                  md: "start",
-                  lg: "start",
-                  xl: "start",
-                },
-                justifyContent: {
-                  xs: "center",
-                  sm: "center",
-                  md: "start",
-                  lg: "start",
-                  xl: "start",
-                },
+                alignItems: "start",
+                justifyContent: "start",
                 px: 2,
                 pb: { sm: 20, xs: 20, md: 5, lg: 5 },
               }}
             >
+              {/* ✅ Show message if no data */}
               {!modalData?.model || modalData.model.length === 0 ? (
                 <Box
                   sx={{
                     display: "flex",
-                    flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
                     width: "100%",
@@ -222,41 +204,15 @@ const Modal = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    <AlertTitle
-                      sx={{
-                        fontFamily:
-                          fonts.Helvetica_Neue_Regular.style.fontFamily,
-                      }}
-                    >
-                      No Data Available
-                    </AlertTitle>
+                    <AlertTitle>No Data Available</AlertTitle>
                     Please try selecting a different category.
                   </Alert>
                 </Box>
               ) : (
-                modalData?.model?.map((item, index) => (
-                  <Grid
-                    item
-                    xs={6}
-                    sm={6}
-                    md={4}
-                    key={item.id || item.SPI_LINK_URL || index}
-                    sx={{
-                      flex: "0 0 50%", // Default for mobile-first approach
-                      "@media (min-width: 992px)": {
-                        flex: "0 0 calc(100% / 3)", // Ensures correct width for larger screens
-                      },
-                      "@media (min-width: 768px) and (max-width: 991px)": {
-                        flex: "0 0 calc(100% / 4)", // Ensures correct width for larger screens
-                      },
-                      "@media (max-width: 575px)": {
-                        flex: "0 0 calc(100% / 2)", // Adjusting to full width for smaller screens if needed
-                      },
-                    }}
-                  >
+                modalData.model.map((item, index) => (
+                  <Grid item xs={6} sm={6} md={4} key={item.id || index}>
                     <ImageCard
                       category={selectedCategory}
-                      refName={selectModalRef}
                       index={index}
                       name={item.SPI_LINK_TITLE}
                       link={item.SPI_LINK_URL}

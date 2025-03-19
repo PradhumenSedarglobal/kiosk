@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import shortid from "shortid";
 import * as THREE from "three";
+import { getCookie, setCookie } from "cookies-next";
 
 import {
   Modal,
@@ -25,6 +26,7 @@ import { decrementStep } from "@/redux/slices/stepSlice";
 //const { addToCartFunScene } = require("@/sections/product/customization/sceneCanvas3D");
 // import { addToCartFunScene } from "@/sections/product/customization/sceneCanvas3D";
 import {addToCartFunScene} from "@/sections/product/customization/addToCartFunScene";
+import { NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES } from "@/utils/constant";
 
 
 
@@ -68,6 +70,20 @@ export default function PopupModal({setAddToCartShow}) {
           }
         }
       );
+
+      let getAllCookies = getCookie(NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES)
+            ? JSON.parse(getCookie(NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES) || "undefined")
+            : {};
+      getAllCookies.locale = 'uae-en'
+      setCookie('NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES', JSON.stringify(getAllCookies), {
+        path: '/', // ✅ Make the cookie accessible from all routes
+        maxAge: 60 * 60 * 24 * 7, // ✅ 1 week expiration
+        secure: process.env.NODE_ENV === 'production', // ✅ Use secure cookies in production
+        sameSite: 'strict', // ✅ Prevent CSRF attacks
+      });
+
+      console.log("coooookkkk",getAllCookies);
+      
 
       dispatch(setGeoLocationDetails(response.data));
   
@@ -122,7 +138,6 @@ export default function PopupModal({setAddToCartShow}) {
               complete: response.data.complete, 
               cart_count: response.data.cart_count,
               total_price: response.data.total_price,
-              total_price: response.data.total_price,
             })
           );
         }
@@ -134,14 +149,6 @@ export default function PopupModal({setAddToCartShow}) {
   }
   
  
-
-  useEffect(()=>{
-
-    console.log("test");
-    getCountry();
-
-
-  },[customerSystemId]);
 
   const handlePhoneChange = (newValue) => {
     setPhone(newValue);
@@ -187,6 +194,7 @@ export default function PopupModal({setAddToCartShow}) {
         );
         setErrorOpen(true);
       } else {
+        getCountry();
         setSuccessOpen(true);
         handleClose();
         // setAddToCartShow(false);
