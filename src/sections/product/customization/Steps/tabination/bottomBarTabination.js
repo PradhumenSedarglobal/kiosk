@@ -172,7 +172,7 @@ const BottomBarTabination = ({
               variant="p"
               component="div"
             >
-              {translate("Total")} {translate(cookies?.CCYCODE ? cookies?.CCYCODE : "AED" )}{" "}
+              {translate("Total")} {translate(cookies?.CCYCODE  || "AED" )}{" "}
               {priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0}
             </Typography>
           </Grid>
