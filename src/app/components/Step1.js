@@ -119,7 +119,8 @@ const Step1 = ({ successValue, stepcount }) => {
           sx={{
             flex: "0 0 50%",
             "@media (min-width: 992px)": {
-              flex: "0 0 calc(100% / 3)",
+              flex: "0 0 calc(100% / 2)",
+              maxWidth:"50% !important"
             },
             "@media (min-width: 768px) and (max-width: 991px)": {
               flex: "0 0 calc(100% / 4)",

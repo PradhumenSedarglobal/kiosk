@@ -50,9 +50,11 @@ const ImageCard = ({
         alt={name}
         loading="lazy"
         sx={{
-          width: "100%",
+          width: img ? "100%" : "50%", // Center fallback image
           height: "120px",
-          objectFit: "cover",
+          objectFit: img ? "cover" : "contain",
+          margin: !img ? "0 auto" : "unset", // Center horizontally when no image
+          display: !img ? "block" : "unset",
         }}
       />
       <CardContent

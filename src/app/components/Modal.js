@@ -163,12 +163,10 @@ const Modal = () => {
             <Grid
               container
               spacing={2}
-              sx={{
-                alignItems: "start",
-                justifyContent: "start",
-                px: 2,
-                pb: { sm: 20, xs: 20, md: 5, lg: 5 },
-              }}
+              sx={{alignItems: "start",
+              justifyContent: "start", 
+              pt:2,
+              px: 2, pb: { sm: 20, xs: 20, md: 5, lg: 5 } }}
             >
               {/* ✅ Show message if no data */}
               {!modalData?.model || modalData.model.length === 0 ? (
@@ -200,7 +198,22 @@ const Modal = () => {
                 </Box>
               ) : (
                 modalData.model.map((item, index) => (
-                  <Grid item xs={6} sm={6} md={4} key={item.id || index}>
+                  <Grid item xs={6} sm={6} md={4} key={item.id || index}
+                  sx={{
+                    flex: "0 0 50%",
+                    "@media (min-width: 992px)": {
+                      flex: "0 0 calc(100% / 2)",
+                      maxWidth:"50% !important"
+                    },
+                    "@media (min-width: 768px) and (max-width: 991px)": {
+                      flex: "0 0 calc(100% / 4)",
+                    },
+                    "@media (max-width: 575px)": {
+                      flex: "0 0 calc(100% / 2)",
+                    },
+                  }}
+                  
+                  >
                     <ImageCard
                       category={selectedCategory}
                       index={index}
