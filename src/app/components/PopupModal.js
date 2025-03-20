@@ -168,6 +168,11 @@ toast.success('Success! Item Added to cart Successfully!', {
   };
 
   const onSubmit = async (data) => {
+    if (!data.customerName || !data.styleConsultantId || !phone) {
+      toast.error("Please fill all required fields before submitting.");
+      return;
+    }
+  
     try {
       const formData = new FormData();
       formData.append("site", "100001");
@@ -185,40 +190,28 @@ toast.success('Success! Item Added to cart Successfully!', {
         formData,
         {
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             "Accept": "application/json",
-            "Access-Control-Allow-Origin": "*", 
+            "Access-Control-Allow-Origin": "*",
           },
-          withCredentials: false, 
+          withCredentials: false,
         }
       );
-
-     
-
+  
       dispatch(setCustomerSysId(response.data.cust_sys_id));
   
- 
       if (response.data.return_status === "-111") {
         setErrorMessage(
-          response.error_message +
-            "\n" +
-            JSON.stringify(response, null, 2)
+          response.error_message + "\n" + JSON.stringify(response, null, 2)
         );
         setErrorOpen(true);
       } else {
         getCountry();
         setSuccessOpen(true);
         handleClose();
-        // setAddToCartShow(false);
-        
-        console.log("customization",customization);
-        console.log("cookies",cookies);
-        console.log("locale",locale);
-        console.log("customization",customization);
         dispatch(setCustomerSystemId(response.data.cust_sys_id));
-
-        if(response.data.cust_sys_id){
-
+  
+        if (response.data.cust_sys_id) {
           const handleAddToCart = async () => {
             try {
               const result = await addToCartFunScene(
@@ -231,58 +224,27 @@ toast.success('Success! Item Added to cart Successfully!', {
                 },
                 dispatch
               );
-              
-              console.log(result); 
+              console.log(result);
             } catch (error) {
               console.error("Failed to add to cart:", error);
             } finally {
-             
-              setTimeout(()=>{
-
+              setTimeout(() => {
                 dispatch(removecart());
                 dispatch(decrementStep(0));
-
-
-                fetchOrderList(cookies.visitorId,response.data.cust_sys_id);
-
-              
-              },2000);
-
-             
+                fetchOrderList(cookies.visitorId, response.data.cust_sys_id);
+              }, 2000);
             }
           };
-          
+  
           handleAddToCart();
-
-        
-        
-          console.log("customization_info",customization_info);
-          
-     
         }
-       
-
-
-       
       }
     } catch (error) {
       console.error("API Error:", error);
-
-  
-      // if (error.response == "Success") {
-      //   setErrorMessage(
-      //     "Error: " +
-      //       error.response.data.error_message +
-      //       "\n" +
-      //       JSON.stringify(error.response.data.result, null, 2)
-      //   );
-      // } else {
-      //   setErrorMessage("An unexpected error occurred. Please try again.");
-      // }
-  
       setErrorOpen(true);
     }
   };
+  
   
   
   

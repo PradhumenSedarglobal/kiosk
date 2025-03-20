@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { Box, Modal, Typography, Grid } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import {
   removecart,
@@ -20,7 +20,6 @@ import {
 import MainHeading from "./MainHeading";
 import ImageCard from "./ImageCard";
 import { useAuthContext } from "@/auth/useAuthContext";
-import { NextResponse } from "next/server";
 
 const fetchCategory = async (cancelToken) => {
   try {
@@ -44,19 +43,24 @@ const Step1 = ({ successValue, stepcount }) => {
   const { cookies } = state;
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const globalSelectedCategory = useSelector(
+    (state) => state.customization.SelectedCategory
+  );
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
 
-  const response = NextResponse.next();
-
   const getIpAddress = async () => {
-    const res = await fetch("https://api.ipify.org?format=json");
-    const data = await res.json();
-    dispatch(setIp(data.ip));
-    console.log("Your IP:", data.ip);
+    try {
+      const res = await fetch("https://api.ipify.org?format=json");
+      const data = await res.json();
+      dispatch(setIp(data.ip));
+      console.log("Your IP:", data.ip);
+    } catch (err) {
+      console.error("Failed to fetch IP address:", err);
+    }
   };
 
   useEffect(() => {
@@ -70,32 +74,26 @@ const Step1 = ({ successValue, stepcount }) => {
         hasFetched.current = true;
         setCategory(data.result);
         if (data.result.length > 0) {
-          const firstCategory = data.result[0].link_url;
-          setSelectedCategory(firstCategory);
+          const initialCategory = globalSelectedCategory || data.result[0].link_url;
+          setSelectedCategory(initialCategory);
           dispatch(removecart());
-          dispatch(updateSelectedCategory(firstCategory));
+          dispatch(updateSelectedCategory(initialCategory));
         }
       })
-      .catch(setError)
+      .catch((error) => setError(error))
       .finally(() => setLoading(false));
 
     getIpAddress();
 
     return () => cancelToken.cancel();
-  }, [dispatch]);
+  }, [dispatch, globalSelectedCategory]);
 
   const handleChange = useCallback(
     (link) => {
-      // 👉 Dispatch resetState() first
       dispatch(resetState());
-
-      // 👉 Dispatch loadingfalse(true) before loading new category
       dispatch(loadingfalse(true));
-
       setSelectedCategory(link);
-      dispatch(removecart());
       dispatch(updateSelectedCategory(link));
-
       console.log("Category changed to:", link);
     },
     [dispatch]
@@ -179,7 +177,6 @@ const Step1 = ({ successValue, stepcount }) => {
             }}
           >
             <Grid
-              className="tester"
               container
               spacing={2}
               sx={{ px: 2, pb: { sm: 20, xs: 20, md: 5, lg: 5 } }}

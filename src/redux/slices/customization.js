@@ -69,20 +69,18 @@ const slice = createSlice({
     },
 
     removecart: (state) => {
-      state.customization = null;
-      state.materialCustomization = null;
-      state.productInfo = {};
-      state.priceArray = {};
-      state.filterOption = {};
-      state.materialList = [];
-      state.stepsArray = {};
-      state.SelectedModal= null;
-      // state.orderList= null;
+      return{
+        ...initialState,
+        orderList: state.orderList,
+        SelectedCategory: state.SelectedCategory,
+        SelectedModal: state.SelectedModal,
+      }
     },
 
     resetState:(state) => {
       return{
         ...initialState,
+        SelectedCategory: state.SelectedCategory,
         orderList: state.orderList
       }
     },

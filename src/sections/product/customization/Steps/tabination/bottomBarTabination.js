@@ -198,7 +198,7 @@ const BottomBarTabination = ({
               alignItems: "start",
             }}
           >
-            {tabChange != "0" && (
+            {tabChange !== "0" && (
               <Button
                 size="large"
                 variant="outlined"

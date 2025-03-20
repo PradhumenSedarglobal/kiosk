@@ -28,9 +28,7 @@ const Modal = () => {
     (state) => state.customization.SelectedModal
   );
   const modalData = useSelector((state) => state.customization.ModalData);
- 
 
- 
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -38,7 +36,6 @@ const Modal = () => {
   // ✅ Clear cart and start loading on category change
   const debouncedRemoveCart = useCallback(
     debounce(() => {
-      dispatch(removecart());
       dispatch(startCustomizationLoading());
     }, 300),
     [dispatch]
@@ -47,13 +44,7 @@ const Modal = () => {
   // ✅ Reset state when category changes
   useEffect(() => {
     dispatch(removecart());
-    dispatch(updateModalData([]));
-    dispatch(updateSelectedModal(null));
-    dispatch(setCustomization(null));
-    dispatch(setMaterialCustomization(null));
-    setSelectedModal(null);
-    setError(null);
-  }, [selectedCategory, dispatch]);
+  }, [(selectedCategory && selectedModalData !== null), dispatch]);
 
   // ✅ Fetch modal data when category changes
   useEffect(() => {
@@ -71,9 +62,13 @@ const Modal = () => {
 
         if (response?.data?.result?.model?.length > 0) {
           dispatch(updateModalData(response.data.result));
-          const firstModal = response.data.result.model[0].SPI_LINK_URL;
+
+          const firstModal =
+            selectedModalData || response.data.result.model[0]?.SPI_LINK_URL;
+
           setSelectedModal(firstModal);
           dispatch(updateSelectedModal(firstModal));
+
           await getStep(firstModal);
         } else {
           dispatch(updateModalData([]));
@@ -95,7 +90,7 @@ const Modal = () => {
     return () => {
       source.cancel("Component unmounted, request canceled");
     };
-  }, [selectedCategory, dispatch, debouncedRemoveCart]);
+  }, [selectedCategory, dispatch, debouncedRemoveCart, selectedModalData]);
 
   // ✅ Fetch steps data for selected modal
   const getStep = async (modalData) => {
@@ -135,15 +130,10 @@ const Modal = () => {
   // ✅ Handle modal change and state reset
   const handleChange = async (link) => {
     if (selectedModalData !== link) {
-  
-      // ✅ Set the new selected modal
       dispatch(updateSelectedModal(link));
-  
-      // ✅ Fetch new steps AFTER resetting state
       await getStep(link);
     }
   };
-  
 
   return (
     <>
