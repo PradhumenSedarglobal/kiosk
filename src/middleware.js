@@ -31,15 +31,15 @@ export async function middleware(request) {
     console.log("Request Headers:", headers);
 
     // Get the client IP, defaulting to a placeholder IP for testing
-    const ip = headers.get("True-Client-IP")?.split(",")[0] || "217.165.59.84";
-    const ip2 = headers.get('x_forwarded_for') || '217.165.59.84';
+    // const ip = headers.get("True-Client-IP")?.split(",")[0] || "217.165.59.84";
+    const ip = headers.get('x-forwarded-for') || '217.165.59.84';
 
     const response = NextResponse.next();
 
     // Fetch geo data if not already present in cookies
     let firstGeoData = null;
     try {
-      console.log("Fetching Geo data for IP:", ip,ip2, headers.get('x_forwarded_for'));
+      console.log("Fetching Geo data for IP:", ip);
       console.log("Dataaaa", `${process.env.LIVE_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`);
       const geoResponse = await fetch(
         `${process.env.LIVE_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`
