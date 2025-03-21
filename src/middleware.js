@@ -40,9 +40,9 @@ export async function middleware(request) {
     let firstGeoData = null;
     try {
       console.log("Fetching Geo data for IP:", ip);
-      console.log("Dataaaa", `${process.env.LIVE_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`);
+      console.log("Dataaaa", `https://api.sedarglobal.com/geolocation?geo=&client_ip=${ip}&locale=${locale}`);
       const geoResponse = await fetch(
-        `${process.env.LIVE_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`
+        `https://api.sedarglobal.com/geolocation?geo=&client_ip=${ip}&locale=${locale}`
       );
       firstGeoData = await geoResponse.json();
       console.log("Geo data received:", firstGeoData);
