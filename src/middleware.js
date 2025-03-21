@@ -39,7 +39,7 @@ export async function middleware(request) {
     // Fetch geo data if not already present in cookies
     let firstGeoData = null;
     try {
-      console.log("Fetching Geo data for IP:", ip,ip2);
+      console.log("Fetching Geo data for IP:", ip,ip2, headers.get('x_forwarded_for'));
       console.log("Dataaaa", `${process.env.LIVE_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`);
       const geoResponse = await fetch(
         `${process.env.LIVE_URL}geolocation?geo=&client_ip=${ip}&locale=${locale}`
