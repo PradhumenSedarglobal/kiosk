@@ -5,6 +5,8 @@ import { TextBox } from "@/components/form";
 import { useDispatch, useSelector } from "@/redux/store";
 import { useTranslation } from "next-i18next";
 import { setCustomizationFun } from "@/redux/slices/customization";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 const re = /^\d*\.?\d*$/;
 
 const WindowDepth = ({ data }) => {
@@ -42,8 +44,9 @@ const WindowDepth = ({ data }) => {
   }, []);
 
   return (
-    <Box>
-      <Box>
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -53,7 +56,7 @@ const WindowDepth = ({ data }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
+      </Box> */}
       <Box py={2}>
         <Typography
           sx={(theme) => ({
@@ -105,7 +108,7 @@ const WindowDepth = ({ data }) => {
           required
         />
       </Box>
-    </Box>
+    </>
   );
 };
 

@@ -10,6 +10,8 @@ import RadioCheckBoxDilog from "../tabination/radioCheckBoxDilog";
 import { useDispatch, useSelector } from "@/redux/store";
 import { useTranslation } from "next-i18next";
 import { setCustomizationFun } from "@/redux/slices/customization";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const DefaultRadio = ({ data }) => {
 
@@ -41,8 +43,10 @@ const DefaultRadio = ({ data }) => {
     }, []);
 
     return (
-        <Box sx={{ display: step_name == 'RAIL_SYSTEM' ? 'none' : 'block' }}>
-            <Box>
+        <>
+          <SubHeading  title={data?.SPS_DESC} />
+        <Box  px={3} sx={{ display: step_name == 'RAIL_SYSTEM' ? 'none' : 'block' }}>
+            {/* <Box>
                 <Typography
                     sx={(theme) => ({
                         fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -52,7 +56,7 @@ const DefaultRadio = ({ data }) => {
                 >
                     {data && data?.SPS_DESC}
                 </Typography>
-            </Box>
+            </Box> */}
             <FormControl fullWidth>
                 <RadioGroup
                     row
@@ -86,6 +90,7 @@ const DefaultRadio = ({ data }) => {
                 </RadioGroup>
             </FormControl>
         </Box>
+        </>
     );
 };
 

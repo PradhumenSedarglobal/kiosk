@@ -13,6 +13,8 @@ import InfoDilogueButton from "../tabination/infoDilogueButton";
 import { glassColor, addLights, addToCartFunScene } from '../../sceneCanvas3D';
 import { useRouter } from "next/router";
 import { useAuthContext } from '@/auth/useAuthContext';
+import MainHeading from '@/app/components/MainHeading';
+import SubHeading from '@/app/components/SubHeading';
 let track_type = ['WITHOUT_TRACK_TEXTURE', 'MOTORIZED_TRACK_TEXTURE', 'CORDLESS_TRACK_TEXTURE', 'CORDED_TRACK_TEXTURE'];
 let img_path = "/assets/images/";
 const item_img_path = process.env.NEXT_PUBLIC_ITEM_IMG_WEBP_PATH + "laptop/";
@@ -91,10 +93,12 @@ const GlassColor = ({ data }) => {
 
 
   return (
-    <div className="SizeAndMount">
-      <div className="step-heading">
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
+    <div className="SizeAndMount" >
+      {/* <div className="step-heading">
         <h5>{data.SPS_DESC}</h5>
-      </div>
+      </div> */}
       <div className="GlassColor">
         <Box py={2}>
           <Grid container spacing={1}>
@@ -156,6 +160,7 @@ const GlassColor = ({ data }) => {
         }
       </Card>
     </div >
+    </>
   )
 }
 

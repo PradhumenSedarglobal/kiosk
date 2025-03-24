@@ -9,6 +9,8 @@ import { addToCartFunScene } from "../../sceneCanvas3D";
 import { useAuthContext } from "@/auth/useAuthContext";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "@/redux/store";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const ControlType = ({ data, formik, elem }) => {
   const { t: translate } = useTranslation();
@@ -39,8 +41,10 @@ const ControlType = ({ data, formik, elem }) => {
 
 
   return (
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
     <Box>
-      <Box>
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -50,8 +54,8 @@ const ControlType = ({ data, formik, elem }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
-      <Box py={2}>
+      </Box> */}
+      <Box  px={3} py={2}>
         <Grid container spacing={1}>
           {data &&
             data?.SUB_CHILD.map((elem, index) => {
@@ -97,6 +101,7 @@ const ControlType = ({ data, formik, elem }) => {
         </Grid>
       </Box>
     </Box>
+    </>
   );
 };
 

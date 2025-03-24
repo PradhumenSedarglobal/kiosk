@@ -4,11 +4,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import SubStepImport from "../SubStepImport";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const PanelOption = ({ data, formik, elem }) => {
   return (
-    <Box>
-      <Box>
+    <>
+        <SubHeading  title={data?.SPS_DESC} />
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -18,8 +21,8 @@ const PanelOption = ({ data, formik, elem }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
-      <Box py={2}>
+      </Box> */}
+      <Box  px={3} py={2}>
         <Grid container spacing={1}>
           {data &&
             data?.SUB_CHILD.map((elem, index) => {
@@ -47,7 +50,7 @@ const PanelOption = ({ data, formik, elem }) => {
           </Grid>
         </Grid>
       </Box>
-    </Box>
+    </>
   );
 };
 

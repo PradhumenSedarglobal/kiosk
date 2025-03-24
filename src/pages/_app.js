@@ -60,7 +60,7 @@ function App(data) {
                     <ErrorBoundary>
                       <ProgressRouterProvider>
                         <ProgressBar />
-                        {locale != "default" && <Dial />}
+                        {/* {locale != "default" && <Dial />} */}
                         {/* <CookiePolicyPopup /> */}
                         <RTL>
                         <ToastProvider>

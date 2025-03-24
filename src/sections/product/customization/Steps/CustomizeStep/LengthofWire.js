@@ -8,6 +8,8 @@ import { useTranslation } from "next-i18next";
 import { useDispatch, useSelector } from "@/redux/store";
 import SubStepImport from "../SubStepImport";
 import { setCustomizationFun, deleteCustomizationStep } from "@/redux/slices/customization";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const LengthOfWire = ({ data, formik }) => {
   const { t: translate } = useTranslation();
@@ -44,8 +46,9 @@ const LengthOfWire = ({ data, formik }) => {
     }
   }, []);
   return (
-    <Box>
-      <Box>
+    <>
+       <SubHeading  title={data?.SPS_DESC} />
+      <Box  px={3}>
         {/* <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -120,7 +123,7 @@ const LengthOfWire = ({ data, formik }) => {
           })}
         </Grid>
       </Box>
-    </Box>
+    </>
   );
 };
 

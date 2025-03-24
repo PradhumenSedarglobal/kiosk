@@ -153,8 +153,10 @@ const Modal = () => {
           />
         </Box>
       ) : (
+        <>
+        <MainHeading sx={{ mb: 2 }} title="Modal Selection" />
         <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
-          <MainHeading sx={{ mb: 2 }} title="Modal Selection" />
+         
 
           <Box
             className="bigipads"
@@ -229,6 +231,7 @@ const Modal = () => {
             </Grid>
           </Box>
         </Box>
+        </>
       )}
     </>
   );

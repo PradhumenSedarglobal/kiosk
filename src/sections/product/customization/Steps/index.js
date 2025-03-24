@@ -253,7 +253,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
 
       {showAddToCart && <PopupModal setAddToCartShow={setAddToCartShow}  />}
 
-      <Container>
+     
         {tabChange != "preview" && (
           <Box
             sx={{
@@ -494,7 +494,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
             </Box>
           </>
         )}
-      </Container>
+    
 
       <BottomBarTabination
         setTabChange={setTabChange}

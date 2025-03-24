@@ -236,6 +236,8 @@ export default function ProductPage(props) {
       if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
         setImageUrls(updatedImageUrls);
       }
+
+      console.log("setImageUrls",imageUrls);
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
@@ -342,6 +344,7 @@ export default function ProductPage(props) {
   });
 
   const handleThumbnailClick = (index) => {
+    console.log("thisclickcing",index);
     setAllowNextSlide(true);
     thumbsSwiper.slideTo(index);
   };
@@ -494,8 +497,21 @@ export default function ProductPage(props) {
                 zIndex: 999,
                 marginLeft: "5px",
                 top: "10px",
-                right: { xs: "20px", sm: "10px", lg: "570px" },
+              
+                // Use MUI breakpoints for responsiveness
+                right: { 
+                  // xs: "calc(100vw - 200px)",  // Mobile (375px+)
+                  // sm: "calc(100vw - 300px)",  // Tablet (600px+)
+                  // md: "calc(100vw - 500px)",  // Small laptops (900px+)
+                  lg: "calc(100vw - 58%)",  // Large screens (1200px+)
+                },
+              
+                // Media Query (Only if necessary)
+                "@media (min-width: 375px) and (max-width: 959px)": {
+                  right: "calc(100vw - 95%)", 
+                }
               }}
+              
               color="warning"
               aria-label="edit"
             >
@@ -723,7 +739,7 @@ export default function ProductPage(props) {
                 position: "fixed",
                 bottom: 0,
                 zIndex: 1000,
-
+                boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                 padding: "10px",
                 display: "flex",
                 justifyContent: "space-between", // Center buttons

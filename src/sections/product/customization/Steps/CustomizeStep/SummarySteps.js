@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import { useTranslation } from "next-i18next";
 import { useDispatch, useSelector } from "@/redux/store";
 import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 
 const SummarySteps = ({ data, setTabChange }) => {
@@ -51,13 +52,7 @@ const SummarySteps = ({ data, setTabChange }) => {
     }
   }
   return (
-    <Box
-      sx={{
-        // borderBottom: (theme) => `1px dashed ${theme.palette.grey[2800]}`,
-        padding: "0px 0px 10px 0px",
-        margin: "0px 0px 10px 0px",
-      }}
-    >
+    <>
       {/* <Box pt={2} pb={2}>
         <Typography
           sx={(theme) => ({
@@ -70,7 +65,7 @@ const SummarySteps = ({ data, setTabChange }) => {
         </Typography>
       </Box> */}
 
-      <MainHeading sx={{ mb: 2 }} title={data?.SPS_DESC} />
+      {/* <SubHeading  title={data?.SPS_DESC} /> */}
 
       {steps_data.map((step_name, index) => {
         if (step_name == 'Color') {
@@ -362,7 +357,7 @@ const SummarySteps = ({ data, setTabChange }) => {
           )
         }
       })}
-    </Box>
+    </>
   );
 };
 

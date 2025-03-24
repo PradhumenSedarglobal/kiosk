@@ -185,8 +185,9 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
           />
         </Box>
       ) : (
+        <>
+        <MainHeading title="Category Selection" />
         <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
-          <MainHeading title="Category Selection" />
           <Box
             sx={{
               height: { lg: "calc(100vh - 130px)" },
@@ -203,6 +204,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
             </Grid>
           </Box>
         </Box>
+        </>
       )}
     </>
   );

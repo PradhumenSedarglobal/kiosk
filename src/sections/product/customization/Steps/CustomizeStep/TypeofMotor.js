@@ -13,6 +13,8 @@ import { addToCartFunScene } from "../../sceneCanvas3D";
 import { setCustomizationFun } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import { useRouter } from "next/router";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const TypeOfMotor = ({ data }) => {
 
@@ -64,8 +66,9 @@ const TypeOfMotor = ({ data }) => {
   }, [stepsArray[step_name]])
 
   return (
-    <Box>
-      <Box>
+    <>
+       <SubHeading  title={data?.SPS_DESC} />
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -75,7 +78,7 @@ const TypeOfMotor = ({ data }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
+      </Box> */}
       <FormControl fullWidth>
         <RadioGroup
           row
@@ -117,7 +120,7 @@ const TypeOfMotor = ({ data }) => {
           })}
         </Grid>
       </Grid>
-    </Box>
+    </>
   );
 };
 

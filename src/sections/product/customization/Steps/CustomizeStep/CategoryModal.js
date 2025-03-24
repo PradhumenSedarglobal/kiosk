@@ -1,5 +1,6 @@
 import ImageCard from "@/app/components/ImageCard";
 import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 import { updateSelectedModal } from "@/redux/slices/customization";
 import { Box, Grid } from "@mui/material";
 import axios from "axios";
@@ -58,13 +59,14 @@ const CategoryModal = ({ data, formik, elem }) => {
   return (
     <>
       {/* Modal Start */}
+      <SubHeading  title={data?.SPS_DESC} />
       <Box
+        px={3}
         sx={{
           userSelect: "none",
           paddingBottom: "1.5rem",
         }}
       >
-        <MainHeading sx={{ mb: 2 }} title="Modal Selection" />
 
         <Box
           className="bigipads"

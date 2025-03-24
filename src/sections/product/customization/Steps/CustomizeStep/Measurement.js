@@ -12,6 +12,7 @@ import {
 } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const re = /^\d*\.?\d*$/;
 
@@ -30,8 +31,8 @@ const Measurement = ({ data }) => {
 
   const { stepsArray, editStepData, productInfo } = customization_info;
 
-  let [me_width, setMe_width] = useState();
-  let [me_height, setMe_height] = useState();
+  let [me_width, setMe_width] = useState(productInfo.SPI_MIN_WIDTH);
+  let [me_height, setMe_height] = useState(productInfo.SPI_MIN_HEIGHT);
   const [isvalid, setIivalid] = useState({
     product_width: false,
     product_height: false,
@@ -42,6 +43,10 @@ const Measurement = ({ data }) => {
   let MIN_HEIGHT = parseInt(productInfo.SPI_MIN_HEIGHT);
   let MAX_HEIGHT = parseInt(productInfo.SPI_MAX_HEIGHT);
 
+
+  console.log("stepsArraystepsArray",stepsArray);
+  console.log("state.productInfo",productInfo);
+  
   const fonts = useSelector((state) => state.font);
 
   let restrict_to_material_width_yn =
@@ -107,8 +112,10 @@ const Measurement = ({ data }) => {
   }
 
   const measurementFun = (type, value) => {
+    
     let m_width = me_width;
     let m_height = me_height;
+    
     let val = value;
 
     if (val == NaN) {
@@ -237,21 +244,21 @@ const Measurement = ({ data }) => {
   }, [isvalid.product_width, isvalid.product_height, me_width, me_height]);
 
   return (
+    <>
+    <SubHeading  title={data?.SPS_DESC} />
     <Box sx={{ overflow: "hidden" }}>
+
       {/* <Box>
         <Typography
           sx={(theme) => ({
-            marginBottom: "10px",
-            fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            fontFamily: theme.fontFaces.helveticaNeueBold,
+            fontSize: theme.typography.typography15,
+            color: theme.palette.common.black,
           })}
         >
           {data && data?.SPS_DESC}
         </Typography>
       </Box> */}
-       <MainHeading sx={{ mb: 2 }} title={data?.SPS_DESC} />
 
       <Box  px={3} py={2} sx={{ overflow: "hidden"}}>
         {" "}
@@ -259,6 +266,9 @@ const Measurement = ({ data }) => {
 
         <Typography
           sx={{
+            "@media (min-width: 375px) and (max-width: 450px)": {
+              display: "unset", 
+            },
             display: "flex",
             marginBottom: "10px",
             fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
@@ -319,6 +329,9 @@ const Measurement = ({ data }) => {
         {/* Hide overflow here */}
         <Typography
            sx={{
+            "@media (min-width: 375px) and (max-width: 450px)": {
+              display: "unset", 
+            },
             display: "flex",
             marginBottom: "10px",
             fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
@@ -373,6 +386,7 @@ const Measurement = ({ data }) => {
         />
       </Box>
     </Box>
+    </>
   );
 };
 

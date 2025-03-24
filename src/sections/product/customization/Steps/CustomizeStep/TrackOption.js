@@ -24,6 +24,7 @@ import {
 import { useRouter } from "next/router";
 import { useAuthContext } from "@/auth/useAuthContext";
 import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const TrackOption = ({ data }) => {
   //let sm_length = (data.SUB_CHILD.length % 2) == 0 ? 6 : 6;
@@ -128,7 +129,7 @@ const TrackOption = ({ data }) => {
           {data && data?.SPS_DESC}
         </Typography>
       </Box> */}
-       <MainHeading sx={{ mb: 2 }} title={data?.SPS_DESC} />
+      <SubHeading  title={data?.SPS_DESC} />
 
       <div className="mountingoptions">
         <Box sm={12}>

@@ -77,7 +77,7 @@ const BottomBarTabination = ({
         position: "fixed",
         bottom: 0,
         zIndex: 1000,
-        // boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
+        boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
         padding: "10px",
         display: "flex",
         justifyContent: "space-between",

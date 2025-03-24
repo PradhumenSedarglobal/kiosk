@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "@/redux/store";
 import { useTranslation } from "next-i18next";
 import { setCustomizationFun } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const Quantity = ({ data, formik }) => {
   const { t: translate } = useTranslation();
@@ -62,26 +64,16 @@ const Quantity = ({ data, formik }) => {
   }, [selected]);
 
   return (
-    <Box px={3} py={2}>
-      <Box>
-        <Typography
-          sx={(theme) => ({
-            fontFamily: theme.fontFaces.helveticaNeueBold,
-            fontSize: theme.typography.h6.fontSize, // Updated for a modern, clear look
-            color: theme.palette.text.primary, // Adjusted for a modern, accessible text color
-            fontWeight: theme.typography.fontWeightMedium, // Added medium font weight for clarity
-          })}
-        >
-          {data && data?.SPS_DESC}
-        </Typography>
-      </Box>
-
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
+     
       <Stack
         direction="row"
         pt={2}
         justifyContent="space-between"
         alignItems="center"
         spacing={2} // Reduced spacing to make it look more compact and clean
+        px={3}
       >
         <Box sx={{ width: "100%" }}>
           <SelectBox
@@ -120,7 +112,7 @@ const Quantity = ({ data, formik }) => {
           />
         </Box>
       </Stack>
-    </Box>
+    </>
   );
 };
 

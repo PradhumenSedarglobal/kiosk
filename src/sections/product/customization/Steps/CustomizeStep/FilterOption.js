@@ -23,6 +23,8 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "@/redux/store";
 import { Formik, Field, Form } from "formik";
 import { useAuthContext } from "@/auth/useAuthContext";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 const qs = require("qs");
 const perPage = 15;
 const radio_filter = ["Sort By", "متوفر"];
@@ -141,10 +143,12 @@ const FilterOption = ({ data }) => {
   };
 
   return (
-    <Box sx={{
+    <>
+      {/* <SubHeading  title={data?.SPS_DESC} /> */}
+    <Box  px={3} sx={{
       display:"none"
     }}>
-      <Box mb={1}>
+      {/* <Box mb={1}>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -154,7 +158,7 @@ const FilterOption = ({ data }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
+      </Box> */}
 
       <Grid container spacing={1}>
         {filterKey?.map((filters, index) => {
@@ -301,6 +305,7 @@ const FilterOption = ({ data }) => {
         </Formik>
       </Box>
     </Box>
+    </>
   );
 };
 

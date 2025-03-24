@@ -8,6 +8,8 @@ import { useTranslation } from "next-i18next";
 import { useDispatch, useSelector } from "@/redux/store";
 import { setCustomizationFun } from "@/redux/slices/customization";
 import { NextFillImage } from "@/components/image";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const ItemLabel = ({ data, formik }) => {
   const { t: translate } = useTranslation();
@@ -49,8 +51,10 @@ const ItemLabel = ({ data, formik }) => {
   }, []);
 
   return (
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
     <Box>
-      <Box my={3}>
+      {/* <Box my={3}>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -60,8 +64,8 @@ const ItemLabel = ({ data, formik }) => {
         >
           {data?.SPS_DESC}
         </Typography>
-      </Box>
-      <Box py={2}>
+      </Box> */}
+      <Box  px={3} py={2}>
         <Grid container spacing={1}>
           {(() => {
 
@@ -283,6 +287,7 @@ const ItemLabel = ({ data, formik }) => {
         </Grid>
       </Box>
     </Box>
+    </>
   );
 };
 

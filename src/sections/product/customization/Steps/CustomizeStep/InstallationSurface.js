@@ -10,6 +10,8 @@ import RadioCheckBoxDilog from "../tabination/radioCheckBoxDilog";
 import { useDispatch, useSelector } from "@/redux/store";
 import { useTranslation } from "next-i18next";
 import { setCustomizationFun } from "@/redux/slices/customization";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const InstallationSurface = ({ data, formik }) => {
 
@@ -40,8 +42,10 @@ const InstallationSurface = ({ data, formik }) => {
     }, []);
 
     return (
-        <Box>
-            <Box>
+        <>
+          <SubHeading  title={data?.SPS_DESC} />
+        <Box  px={3}>
+            {/* <Box>
                 <Typography
                     sx={(theme) => ({
                         fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -51,7 +55,7 @@ const InstallationSurface = ({ data, formik }) => {
                 >
                     {data && data?.SPS_DESC}
                 </Typography>
-            </Box>
+            </Box> */}
             <FormControl fullWidth>
                 <RadioGroup
                     row
@@ -84,6 +88,7 @@ const InstallationSurface = ({ data, formik }) => {
                 </RadioGroup>
             </FormControl>
         </Box>
+        </>
     );
 };
 

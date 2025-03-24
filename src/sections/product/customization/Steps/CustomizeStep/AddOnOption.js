@@ -4,10 +4,13 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import SubStepImport from "../SubStepImport";
+import SubHeading from "@/app/components/SubHeading";
 const AddOnOption = ({ data, formik, elem }) => {
   return (
+    <>
+    <SubHeading  title={data?.SPS_DESC} />
     <Box>
-      <Box>
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -17,7 +20,7 @@ const AddOnOption = ({ data, formik, elem }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
+      </Box> */}
       <Box py={2}>
         <Grid container spacing={1}>
           {data &&
@@ -47,6 +50,7 @@ const AddOnOption = ({ data, formik, elem }) => {
         </Grid>
       </Box>
     </Box>
+    </>
   );
 };
 

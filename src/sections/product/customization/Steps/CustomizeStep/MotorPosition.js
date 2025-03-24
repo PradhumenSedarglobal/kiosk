@@ -10,6 +10,8 @@ import RadioCheckBoxDilog from "../tabination/radioCheckBoxDilog";
 import { useDispatch, useSelector } from "@/redux/store";
 import { useTranslation } from "next-i18next";
 import { setCustomizationFun } from "@/redux/slices/customization";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const MotorPosition = ({ data }) => {
 
@@ -41,8 +43,9 @@ const MotorPosition = ({ data }) => {
     }, []);
 
     return (
-        <Box >
-            <Box>
+        < >
+             <SubHeading  title={data?.SPS_DESC} />
+            {/* <Box>
                 <Typography
                     sx={(theme) => ({
                         fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -52,8 +55,8 @@ const MotorPosition = ({ data }) => {
                 >
                     {data && data?.SPS_DESC}
                 </Typography>
-            </Box>
-            <FormControl fullWidth>
+            </Box> */}
+            <FormControl  px={3} fullWidth>
                 <RadioGroup
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
@@ -88,7 +91,7 @@ const MotorPosition = ({ data }) => {
                     </Grid>
                 </RadioGroup>
             </FormControl>
-        </Box>
+        </>
     );
 };
 

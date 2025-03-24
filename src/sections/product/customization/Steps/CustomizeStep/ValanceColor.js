@@ -11,6 +11,8 @@ import { addLights, addToCartFunScene, valanceColorFun } from '../../sceneCanvas
 import SubStepImport from "../SubStepImport";
 import InfoDilogueButton from "../tabination/infoDilogueButton";
 import { useAuthContext } from "@/auth/useAuthContext";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 let img_path = "/assets/images/";
 const item_img_path = process.env.NEXT_PUBLIC_ITEM_IMG_WEBP_PATH + "laptop/";
@@ -86,10 +88,13 @@ const ValanceColor = ({ data = {} }) => {
   }
 
   return (
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
     <div className="SizeAndMount">
-      <div className="step-heading">
+         
+      {/* <div className="step-heading">
         <h5>{data.SPS_DESC}</h5>
-      </div>
+      </div> */}
       <div className="ValanceColor">
         <Box>
           <Grid container spacing={1}>
@@ -184,6 +189,7 @@ const ValanceColor = ({ data = {} }) => {
         </Box>
       </div>
     </div>
+    </>
   )
 }
 

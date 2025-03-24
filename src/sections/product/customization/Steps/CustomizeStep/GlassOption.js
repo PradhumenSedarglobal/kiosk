@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import SubStepImport from "../SubStepImport";
 import { useSelector } from "@/redux/store";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const GlassOption = ({ data, formik, elem }) => {
 
@@ -12,8 +14,10 @@ const GlassOption = ({ data, formik, elem }) => {
   let step_name = data.SS_CODE_NAME ? data.SS_CODE_NAME : false;
 
   return (
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
     <Box>
-      <Box>
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -23,7 +27,7 @@ const GlassOption = ({ data, formik, elem }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
+      </Box> */}
       <Box py={2}>
         <Grid container spacing={1}>
           {data &&
@@ -54,6 +58,7 @@ const GlassOption = ({ data, formik, elem }) => {
         </Grid>
       </Box>
     </Box>
+    </>
   );
 };
 

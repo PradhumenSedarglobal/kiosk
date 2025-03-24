@@ -17,21 +17,15 @@ import typography, {
 import { Box, Typography } from "@mui/material";
   
 
-const MainHeading = ({title}) => {
+const SubHeading = ({title}) => {
   return (
     <Box sx={{
       padding:"0px !important",
-      position:"sticky",
-      top:0,
-      zIndex:10,
-      backgroundColor:"White"
       }}>
     <Typography
       sx={{
         fontFamily: Helvetica_Neue_Medium.style.fontFamily,
-        borderBottom:"2px solid #eaaf60",
         borderRadius:"2px",
-        boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
         padding: "1rem"
       }}
       gutterBottom
@@ -44,4 +38,4 @@ const MainHeading = ({title}) => {
   );
 };
 
-export default MainHeading;
+export default SubHeading;

@@ -13,6 +13,8 @@ import { addToCartFunScene } from "../../sceneCanvas3D";
 import InfoDilogueButton from "../tabination/infoDilogueButton";
 import { useRouter } from "next/router";
 import { useAuthContext } from "@/auth/useAuthContext";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 let img_path = "/assets/images/";
 const item_img_path = process.env.NEXT_PUBLIC_ITEM_IMG_WEBP_PATH + "laptop/";
@@ -72,8 +74,9 @@ const TypeOfRemote = ({ data }) => {
   }, [stepsArray?.TYPE_OF_REMOTE])
 
   return (
-    <Box>
-      <Box>
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -83,7 +86,7 @@ const TypeOfRemote = ({ data }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
+      </Box> */}
       <Box py={2}>
         <Grid container spacing={1}>
           {data &&
@@ -184,7 +187,7 @@ const TypeOfRemote = ({ data }) => {
           </Grid>
         </Grid>
       </Box>
-    </Box>
+    </>
   );
 };
 

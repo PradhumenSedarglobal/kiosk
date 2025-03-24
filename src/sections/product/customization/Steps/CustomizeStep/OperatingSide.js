@@ -13,6 +13,8 @@ import { setCustomizationFun } from "@/redux/slices/customization";
 import { manualControl } from '../../sceneCanvas3D';
 import SubStepImport from '../SubStepImport';
 import SelectCardImage from "../tabination/selectCardImage";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const OperatingSide = ({ data }) => {
 
@@ -44,8 +46,9 @@ const OperatingSide = ({ data }) => {
     })
   }, []);
   return (
-    <Box>
-      <Box>
+    <>
+         <SubHeading  title={data?.SPS_DESC} />
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -55,8 +58,8 @@ const OperatingSide = ({ data }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
-      <FormControl fullWidth>
+      </Box> */}
+      <FormControl  px={3} >
         <Box py={2}>
           <Grid container justifyContent="space-between" spacing={1}>
 
@@ -137,7 +140,7 @@ const OperatingSide = ({ data }) => {
         </Grid>
 
       </FormControl>
-    </Box>
+    </>
   );
 };
 

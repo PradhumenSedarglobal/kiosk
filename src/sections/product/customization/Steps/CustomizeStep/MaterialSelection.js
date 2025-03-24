@@ -13,6 +13,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import {
   getMaterialCustomization,
+  loadingfalse,
   setCustomizationFun,
 } from "@/redux/slices/customization";
 import { find } from "lodash";
@@ -25,6 +26,7 @@ import NextLazyLoadImage from "@/components/image/NextLazyLoadImage";
 import { useAuthContext } from "@/auth/useAuthContext";
 import MaterialSwiper from "./MaterialSelectionSwiper";
 import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 const qs = require("qs");
 
 let img_path = "/assets/images/";
@@ -104,7 +106,7 @@ const MaterialSelection = ({ data, formik, elem }) => {
 
     material_data["SUB_CHILD"] = "";
 
-    
+    dispatch(loadingfalse(false));
 
     dispatch(setCustomizationFun(material_data));
   };
@@ -208,7 +210,8 @@ const MaterialSelection = ({ data, formik, elem }) => {
     loopAdditionalSlides: 1,
   };
   return (
-    <Box>
+    <>
+       <SubHeading  title={data?.SPS_DESC} />
       {/* <Box>
         <Typography
           sx={(theme) => ({
@@ -220,7 +223,6 @@ const MaterialSelection = ({ data, formik, elem }) => {
           {data && data?.SPS_DESC}
         </Typography>
       </Box> */}
-      <MainHeading sx={{ mb: 2 }} title={data?.SPS_DESC} />
       <Box px={3} py={2}>
         <Grid
           container
@@ -250,9 +252,10 @@ const MaterialSelection = ({ data, formik, elem }) => {
                   <Box
                     
                     sx={(theme) => ({
-                      p: 0.5,
+                      // p: 0.5,
+                      borderRadius: '10px',
                       border:
-                        checked && `1px solid ${theme.palette.primary.main}`,
+                        checked && `2px solid ${theme.palette.primary.main}`,
                     })}
                     position="relative"
                   >
@@ -278,7 +281,7 @@ const MaterialSelection = ({ data, formik, elem }) => {
                           objectFit: "contain",
                           backgroundSize: "contain",
                           "&.MuiCard-root": {
-                            borderRadius: 0,
+                            borderRadius: "8px 8px 0px 0px",
                             boxShadow: "none",
                             position: "relative!important",
                             width: "100%!important",
@@ -327,7 +330,7 @@ const MaterialSelection = ({ data, formik, elem }) => {
           </Grid>
         </Grid>
       </Box>
-    </Box>
+    </>
   );
 };
 

@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import SubStepImport from "../SubStepImport";
 import { useSelector } from "@/redux/store";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const LiningOption = ({ data, formik }) => {
 
@@ -14,8 +16,10 @@ const LiningOption = ({ data, formik }) => {
   let sfi_blackout_lining_app_yn = stepsArray.MATERIAL_SELECTION && stepsArray.MATERIAL_SELECTION.material_info ? stepsArray.MATERIAL_SELECTION.material_info.SFI_BLACKOUT_LINING_APP_YN : false;
 
   return (
-    <Box>
-      <Box>
+    <>
+      <SubHeading  title={data?.SPS_DESC} />
+    <Box  px={3}>
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -25,7 +29,7 @@ const LiningOption = ({ data, formik }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
+      </Box> */}
       <Box py={2}>
         <Grid container spacing={1}>
           {data &&
@@ -88,6 +92,7 @@ const LiningOption = ({ data, formik }) => {
         </Grid>
       </Box >
     </Box >
+    </>
   );
 };
 

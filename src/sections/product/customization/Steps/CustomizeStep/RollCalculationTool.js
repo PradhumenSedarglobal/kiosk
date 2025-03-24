@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "@/redux/store";
 import { useTranslation } from "next-i18next";
 import { setCustomizationFun, deleteCustomizationStep } from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
+import MainHeading from "@/app/components/MainHeading";
+import SubHeading from "@/app/components/SubHeading";
 
 const re = /^\d*\.?\d*$/;
 
@@ -132,8 +134,9 @@ const RollCalculationTool = ({ data }) => {
   }, [priceArray.ROLL_CALC]);
 
   return (
-    <Box px={3}>
-      <Box>
+    <>
+         <SubHeading  title={data?.SPS_DESC} />
+      {/* <Box>
         <Typography
           sx={(theme) => ({
             fontFamily: theme.fontFaces.helveticaNeueBold,
@@ -143,8 +146,8 @@ const RollCalculationTool = ({ data }) => {
         >
           {data && data?.SPS_DESC}
         </Typography>
-      </Box>
-      <Box py={2}>
+      </Box> */}
+      <Box  px={3} py={2}>
 
         <Typography
            sx={{
@@ -255,7 +258,7 @@ const RollCalculationTool = ({ data }) => {
           : ""
         }
       </Box>
-    </Box>
+    </>
   );
 };
 

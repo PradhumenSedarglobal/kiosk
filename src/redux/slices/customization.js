@@ -185,7 +185,7 @@ const slice = createSlice({
         state.stepsArray[option_info.SS_CODE_NAME] = option_info;
 
         state.productInfo = state.productInfo;
-
+        
         // state.productInfo['component_type'] = option_info.SS_CODE_NAME;
 
         if (option_info.SS_CODE_NAME === "MEASUREMENT") {
@@ -193,23 +193,23 @@ const slice = createSlice({
             state.stepsArray["MEASUREMENT"] &&
             state.stepsArray["MEASUREMENT"]["m_width"]
               ? state.stepsArray["MEASUREMENT"]["m_width"]
-              : 0;
+              : state.productInfo.SPI_MIN_WIDTH ||  0;
           state.productInfo["m_height"] =
             state.stepsArray["MEASUREMENT"] &&
             state.stepsArray["MEASUREMENT"]["m_height"]
               ? state.stepsArray["MEASUREMENT"]["m_height"]
-              : 0;
+              : state.productInfo.SPI_MIN_HEIGHT || 0;
         } else if (option_info.SS_CODE_NAME === "ROLL_CALCULATION") {
           state.productInfo["m_width"] =
             state.stepsArray["ROLL_CALCULATION"] &&
             state.stepsArray["ROLL_CALCULATION"]["m_width"]
               ? state.stepsArray["ROLL_CALCULATION"]["m_width"]
-              : 0;
+              : state.productInfo.SPI_MIN_WIDTH || 0;
           state.productInfo["m_height"] =
             state.stepsArray["ROLL_CALCULATION"] &&
             state.stepsArray["ROLL_CALCULATION"]["m_height"]
               ? state.stepsArray["ROLL_CALCULATION"]["m_height"]
-              : 0;
+              : state.productInfo.SPI_MIN_HEIGHT || 0;
         } else if (option_info.SS_CODE_NAME === "MATERIAL_SELECTION") {
           state.productInfo["code"] =
             state.stepsArray["MATERIAL_SELECTION"] &&
