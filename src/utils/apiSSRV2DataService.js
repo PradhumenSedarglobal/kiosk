@@ -59,7 +59,9 @@ function post({ path, data = "", cookies }) {
       site,
       locale,
     } = cookies || {};
-    const localeParam = locale == "default" ? `${global}-en` : locale;
+    // const localeParam = locale == "default" ? `${global}-en` : locale;
+    const localeParam = "uae-en";
+    
     const config = {
       site: site,
       lang: langName,
@@ -99,7 +101,7 @@ function Delete({ path, param = "", cookies = {} }) {
     const country = countryName;
     const userId = USER_ID;
     // const localeParam = locale == "default" ? `${global}-en` : locale;
-    const localeParam = "uae-en";
+    // const localeParam = "uae-en";
 
     let path_url = `${path}?lang=${langName}&site=${site}&country=${country}&visitorId=${visitorId}&userId=${userId}&currency=${CCYCODE}&ccy_decimal=${CCYDECIMALS}&cn_iso=${cniso}&detect_country=${detect_country}&locale=${localeParam}`;
     if (param != "") {
