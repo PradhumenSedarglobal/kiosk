@@ -344,7 +344,7 @@ export default function ProductPage(props) {
   });
 
   const handleThumbnailClick = (index) => {
-    console.log("thisclickcing",index);
+    
     setAllowNextSlide(true);
     thumbsSwiper.slideTo(index);
   };
@@ -400,6 +400,7 @@ export default function ProductPage(props) {
   };
 
   useEffect(() => {
+    console.log("materialListlllllll",materialList);
     console.log("steeeeep", stepCount);
     console.log("testing", stepCount === 0 || stepCount === 1);
     console.log("isCustomizationLoading", isCustomizationLoading);
@@ -500,10 +501,10 @@ export default function ProductPage(props) {
               
                 // Use MUI breakpoints for responsiveness
                 right: { 
-                  // xs: "calc(100vw - 200px)",  // Mobile (375px+)
-                  // sm: "calc(100vw - 300px)",  // Tablet (600px+)
-                  // md: "calc(100vw - 500px)",  // Small laptops (900px+)
-                  lg: "calc(100vw - 58%)",  // Large screens (1200px+)
+                  xs: "calc(100vw - 200px)",  // Mobile (375px+)
+                  sm: "calc(100vw - 300px)",  // Tablet (600px+)
+                  md: "calc(100vw - 500px)",  // Small laptops (900px+)
+                  lg: "calc(100vw - 710px)",  // Large screens (1200px+)
                 },
               
                 // Media Query (Only if necessary)

@@ -22,6 +22,7 @@ import {
   loadingfalse,
   removecart,
   resetState,
+  setMaterialListEmpty,
 } from "@/redux/slices/customization";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -51,7 +52,7 @@ const BottomBarTabination = ({
 
   useEffect(() => {
     if (priceArray.SOL_VALUE) {
-      setIsLoading(false); // Hide loader when price is available
+      setIsLoading(false); 
     }
   }, [priceArray.SOL_VALUE]);
 
@@ -259,6 +260,7 @@ const BottomBarTabination = ({
                   if (tabChange === "1") {
                     console.log("tabChangetabChange", tabChange);
                     dispatch(removecart());
+                    dispatch(setMaterialListEmpty());
                     dispatch(loadingfalse(true));
                   }
 
