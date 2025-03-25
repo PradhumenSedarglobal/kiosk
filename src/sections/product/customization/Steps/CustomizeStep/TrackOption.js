@@ -132,7 +132,7 @@ const TrackOption = ({ data }) => {
       <SubHeading  title={data?.SPS_DESC} />
 
       <div className="mountingoptions">
-        <Box sm={12}>
+        <Box px={3} sm={12}>
           <FormControl fullWidth>
             <Grid container justifyContent="space-between">
               {data.SUB_CHILD.map((elem, index) => {
@@ -169,6 +169,7 @@ const TrackOption = ({ data }) => {
                       stepsArray["TRACK_OPTION"] &&
                       stepsArray["TRACK_OPTION"]["SPS_CODE"] == "TO04" ? (
                       <Typography
+                        px={2}
                         component="p"
                         variant="typography12"
                         color="error"

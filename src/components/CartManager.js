@@ -38,46 +38,33 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   const fonts = useSelector((state) => state.font);
   const { state } = useAuthContext();
   const { cookies } = state;
-  const visitorId = cookies.visitorId;
-  const userId = useSelector((state) => state.customization.customerSysId);
-
   const dispatch = useDispatch();
 
   const removeCart = async (cartId) => {
     const response = await apiSSRV2DataService.Delete({
       path: `kiosk/cart/${cartId}`,
-      param: {
-        content: "customization",
-        sys_id: 0,
-      },
+      param: { content: "customization", sys_id: 0 },
       cookies: cookies,
     });
 
     if (response.data.complete) {
       toast.success("Item successfully removed from cart!", {
         position: "top-right",
-        style: {
-          background: 'linear-gradient(45deg, #d32f2f, #f44336)',
-          color: 'white',
-        },
+        style: { background: 'linear-gradient(45deg, #d32f2f, #f44336)', color: 'white' },
       });
 
-      dispatch(
-        setOrderList({
-          complete: response.data.complete,
-          cart_count: response.data.cart_count,
-          total_price: response.data.total_price,
-        })
-      );
+      dispatch(setOrderList(response.data));
     }
   };
 
   const updateQuantity = async (cartId, updatedQty) => {
+    if (updatedQty < 1) return; // Prevent negative or zero values
+
     const response = await apiSSRV2DataService.post({
       path: `kiosk/order/cart/updateLineTable/${cartId}`,
       data: {
         line_type: "ORDER_QTY",
-        line_value: updatedQty,  
+        line_value: updatedQty,
         soh_sys_id: 0,
         content: "customization",
         sys_id: 0,
@@ -86,21 +73,12 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
     });
 
     if (response.data.complete) {
-      toast.success(`Item quantity updated successfully!`, {
+      toast.success("Item quantity updated successfully!", {
         position: "top-right",
-        style: {
-          background: 'linear-gradient(45deg, #16a085, #1abc9c)',
-          color: 'white',
-        },
+        style: { background: 'linear-gradient(45deg, #16a085, #1abc9c)', color: 'white' },
       });
 
-      dispatch(
-        setOrderList({
-          complete: response.data.complete,
-          cart_count: response.data.cart_count,
-          total_price: response.data.total_price,
-        })
-      );
+      dispatch(setOrderList(response.data));
     }
   };
 
@@ -193,15 +171,13 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
                           borderRadius: "12px",
                           fontWeight: "600",
                           cursor: "pointer",
-                          "&:hover": {
-                            backgroundColor: "#c0392b",
-                          },
+                          "&:hover": { backgroundColor: "#c0392b" },
                         }}
                       />
                     </Box>
 
                     <Box sx={{ display: "flex", marginTop: "8px" }}>
-                      <Typography  variant="body2" sx={{ fontWeight: 500,fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500, fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily }}>
                         QTY:{" "}
                       </Typography>
                       <Typography
@@ -216,34 +192,30 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
                       </Typography>
                     </Box>
 
-                    <Box sx={{ display: "flex", marginTop: "8px" }}>
-                      <Typography variant="body2" sx={{ fontWeight: 500,fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily }}>
-                        Value:{" "}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 700,
-                          marginLeft: "5px",
-                          fontFamily: fonts.Helvetica_Neue.style.fontFamily,
-                        }}
-                      >
-                        {item?.SOL_CCY_CODE + " " + item?.SOL_VALUE}
-                      </Typography>
-                    </Box>
-
-                    <Box sx={{ display: "flex", marginTop: "8px", justifyContent: "space-between" }}>
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "8px" }}>
                       <Button
-                        onClick={() => updateQuantity(item.SOL_SYS_ID, item?.SOL_QTY - 1)}
+                        onClick={() => updateQuantity(item.SOL_SYS_ID, Number(item?.SOL_QTY) - 1)}
                         variant="outlined"
-                        sx={{ minWidth: "50px", fontSize: "1.2rem", padding: "5px 10px" }}
+                        sx={{ minWidth: "40px", fontSize: "1.2rem", padding: "5px 10px" }}
                       >
                         -
                       </Button>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: "1.1rem",
+                          margin: "0 15px",
+                          minWidth: "30px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {item?.SOL_QTY}
+                      </Typography>
                       <Button
-                        onClick={() => updateQuantity(item.SOL_SYS_ID, item?.SOL_QTY + 1)}
+                        onClick={() => updateQuantity(item.SOL_SYS_ID, Number(item?.SOL_QTY) + 1)}
                         variant="outlined"
-                        sx={{ minWidth: "50px", fontSize: "1.2rem", padding: "5px 10px" }}
+                        sx={{ minWidth: "40px", fontSize: "1.2rem", padding: "5px 10px" }}
                       >
                         +
                       </Button>

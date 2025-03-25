@@ -18,7 +18,12 @@ import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import { useEffect, useState } from "react";
 import PopupModal from "@/app/components/PopupModal";
-import { loadingfalse, removecart, resetState } from "@/redux/slices/customization";
+import {
+  loadingfalse,
+  removecart,
+  resetState,
+} from "@/redux/slices/customization";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const BottomBarTabination = ({
   setTabChange,
@@ -32,7 +37,7 @@ const BottomBarTabination = ({
   handleSubmit,
   formClose,
   setFormClose,
-  setAddToCartShow
+  setAddToCartShow,
 }) => {
   const { t: translate } = useTranslation();
   const { locale, query } = useRouter();
@@ -42,12 +47,12 @@ const BottomBarTabination = ({
   const { cookies } = state;
   const { langName } = cookies || {};
 
-  
-
-  console.log("tabChangetabChange1",tabChange);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("priceArray.SOL_PRICE", priceArray.SOL_VALUE);
+    if (priceArray.SOL_VALUE) {
+      setIsLoading(false); // Hide loader when price is available
+    }
   }, [priceArray.SOL_VALUE]);
 
   const fonts = useSelector((state) => state.font);
@@ -58,8 +63,6 @@ const BottomBarTabination = ({
     dispatch(showScanner(true));
     dispatch(decrementStep(0));
   };
-  
-
 
   return (
     <Box
@@ -83,11 +86,11 @@ const BottomBarTabination = ({
         display: "flex",
         justifyContent: "space-between",
         gap: "8px",
-        flexWrap: "nowrap", 
-        overflowX: "auto", 
+        flexWrap: "nowrap",
+        overflowX: "auto",
       }}
     >
-       <Box
+      <Box
         sx={{
           width: "100%",
           backgroundColor: "#fff",
@@ -126,7 +129,7 @@ const BottomBarTabination = ({
                     color: "#010101",
                     paddingTop: "25px",
                     textAlign: "start",
-                    fontSize: '16px !important'
+                    fontSize: "16px !important",
                     // paddingLeft: "20px",
                   }}
                   gutterBottom
@@ -145,7 +148,7 @@ const BottomBarTabination = ({
                     fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
                     color: "#010101",
                     textAlign: "start",
-                    fontSize: '16px !important'
+                    fontSize: "16px !important",
                     // paddingLeft: "20px",
                   }}
                   gutterBottom
@@ -161,21 +164,70 @@ const BottomBarTabination = ({
           </Grid>
 
           <Grid item xs={5} pt={"0 !important"}>
-            <Typography
-              sx={{
-                fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-                color: "#010101",
-                paddingTop: "25px",
-                textAlign: "end",
-                fontSize: '16px !important'
-              }}
-              gutterBottom
-              variant="p"
-              component="div"
-            >
-              {translate("Total")} {translate(cookies?.CCYCODE  || "AED" )}{" "}
-              {priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0}
-            </Typography>
+            {isLoading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "5px",
+                  alignItems: "center",
+                  paddingTop: "25px",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 10,
+                    height: 10,
+                    bgcolor: "primary.main",
+                    borderRadius: "50%",
+                    animation: "dot-pulse 1.2s infinite",
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 10,
+                    height: 10,
+                    bgcolor: "primary.main",
+                    borderRadius: "50%",
+                    animation: "dot-pulse 1.2s infinite 0.2s",
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 10,
+                    height: 10,
+                    bgcolor: "primary.main",
+                    borderRadius: "50%",
+                    animation: "dot-pulse 1.2s infinite 0.4s",
+                  }}
+                />
+                <style>
+                  {`
+        @keyframes dot-pulse {
+          0% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.5); opacity: 0.5; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+      `}
+                </style>
+              </Box>
+            ) : (
+              <Typography
+                sx={{
+                  fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+                  color: "#010101",
+                  paddingTop: "25px",
+                  textAlign: "end",
+                  fontSize: "16px !important",
+                }}
+                gutterBottom
+                variant="p"
+                component="div"
+              >
+                {translate("Total")} {translate(cookies?.CCYCODE || "AED")}{" "}
+                {priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0}
+              </Typography>
+            )}
           </Grid>
         </Grid>
 
@@ -205,14 +257,13 @@ const BottomBarTabination = ({
                 variant="outlined"
                 onClick={() => {
                   if (tabChange === "1") {
-                    console.log("tabChangetabChange",tabChange);
+                    console.log("tabChangetabChange", tabChange);
                     dispatch(removecart());
                     dispatch(loadingfalse(true));
                   }
-                  
+
                   onPreviousHandle("PREV");
                 }}
-                
                 startIcon={<ArrowCircleLeftIcon color="black" />}
               >
                 Previous
