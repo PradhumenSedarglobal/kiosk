@@ -10,6 +10,9 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import SubStepImport from "../SubStepImport";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
 
 import {
   getMaterialCustomization,
@@ -33,7 +36,7 @@ let img_path = "/assets/images/";
 const item_img_path = process.env.NEXT_PUBLIC_ITEM_IMG_WEBP_PATH + "laptop/";
 const perPage = 15;
 
-const MaterialSelection = ({ data, formik, elem }) => {
+const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   const locale = 'uae-en';
   const { query } = useRouter();
   const { slug } = query;
@@ -43,6 +46,7 @@ const MaterialSelection = ({ data, formik, elem }) => {
   const [page, setPage] = useState(1);
   const listInnerRef = useRef(null);
   const sliderRef = useRef(null);
+  const [alertMessage, setAlertMessage] = useState(null);
   //  const [materialList, setMaterialList] = useState([]);
 
   const selectedCategory = useSelector((state) => state.customization.SelectedCategory);
@@ -90,8 +94,43 @@ const MaterialSelection = ({ data, formik, elem }) => {
 
   const updateTextureFun = async (val) => {
 
+  
+    if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
+      if (val.SII_WIDTH <= stepsArray.MEASUREMENT?.m_width) {
+        setAlertMessage(
+          "The entered width should not be greater than the selected material's maximum width."
+        );
+    
+        // ✅ Automatically remove the alert after 5 seconds
+        setTimeout(() => {
+          setAlertMessage(null);
+          setTabChange(1); // Moves to the first page
+        }, 4000);
+      }
+    }
+
+    if (productInfo.SPI_RESTRICT_TO_MATERIAL_HEIGHT_YN === "Y") {
+      if (val.SII_HEIGHT <= stepsArray.MEASUREMENT?.m_height) {
+        setAlertMessage(
+          "The entered height should not be greater than the selected material's maximum height."
+        );
+    
+        // ✅ Automatically remove the alert after 5 seconds
+        setTimeout(() => {
+          setAlertMessage(null);
+          setTabChange(1); // Moves to the first page
+        }, 4000);
+      }
+    }
+    
+
+    
+     
+
 
     console.log("this function invok",val);
+    console.log("productInfooooooo",productInfo);
+    console.log("stepsArrayyyyyyy",stepsArray);
 
     let material_data = {
       ...data,
@@ -211,6 +250,7 @@ const MaterialSelection = ({ data, formik, elem }) => {
   };
   return (
     <>
+    
        <SubHeading  title={data?.SPS_DESC} />
       {/* <Box>
         <Typography
@@ -223,6 +263,14 @@ const MaterialSelection = ({ data, formik, elem }) => {
           {data && data?.SPS_DESC}
         </Typography>
       </Box> */}
+
+      {alertMessage && (
+        <Alert icon={<ErrorIcon fontSize="inherit" />} severity="warning">
+          {alertMessage}
+        </Alert>
+      )}
+
+
       <Box px={3} py={2}>
         <Grid
           container

@@ -58,6 +58,7 @@ const BottomBarTabination = ({
     dispatch(showScanner(true));
     dispatch(decrementStep(0));
   };
+  
 
 
   return (

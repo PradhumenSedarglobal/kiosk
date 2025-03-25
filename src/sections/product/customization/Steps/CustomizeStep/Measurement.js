@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { TextBox } from "@/components/form";
@@ -19,8 +19,8 @@ const re = /^\d*\.?\d*$/;
 const Measurement = ({ data }) => {
   const { t: translate } = useTranslation();
   const dispatch = useDispatch();
-  // const { locale } = useRouter();
-  const locale = "uae-en";
+  const { locale } = useRouter();
+ 
 
 
   const customization_info = useSelector((state) => state.customization);
@@ -37,6 +37,7 @@ const Measurement = ({ data }) => {
     product_width: false,
     product_height: false,
   });
+  const [matrialWidthChecker,setMaterialWidthChecker] = useState(false);
 
   let MIN_WIDTH = parseInt(productInfo.SPI_MIN_WIDTH);
   let MAX_WIDTH = parseInt(productInfo.SPI_MAX_WIDTH);
@@ -121,7 +122,7 @@ const Measurement = ({ data }) => {
     if (val == NaN) {
       return false;
     }
-
+    console.log('comming here')
     if (type == "product_width") {
       m_width = val;
       setMe_width(val);
@@ -170,6 +171,7 @@ const Measurement = ({ data }) => {
   };
 
   const toggleValidation = (name, value) => {
+    console.log(name, value,'toggleValidation')
     if ((value < MIN_WIDTH || value > MAX_WIDTH) && name == "product_width") {
       setIivalid({ ...isvalid, [name]: true });
     } else if (
@@ -223,6 +225,9 @@ const Measurement = ({ data }) => {
             stepsArray["MEASUREMENT"]["m_width"],
             stepsArray["MEASUREMENT"]["m_height"]
           );
+
+         
+
         }.bind(this),
         600
       );
@@ -230,7 +235,9 @@ const Measurement = ({ data }) => {
   }, [MIN_WIDTH, MAX_HEIGHT]);
 
   useEffect(() => {
+ 
     if (isvalid.product_width == false && isvalid.product_height == false) {
+     
       setTimeout(
         function () {
           addToCartFunScene(
@@ -242,6 +249,29 @@ const Measurement = ({ data }) => {
       );
     }
   }, [isvalid.product_width, isvalid.product_height, me_width, me_height]);
+
+
+
+
+  useEffect(() => {
+    if (productInfo.SPI_MAX_WIDTH <= stepsArray.MEASUREMENT?.m_width) {
+      console.log("check width called");
+      setMe_width(0);
+      measurementFun("product_width", stepsArray.MEASUREMENT?.m_width);
+    }
+  }, [MAX_WIDTH < me_width]); 
+
+  useEffect(() => {
+    if (productInfo.SPI_MAX_HEIGHT <= stepsArray.MEASUREMENT?.m_height) {
+      console.log("check width called");
+      setMe_width(0);
+      measurementFun("product_height", stepsArray.MEASUREMENT?.m_height);
+    }
+  }, [MAX_HEIGHT < me_height]); 
+  
+  
+
+  
 
   return (
     <>
@@ -281,6 +311,7 @@ const Measurement = ({ data }) => {
           }}
         />
         <TextBox
+         
           fullWidth
           type="text"
           variant="outlined"
