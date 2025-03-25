@@ -1,10 +1,10 @@
-"use Client"
+"use Client";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import shortid from "shortid";
 import * as THREE from "three";
 import { getCookie, setCookie } from "cookies-next";
-import { toast } from 'react-toastify';
+
 
 import {
   Modal,
@@ -20,21 +20,26 @@ import { useDispatch, useSelector } from "react-redux";
 import PhoneInput from "react-phone-input-2";
 import axios from "axios";
 import "react-phone-input-2/lib/style.css";
-import { removecart, setCustomerSysId, setCustomerSystemId, setGeoLocationDetails, setOrderList } from "@/redux/slices/customization";
+import {
+  removecart,
+  setCustomerSysId,
+  setCustomerSystemId,
+  setGeoLocationDetails,
+  setOrderList,
+} from "@/redux/slices/customization";
 import { useAuthContext } from "@/auth/useAuthContext";
 import axiosInstance from "@/utils/axios";
 import { decrementStep } from "@/redux/slices/stepSlice";
 //const { addToCartFunScene } = require("@/sections/product/customization/sceneCanvas3D");
 // import { addToCartFunScene } from "@/sections/product/customization/sceneCanvas3D";
-import {addToCartFunScene} from "@/sections/product/customization/addToCartFunScene";
+import { addToCartFunScene } from "@/sections/product/customization/addToCartFunScene";
 import { NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES } from "@/utils/constant";
+import { toast } from "react-toastify";
 
-
-
-export default function PopupModal({setAddToCartShow}) {
+export default function PopupModal({ setAddToCartShow }) {
   const { state } = useAuthContext();
   const { cookies } = state;
-  const locale = 'uae-en';
+  const locale = "uae-en";
   const [open, setOpen] = useState(true);
   const [successOpen, setSuccessOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
@@ -42,64 +47,61 @@ export default function PopupModal({setAddToCartShow}) {
   const fonts = useSelector((state) => state.font);
   const [phone, setPhone] = useState("");
   const dispatch = useDispatch();
-   const customization_info = useSelector((state) => state.customization);
+  const customization_info = useSelector((state) => state.customization);
   const customerSystemId = useSelector(
-      (state) => state.customization.customerSystemId
-    );
+    (state) => state.customization.customerSystemId
+  );
   const customization = useSelector(
-      (state) => state.customization.customization
-    );
-
-
+    (state) => state.customization.customization
+  );
 
   const ip = customization_info.ip;
   const geoDetails = customization_info.geoLocationDetails;
 
-
-  
-
-  const getCountry = async(val) => {
-    try{
-   
+  const getCountry = async (val) => {
+    try {
       const response = await axios.get(
         `https://api.sedarglobal.com/geolocation?geo=&client_ip=${ip}&locale=${locale}`,
         {
-          headers:{
-              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
-              "Accept": "application/json",
-              "Access-Control-Allow-Origin": "*", 
-          }
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            Accept: "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
         }
       );
 
       let getAllCookies = getCookie(NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES)
-            ? JSON.parse(getCookie(NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES) || "undefined")
-            : {};
-      getAllCookies.locale = 'uae-en'
-      setCookie('NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES', JSON.stringify(getAllCookies), {
-        path: '/', // ✅ Make the cookie accessible from all routes
-        maxAge: 60 * 60 * 24 * 7, // ✅ 1 week expiration
-        secure: process.env.NODE_ENV === 'production', // ✅ Use secure cookies in production
-        sameSite: 'strict', // ✅ Prevent CSRF attacks
-      });
+        ? JSON.parse(
+            getCookie(NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES) || "undefined"
+          )
+        : {};
+      getAllCookies.locale = "uae-en";
+      setCookie(
+        "NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES",
+        JSON.stringify(getAllCookies),
+        {
+          path: "/", 
+          maxAge: 60 * 60 * 24 * 7, 
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict", 
+        }
+      );
 
-      console.log("coooookkkk",getAllCookies);
-      
+      console.log("coooookkkk", getAllCookies);
 
       dispatch(setGeoLocationDetails(response.data));
-  
+
       return response.data;
-  
-    } catch(error) {
-        console.log(error);
-        throw error
+    } catch (error) {
+      console.log(error);
+      throw error;
     } finally {
       console.log("order head done");
     }
-  }
+  };
 
-  console.log("cookies",cookies);
-
+  console.log("cookies", cookies);
 
   const {
     register,
@@ -115,52 +117,34 @@ export default function PopupModal({setAddToCartShow}) {
   const handleSuccessClose = () => setSuccessOpen(false);
   const handleErrorClose = () => setErrorOpen(false);
 
-
-  const fetchOrderList = async (customerId,userId) => {
-      try{
-        const response = await axios.get(
-          `https://migapi.sedarglobal.com/order/orderList?lang=en&site=100001&country=uae&visitorId=${customerId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=`,
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", 
-              "Accept": "application/json",
-              "Access-Control-Allow-Origin": "*", 
-            },
-            withCredentials: false, 
-          }
-        );
-
-
-        if(response){
-
-         
-
-// Showing the success message and preventing it from auto-closing
-toast.success('Success! Item Added to cart Successfully!', {
-  position: "top-right",
-  style: {
-    background: 'linear-gradient(45deg, rgb(232 175 59), rgb(239 156 0))',
-    color: 'white',
-  },
-
-});
-
-          dispatch(
-            setOrderList({
-              complete: response.data.complete, 
-              cart_count: response.data.cart_count,
-              total_price: response.data.total_price,
-            })
-          );
+  const fetchOrderList = async (customerId, userId) => {
+    try {
+      const response = await axios.get(
+        `https://migapi.sedarglobal.com/order/orderList?lang=en&site=100001&country=uae&visitorId=${customerId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=`,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            Accept: "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          withCredentials: false,
         }
+      );
 
-        console.log("API Response OrderList:", response);
-      } catch {
-
+      if (response) {
+     
+        dispatch(
+          setOrderList({
+            complete: response.data.complete,
+            cart_count: response.data.cart_count,
+            total_price: response.data.total_price,
+          })
+        );
       }
-  }
-  
- 
+
+      console.log("API Response OrderList:", response);
+    } catch {}
+  };
 
   const handlePhoneChange = (newValue) => {
     setPhone(newValue);
@@ -172,7 +156,7 @@ toast.success('Success! Item Added to cart Successfully!', {
       toast.error("Please fill all required fields before submitting.");
       return;
     }
-  
+
     try {
       const formData = new FormData();
       formData.append("site", "100001");
@@ -182,24 +166,24 @@ toast.success('Success! Item Added to cart Successfully!', {
       formData.append("cust_first_name", data.customerName);
       formData.append("salesman", data.styleConsultantId);
       formData.append("visitorId", cookies.visitorId);
-  
+
       console.log("Submitting FormData:", Object.fromEntries(formData));
-  
+
       const response = await axios.post(
         "https://migapi.sedarglobal.com/kiosk/sign_up",
         formData,
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": "*",
           },
           withCredentials: false,
         }
       );
-  
+
       dispatch(setCustomerSysId(response.data.cust_sys_id));
-  
+
       if (response.data.return_status === "-111") {
         setErrorMessage(
           response.error_message + "\n" + JSON.stringify(response, null, 2)
@@ -210,8 +194,16 @@ toast.success('Success! Item Added to cart Successfully!', {
         setSuccessOpen(true);
         handleClose();
         dispatch(setCustomerSystemId(response.data.cust_sys_id));
-  
+
         if (response.data.cust_sys_id) {
+          toast.success("Add to cart successfully!", {
+            position: "top-right",
+            style: {
+              background: "linear-gradient(45deg,rgb(22, 160, 54),rgb(97, 238, 72))",
+              color: "white",
+            },
+          });
+
           const handleAddToCart = async () => {
             try {
               const result = await addToCartFunScene(
@@ -235,7 +227,7 @@ toast.success('Success! Item Added to cart Successfully!', {
               }, 2000);
             }
           };
-  
+
           handleAddToCart();
         }
       }
@@ -244,10 +236,6 @@ toast.success('Success! Item Added to cart Successfully!', {
       setErrorOpen(true);
     }
   };
-  
-  
-  
-  
 
   return (
     <>
@@ -396,9 +384,15 @@ toast.success('Success! Item Added to cart Successfully!', {
           <Typography variant="h6" fontWeight="bold">
             Success!
           </Typography>
-          <Typography mt={1}>Your details have been submitted successfully.</Typography>
+          <Typography mt={1}>
+            Your details have been submitted successfully.
+          </Typography>
 
-          <Button variant="contained" sx={{ mt: 2 }} onClick={handleSuccessClose}>
+          <Button
+            variant="contained"
+            sx={{ mt: 2 }}
+            onClick={handleSuccessClose}
+          >
             OK
           </Button>
         </Box>
