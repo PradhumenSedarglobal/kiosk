@@ -37,6 +37,16 @@ const Measurement = ({ data }) => {
     product_width: false,
     product_height: false,
   });
+
+  useEffect(()=>{
+    if(productInfo.SPI_MIN_WIDTH && productInfo.SPI_MIN_HEIGHT){
+      setMe_width(productInfo.SPI_MIN_WIDTH);
+      measurementFun("product_width", productInfo.SPI_MIN_WIDTH);
+    }
+  
+  },[])
+
+
   const [matrialWidthChecker,setMaterialWidthChecker] = useState(false);
 
   let MIN_WIDTH = parseInt(productInfo.SPI_MIN_WIDTH);

@@ -55,7 +55,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
 
   const customization_info = useSelector((state) => state.customization);
 
-  console.log("customization1111",customization_info);
+
 
   const { state } = useAuthContext();
   const { cookies } = state;
@@ -71,7 +71,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   } = customization_info;
   
 
-  
+  console.log("stepsArray",stepsArray);
   
 
   let m_width = productInfo.m_width ? productInfo.m_width : 0;
@@ -231,7 +231,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   useEffect(() => {
     setTimeout(
       function () {
-    console.log("testing");
         addToCartFunScene(
           { ...cookies, ...customization_info, locale: locale },
           dispatch
@@ -239,7 +238,11 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
       }.bind(this),
       100
     );
-  }, [stepsArray["MATERIAL_SELECTION"]]);
+  }, [stepsArray["MATERIAL_SELECTION"]?.["ITEM_CODE"]]);
+
+  
+  
+  
 
 
   const sliderSetting = {
