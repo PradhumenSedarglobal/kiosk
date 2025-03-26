@@ -51,6 +51,7 @@ const BottomBarTabination = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log("priceArray.SOL_VALUE:", priceArray.SOL_VALUE);
     if (priceArray.SOL_VALUE) {
       setIsLoading(false); 
     }
@@ -260,7 +261,6 @@ const BottomBarTabination = ({
                   if (tabChange === "1") {
                     console.log("tabChangetabChange", tabChange);
                     dispatch(removecart());
-                    dispatch(setMaterialListEmpty());
                     dispatch(loadingfalse(true));
                   }
 

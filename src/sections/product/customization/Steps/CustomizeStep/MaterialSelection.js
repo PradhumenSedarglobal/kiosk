@@ -60,8 +60,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   const { state } = useAuthContext();
   const { cookies } = state;
 
-  const materialRef = useRef(null);
-
  
   const {
     productInfo,
@@ -187,26 +185,20 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     }
   };
  
-  // useEffect(()=>{
-  //    console.log("this called you can check");
-  //    if(materialList.length > 0){
-  //     let elem =
-  //     materialList[0]["items"] &&
-  //       materialList[0]["items"][0] &&
-  //       materialList[0]["items"][0]["texture_info"]
-  //       ? materialList[0]["items"][0]["texture_info"]
-  //       : {};
+  useEffect(()=>{
+     console.log("this called you can check");
+     if(materialList.length > 0){
+      let elem =
+      materialList[0]["items"] &&
+        materialList[0]["items"][0] &&
+        materialList[0]["items"][0]["texture_info"]
+        ? materialList[0]["items"][0]["texture_info"]
+        : {};
 
-  //     updateTextureFun(elem);
-  //    }
+      updateTextureFun(elem);
+     }
   
-  // },[productInfo?.code === "0" || productInfo?.code === 0])
-
-  useEffect(() => {
-    if (materialRef.current) {
-      materialRef.current.click();
-    }
-  }, [materialList]);
+  },[productInfo?.code === "0" || productInfo?.code === 0])
 
   useEffect(() => {
     console.log('called');
@@ -248,7 +240,8 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     );
   }, [stepsArray["MATERIAL_SELECTION"]?.["ITEM_CODE"]]);
 
- 
+  
+  
   
 
 
@@ -318,7 +311,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
                     position="relative"
                   >
                     <a
-                      ref={index === 0 ? materialRef : null}
                       className="matrial_class"
                       onClick={(e) => {
                         updateTextureFun(elem);

@@ -52,7 +52,7 @@ const Modal = () => {
 
     const fetchData = async () => {
       try {
-        setLoading(true);
+        // setLoading(true);
         debouncedRemoveCart();
 
         const response = await axios.get(
@@ -79,7 +79,7 @@ const Modal = () => {
           console.error("Failed to fetch categories:", error);
         }
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -90,7 +90,7 @@ const Modal = () => {
     return () => {
       source.cancel("Component unmounted, request canceled");
     };
-  }, [selectedCategory, dispatch, debouncedRemoveCart, selectedModalData]);
+  }, []);
 
   // ✅ Fetch steps data for selected modal
   const getStep = async (modalData) => {

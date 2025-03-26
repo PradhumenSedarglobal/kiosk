@@ -29,9 +29,9 @@ const DisplayComponent = ({ data, formik }) => {
 };
 const SubStepImport = ({ formik, data }) => {
   return (
-    // <Box>
+    <Box>
       <DisplayComponent data={data} formik={formik} />
-   // </Box>
+    </Box>
   );
 };
 

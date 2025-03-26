@@ -78,6 +78,8 @@ const slice = createSlice({
         orderList: state.orderList,
         SelectedCategory: state.SelectedCategory,
         SelectedModal: state.SelectedModal,
+        
+        
       }
     },
 
