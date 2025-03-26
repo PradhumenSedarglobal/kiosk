@@ -37,8 +37,7 @@ const item_img_path = process.env.NEXT_PUBLIC_ITEM_IMG_WEBP_PATH + "laptop/";
 const perPage = 15;
 
 const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
-  const locale = 'uae-en';
-  const { query } = useRouter();
+  const { query, locale } = useRouter();
   const { slug } = query;
   const { t: translate } = useTranslation();
   const dispatch = useDispatch();

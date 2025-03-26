@@ -2,9 +2,10 @@ var validation_steps_type = ["TECH", "MATL", "MEASUREMENT", "ROLL_CALCULATION"];
 import PdpShema from "@/modules/PdpSchema";
 import PlpSchema from "@/modules/PlpSchema";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
 
 import {
+  removecart,
   resetState,
   setCustomization,
   setHeaderResponse,
@@ -63,6 +64,7 @@ import BottomBarTabination from "@/sections/product/customization/Steps/tabinati
 import CartManager from "@/components/CartManager";
 import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
+import ModalGallary from "@/app/components/ModalGallary";
 
 const SceneCanvas3D = dynamic(
   () => import("@/sections/product/customization/sceneCanvas3D"),
@@ -150,6 +152,8 @@ export default function ProductPage(props) {
   const handleOpen = () => setOpen(!open);
   const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
   const [formClose, setFormClose] = useState(false);
+  const [modalSliderImage, setModalSliderImage] = useState(null);
+  const { query, locale } = useRouter();
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
@@ -171,12 +175,32 @@ export default function ProductPage(props) {
     materialList,
     orderList,
     isCustomizationLoading,
-    resetCanvasScene
+    resetCanvasScene,
+    productInfo,
   } = useSelector((state) => state.customization);
 
-  console.log("resetCanvasScene",resetCanvasScene);
+  console.log("resetCanvasScene", resetCanvasScene);
 
- 
+  const getModalGallary = async () => {
+    if (SelectedCategory !== null && SelectedModal !== null) {
+      const response = await apiSSRV2DataService.getAll({
+        path: `kiosk/fetch_gallery`,
+        param: {
+          category: "curtains-and-drapes",
+          item_code: "1008706",
+        },
+        cookies: cookies,
+        locale: locale,
+      });
+
+      setModalSliderImage(response.result);
+      console.log("gallary Response", response.result);
+    }
+  };
+
+  useEffect(() => {
+    getModalGallary();
+  }, [SelectedCategory, SelectedModal]);
 
   useEffect(() => {
     console.log("orderListnew", orderList);
@@ -193,7 +217,6 @@ export default function ProductPage(props) {
   const data2 = customization?.CHILD;
   const scanner = useSelector((state) => state.scanner.value);
   const fonts = useSelector((state) => state.font);
-  const locale = "uae-en";
 
   const formik = useFormik({
     initialValues: {
@@ -216,40 +239,39 @@ export default function ProductPage(props) {
   useEffect(() => {
     try {
       if (!materialList?.length) return;
-  
-      // setThumbsSwiper(null); 
+
+      // setThumbsSwiper(null);
       const subChild = materialList.flatMap((item) => item.items);
-  
+
       const selectedMaterial = subChild.find(
         (item) => item.SII_CODE === selectedItemCode
       );
-  
+
       if (!selectedMaterial?.gallery?.length) return;
-  
+
       const newImageUrls = selectedMaterial.gallery.map(
         (item) => item.SLI_IMAGE_PATH
       );
-  
+
       const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
       const updatedImageUrls = [firstImage, ...newImageUrls];
-  
+
       if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
         setImageUrls(updatedImageUrls);
       }
-  
+
       // Ensure Swiper instance is set AFTER updating images
       setTimeout(() => {
         if (thumbsSwiper) {
           thumbsSwiper.update(); // Ensure it's properly updated
         }
       }, 100);
-  
+
       console.log("setImageUrls", imageUrls);
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
   }, [materialList, selectedItemCode, imageUrls]);
-  
 
   // useEffect(() => {
   //   console.log("stepCount", stepCount);
@@ -358,11 +380,10 @@ export default function ProductPage(props) {
       thumbsSwiper.update();
     }
   }, [thumbsSwiper]);
-  
 
   const handleThumbnailClick = (index) => {
     console.log("Thumbnail clicked:", index);
-  
+
     if (!thumbsSwiper || !mainSwiper) {
       console.warn("Swiper instances are not ready. Retrying...");
       setTimeout(() => {
@@ -376,13 +397,11 @@ export default function ProductPage(props) {
       }, 100);
       return;
     }
-  
+
     setAllowNextSlide(true);
     thumbsSwiper.slideTo(index);
     mainSwiper.slideTo(index);
   };
-  
-  
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -516,7 +535,7 @@ export default function ProductPage(props) {
           {/* Burger Menu End  */}
 
           {/* Reset 3dModal Icon Start */}
-          { stepCount !== 0 && stepCount !== 1 && (
+          {stepCount !== 0 && stepCount !== 1 && (
             <Fab
               onClick={() => {
                 resetCanvasScene();
@@ -532,21 +551,20 @@ export default function ProductPage(props) {
                 zIndex: 999,
                 marginLeft: "5px",
                 top: "10px",
-              
+
                 // Use MUI breakpoints for responsiveness
-                right: { 
+                right: {
                   // xs: "calc(100vw - 200px)",  // Mobile (375px+)
                   // sm: "calc(100vw - 300px)",  // Tablet (600px+)
                   // md: "calc(100vw - 500px)",  // Small laptops (900px+)
-                  lg: "calc(100vw - 58%)",  // Large screens (1200px+)
+                  lg: "calc(100vw - 58%)", // Large screens (1200px+)
                 },
-              
+
                 // Media Query (Only if necessary)
                 "@media (min-width: 375px) and (max-width: 959px)": {
-                  right: "calc(100vw - 95%)", 
-                }
+                  right: "calc(100vw - 95%)",
+                },
               }}
-              
               color="warning"
               aria-label="edit"
             >
@@ -579,7 +597,14 @@ export default function ProductPage(props) {
                   {index === 0 ? (
                     <>
                       {(stepCount === 0 || stepCount === 1) &&
-                        materialList !== null && (
+                        materialList !== null &&
+                        (modalSliderImage?.length > 0 ? (
+                          <ModalGallary
+                            modalSliderImage={modalSliderImage}
+                            isTablet={isTablet}
+                            isMobile={isMobile}
+                          />
+                        ) : (
                           <Typography
                             sx={{
                               fontFamily: fonts.Helvetica_Neue_Bold.fontFamily,
@@ -603,7 +628,7 @@ export default function ProductPage(props) {
                               position: "relative",
                             }}
                           />
-                        )}
+                        ))}
 
                       {stepCount !== 0 &&
                         stepCount !== 1 &&
@@ -789,7 +814,10 @@ export default function ProductPage(props) {
                 <Button
                   size="large"
                   variant="outlined"
-                  onClick={previousStep}
+                  onClick={() => {
+                    previousStep();
+                    dispatch(removecart());
+                  }}
                   startIcon={<ArrowCircleLeftIcon />}
                 >
                   Previous
