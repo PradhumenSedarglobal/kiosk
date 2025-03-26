@@ -1,8 +1,11 @@
 import PdpShema from "@/modules/PdpSchema";
 import PlpSchema from "@/modules/PlpSchema";
-import React from "react";
+import React, { useState } from "react";
 
-import { setCustomization, setHeaderResponse } from "@/redux/slices/customization";
+import {
+  setCustomization,
+  setHeaderResponse,
+} from "@/redux/slices/customization";
 import { useDispatch } from "@/redux/store";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES } from "@/utils/constant";
@@ -26,12 +29,17 @@ import ProductSlug from "@/sections/slug/ProductSlug";
 import { isEmpty } from "lodash";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import CartManager from "@/components/CartManager";
+import { useSelector } from "react-redux";
+import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
+import Fab from "@mui/material/Fab";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Thumbs } from "swiper/modules";
 
 export const getServerSideProps = async (context) => {
   console.time("getServerSideProps");
   const { locale, query, res, req } = context;
   const { cookies } = req;
-  
 
   // res.setHeader(
   //   "Cache-Control",
@@ -81,7 +89,7 @@ export const getServerSideProps = async (context) => {
 
     const productType =
       firstData?.result?.BANNER?.SC_REDIRECT_TO === "PRODUCT" ||
-        firstData?.result?.BANNER?.[0]?.SC_REDIRECT_TO == "PRODUCT"
+      firstData?.result?.BANNER?.[0]?.SC_REDIRECT_TO == "PRODUCT"
         ? "PRODUCT"
         : "BROWSE_COLLECTION";
 
@@ -325,14 +333,17 @@ export const getServerSideProps = async (context) => {
       path: `v2/getHeaderData`,
       param: {
         content: "Contact Info",
-        column_name: 'SH_LINK_URL',
-        column_value: 'tel:'
+        column_name: "SH_LINK_URL",
+        column_value: "tel:",
       },
       //cookies: GET_ALL_COOKIES,
       locale: locale,
     });
 
-    if (customizationRes?.result?.COMPONENT[0]?.PARENT.CHILD?.return_status == "-1") {
+    if (
+      customizationRes?.result?.COMPONENT[0]?.PARENT.CHILD?.return_status ==
+      "-1"
+    ) {
       if (locale == "default") {
         return {
           redirect: {
@@ -360,13 +371,12 @@ export const getServerSideProps = async (context) => {
         customizationRes: customizationRes,
         slug: slug,
         headerResponse: header_response,
-        customization_slug_url:customization_slug_url,
-        sys_id:sys_id
+        customization_slug_url: customization_slug_url,
+        sys_id: sys_id,
         // Will be passed to the page component as props
       },
     };
   } else {
-    
     if (locale == "default") {
       return {
         redirect: {
@@ -403,8 +413,14 @@ export default function ProductPage(props) {
     firstData,
     productsSlugPageData,
     customizationRes,
-    headerResponse
+    headerResponse,
   } = props;
+  const [open, setOpen] = useState(false);
+  const fonts = useSelector((state) => state.font);
+
+  // store thumbs swiper instance
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
   // console.log(customizationRes, 'customizationRes1');
   React.useEffect(() => {
     if (slug?.includes("customize") && slug?.length >= 3 && slug?.length <= 7) {
@@ -419,6 +435,18 @@ export default function ProductPage(props) {
       setClientSideReduxCookie({ dispatch: dispatch, router: router });
     }
   }, [slug, router]);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  const { orderList, resetCanvasScene } = useSelector(
+    (state) => state.customization
+  );
 
   const { result = {} } = productFilter || {};
   const filters = result.FILTERS || [];
@@ -599,7 +627,73 @@ export default function ProductPage(props) {
         <Head>
           <title>Customization List Page</title>
         </Head>
+
+        {/* Burger Menu Icon Start */}
+        <Fab
+          onClick={handleDrawerOpen}
+          sx={{
+            backgroundColor: "#ef9c00",
+            color: "#f5ece0",
+            fontFamily: fonts.Helvetica_Neue_Regular.style.fontFamily,
+            fontWeight: "700",
+            padding: "8px 16px",
+            position: "absolute",
+            zIndex: 999,
+            marginLeft: "5px",
+            top: "10px",
+          }}
+          color="warning"
+          aria-label="edit"
+        >
+          <MenuIcon />
+        </Fab>
+        {/* Burger Menu End  */}
+
+        <Fab
+          onClick={() => {
+            resetCanvasScene();
+          }}
+          className="resetbutton"
+          sx={{
+            backgroundColor: "#ef9c00",
+            color: "#f5ece0",
+            fontFamily: fonts.Helvetica_Neue_Regular.style.fontFamily,
+            fontWeight: "700",
+            padding: "8px 16px",
+            position: "absolute",
+            zIndex: 999,
+            marginLeft: "5px",
+            top: "10px",
+
+            // Use MUI breakpoints for responsiveness
+            right: {
+              xs: "calc(100vw - 200px)", // Mobile (375px+)
+              sm: "calc(100vw - 300px)", // Tablet (600px+)
+              md: "calc(100vw - 500px)", // Small laptops (900px+)
+              lg: "calc(100vw - 57%)", // Large screens (1200px+)
+            },
+
+            // Media Query (Only if necessary)
+            "@media (min-width: 375px) and (max-width: 959px)": {
+              right: "calc(100vw - 95%)",
+            },
+          }}
+          color="warning"
+          aria-label="edit"
+        >
+          <SettingsBackupRestoreIcon />
+        </Fab>
+
         <CustomizationSlug />
+        <CartManager
+          sx={{
+            overflow: "hidden",
+          }}
+          open={open}
+          handleDrawerOpen={handleDrawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          cartData={orderList}
+        />
       </React.Fragment>
     );
   }

@@ -240,8 +240,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     );
   }, [stepsArray["MATERIAL_SELECTION"]?.["ITEM_CODE"]]);
 
-  
-  
+ 
   
 
 

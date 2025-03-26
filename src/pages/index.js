@@ -171,7 +171,8 @@ export default function ProductPage(props) {
     materialList,
     orderList,
     isCustomizationLoading,
-    resetCanvasScene
+    resetCanvasScene,
+    productInfo
   } = useSelector((state) => state.customization);
 
   console.log("resetCanvasScene",resetCanvasScene);
@@ -253,6 +254,7 @@ export default function ProductPage(props) {
   const dispatch = useDispatch();
   const { t: translate } = useTranslation();
   const { slug } = props;
+  const { langName } = cookies || {};
   const {
     SC_LINK_URL,
     getFilterKeysValuesData,
@@ -344,7 +346,6 @@ export default function ProductPage(props) {
   });
 
   const handleThumbnailClick = (index) => {
-    
     setAllowNextSlide(true);
     thumbsSwiper.slideTo(index);
   };
@@ -401,9 +402,6 @@ export default function ProductPage(props) {
 
   useEffect(() => {
     console.log("materialListlllllll",materialList);
-    console.log("steeeeep", stepCount);
-    console.log("testing", stepCount === 0 || stepCount === 1);
-    console.log("isCustomizationLoading", isCustomizationLoading);
   }, [stepCount === 1]);
 
   const renderStep = () => {
@@ -504,7 +502,7 @@ export default function ProductPage(props) {
                   xs: "calc(100vw - 200px)",  // Mobile (375px+)
                   sm: "calc(100vw - 300px)",  // Tablet (600px+)
                   md: "calc(100vw - 500px)",  // Small laptops (900px+)
-                  lg: "calc(100vw - 710px)",  // Large screens (1200px+)
+                  lg: "calc(100vw - 57%)",  // Large screens (1200px+)
                 },
               
                 // Media Query (Only if necessary)
@@ -574,7 +572,11 @@ export default function ProductPage(props) {
                         stepCount !== 1 &&
                         !isCustomizationLoading && (
                           <SceneCanvas3D
-                            {...(data2 && data2.length > 0 ? data2[0] : {})}
+                          langName={langName}
+                          productInfo={productInfo}
+                            {...(customization?.CHILD && customization?.CHILD?.length > 0
+                              ? customization?.CHILD[0]
+                              : {})}
                           />
                         )}
 
