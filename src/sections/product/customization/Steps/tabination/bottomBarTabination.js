@@ -47,6 +47,8 @@ const BottomBarTabination = ({
   const { cookies } = state;
   const { langName } = cookies || {};
 
+  console.log("tabbbbbb",tabChange);
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -251,7 +253,7 @@ const BottomBarTabination = ({
               alignItems: "start",
             }}
           >
-            {tabChange !== "0" && (
+            {tabChange !== 1 && (
               <Button
                 size="large"
                 variant="outlined"
@@ -270,12 +272,12 @@ const BottomBarTabination = ({
               </Button>
             )}
 
-            {tabChange == "0" && (
+            {tabChange === 1 && (
               <Button
                 size="large"
                 variant="outlined"
                 onClick={handleHome}
-                startIcon={<ArrowCircleLeftIcon color="black" />}
+                startIcon={<HomeIcon color="black" />}
               >
                 Home
               </Button>

@@ -216,32 +216,40 @@ export default function ProductPage(props) {
   useEffect(() => {
     try {
       if (!materialList?.length) return;
-
+  
+      // setThumbsSwiper(null); 
       const subChild = materialList.flatMap((item) => item.items);
-
+  
       const selectedMaterial = subChild.find(
         (item) => item.SII_CODE === selectedItemCode
       );
-
+  
       if (!selectedMaterial?.gallery?.length) return;
-
+  
       const newImageUrls = selectedMaterial.gallery.map(
         (item) => item.SLI_IMAGE_PATH
       );
-
-      // Avoid unnecessary state updates
+  
       const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
       const updatedImageUrls = [firstImage, ...newImageUrls];
-
+  
       if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
         setImageUrls(updatedImageUrls);
       }
-
-      console.log("setImageUrls",imageUrls);
+  
+      // Ensure Swiper instance is set AFTER updating images
+      setTimeout(() => {
+        if (thumbsSwiper) {
+          thumbsSwiper.update(); // Ensure it's properly updated
+        }
+      }, 100);
+  
+      console.log("setImageUrls", imageUrls);
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
   }, [materialList, selectedItemCode, imageUrls]);
+  
 
   // useEffect(() => {
   //   console.log("stepCount", stepCount);
@@ -342,12 +350,39 @@ export default function ProductPage(props) {
     }
     return filter;
   });
+  const [mainSwiper, setMainSwiper] = useState(null);
+
+  useEffect(() => {
+    if (thumbsSwiper) {
+      console.log("ThumbsSwiper updated:", thumbsSwiper);
+      thumbsSwiper.update();
+    }
+  }, [thumbsSwiper]);
+  
 
   const handleThumbnailClick = (index) => {
-    console.log("thisclickcing",index);
+    console.log("Thumbnail clicked:", index);
+  
+    if (!thumbsSwiper || !mainSwiper) {
+      console.warn("Swiper instances are not ready. Retrying...");
+      setTimeout(() => {
+        if (thumbsSwiper && mainSwiper) {
+          console.log("Retrying slideTo", index);
+          thumbsSwiper.slideTo(index);
+          mainSwiper.slideTo(index);
+        } else {
+          console.error("Swiper instances are still not initialized.");
+        }
+      }, 100);
+      return;
+    }
+  
     setAllowNextSlide(true);
     thumbsSwiper.slideTo(index);
+    mainSwiper.slideTo(index);
   };
+  
+  
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -528,6 +563,7 @@ export default function ProductPage(props) {
               style={{
                 marginBottom: "5px",
               }}
+              onSwiper={setMainSwiper}
               className="previewImage"
               modules={[Thumbs]}
               thumbs={{ swiper: thumbsSwiper }}
