@@ -90,7 +90,7 @@ const Modal = () => {
     return () => {
       source.cancel("Component unmounted, request canceled");
     };
-  }, []);
+  }, [selectedCategory, dispatch, debouncedRemoveCart, selectedModalData]);
 
   // ✅ Fetch steps data for selected modal
   const getStep = async (modalData) => {
