@@ -71,7 +71,6 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
       },
       cookies: cookies,
     });
-    
 
     if (response.data.complete) {
       toast.success("Item quantity updated successfully!", {

@@ -36,10 +36,6 @@ const slice = createSlice({
   initialState,
   reducers: {
 
-    setMaterialListEmpty(state) {
-      state.materialList = [];
-    },
-
     setresetSceanCanvas(state,action){
       state.resetCanvasScene = action.payload;
     },
@@ -78,8 +74,6 @@ const slice = createSlice({
         orderList: state.orderList,
         SelectedCategory: state.SelectedCategory,
         SelectedModal: state.SelectedModal,
-        
-        
       }
     },
 
@@ -298,8 +292,7 @@ export const {
   resetState,
   setOrderList,
   setcanvasImg,
-  setresetSceanCanvas,
-  setMaterialListEmpty
+  setresetSceanCanvas
 } = slice.actions;
 
 // GET Faqs PAGE DATA

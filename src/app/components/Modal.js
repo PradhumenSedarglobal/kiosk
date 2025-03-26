@@ -52,7 +52,7 @@ const Modal = () => {
 
     const fetchData = async () => {
       try {
-        // setLoading(true);
+        setLoading(true);
         debouncedRemoveCart();
 
         const response = await axios.get(
@@ -79,7 +79,7 @@ const Modal = () => {
           console.error("Failed to fetch categories:", error);
         }
       } finally {
-        // setLoading(false);
+        setLoading(false);
       }
     };
 

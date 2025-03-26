@@ -59,9 +59,7 @@ function post({ path, data = "", cookies }) {
       site,
       locale,
     } = cookies || {};
-    // const localeParam = locale == "default" ? `${global}-en` : locale;
-    const localeParam = "uae-en";
-
+    const localeParam = locale == "default" ? `${global}-en` : locale;
     const config = {
       site: site,
       lang: langName,

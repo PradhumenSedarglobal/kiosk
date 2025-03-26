@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
 import { useDispatch } from "react-redux";
 import { loadingfalse } from "@/redux/slices/customization";
+import MainHeading from "@/app/components/MainHeading";
 
 const importView = (subreddit) =>
   dynamic(
@@ -44,9 +45,12 @@ const DisplayComponent = ({ data, formik, tabChange, setTabChange }) => {
   return <>{views}</>;
 };
 const StepImport = ({ formik, data, tabChange, setTabChange }) => {
+  console.log("dataaaaaaaaaaa",data);
+  // return false;
+
   return (
     <Box>
-      <MainHeading  title={data?.SPS_DESC} /> 
+       <MainHeading  title={data?.SPS_DESC} />
       <DisplayComponent data={data} formik={formik} tabChange={tabChange} setTabChange={setTabChange} />
     </Box>
   );

@@ -26,6 +26,7 @@ const Measurement = ({ data }) => {
   const customization_info = useSelector((state) => state.customization);
   const { state } = useAuthContext();
   const { cookies } = state;
+  const isFirstRender = useRef(true);
 
   console.log("customization_info111",customization_info);
 
@@ -37,16 +38,6 @@ const Measurement = ({ data }) => {
     product_width: false,
     product_height: false,
   });
-
-  useEffect(()=>{
-    if(productInfo.SPI_MIN_WIDTH && productInfo.SPI_MIN_HEIGHT){
-      setMe_width(productInfo.SPI_MIN_WIDTH);
-      measurementFun("product_width", productInfo.SPI_MIN_WIDTH);
-    }
-  
-  },[])
-
-
   const [matrialWidthChecker,setMaterialWidthChecker] = useState(false);
 
   let MIN_WIDTH = parseInt(productInfo.SPI_MIN_WIDTH);
@@ -264,7 +255,7 @@ const Measurement = ({ data }) => {
 
 
   useEffect(() => {
-    if (productInfo.SPI_MAX_WIDTH <= stepsArray.MEASUREMENT?.m_width) {
+    if (productInfo.SPI_MAX_WIDTH < stepsArray.MEASUREMENT?.m_width) {
       console.log("check width called");
       setMe_width(0);
       measurementFun("product_width", stepsArray.MEASUREMENT?.m_width);
@@ -272,12 +263,21 @@ const Measurement = ({ data }) => {
   }, [MAX_WIDTH < me_width]); 
 
   useEffect(() => {
-    if (productInfo.SPI_MAX_HEIGHT <= stepsArray.MEASUREMENT?.m_height) {
+    if (productInfo.SPI_MAX_HEIGHT < stepsArray.MEASUREMENT?.m_height) {
       console.log("check width called");
       setMe_width(0);
       measurementFun("product_height", stepsArray.MEASUREMENT?.m_height);
     }
   }, [MAX_HEIGHT < me_height]); 
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current && me_width) {
+      isFirstRender.current = false; // Mark as initialized
+      measurementFun("product_width", me_width); // Trigger onChange logic
+    }
+  }, []);
   
   
 
@@ -321,7 +321,7 @@ const Measurement = ({ data }) => {
           }}
         />
         <TextBox
-         
+          ref={isFirstRender}
           fullWidth
           type="text"
           variant="outlined"

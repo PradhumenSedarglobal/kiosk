@@ -22,7 +22,6 @@ import {
   loadingfalse,
   removecart,
   resetState,
-  setMaterialListEmpty,
 } from "@/redux/slices/customization";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -51,9 +50,8 @@ const BottomBarTabination = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("priceArray.SOL_VALUE:", priceArray.SOL_VALUE);
     if (priceArray.SOL_VALUE) {
-      setIsLoading(false); 
+      setIsLoading(false); // Hide loader when price is available
     }
   }, [priceArray.SOL_VALUE]);
 

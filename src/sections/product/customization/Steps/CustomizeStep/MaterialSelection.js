@@ -55,7 +55,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
 
   const customization_info = useSelector((state) => state.customization);
 
-
+  console.log("customization1111",customization_info);
 
   const { state } = useAuthContext();
   const { cookies } = state;
@@ -71,7 +71,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   } = customization_info;
   
 
-  console.log("stepsArray",stepsArray);
+  
   
 
   let m_width = productInfo.m_width ? productInfo.m_width : 0;
@@ -96,7 +96,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
 
   
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
-      if (val.SII_WIDTH <= stepsArray.MEASUREMENT?.m_width) {
+      if (val.SII_WIDTH < productInfo?.m_width) {
         setAlertMessage(
           "The entered width should not be greater than the selected material's maximum width."
         );
@@ -104,13 +104,13 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
         // ✅ Automatically remove the alert after 5 seconds
         setTimeout(() => {
           setAlertMessage(null);
-          setTabChange(1); // Moves to the first page
+          setTabChange(1); 
         }, 4000);
       }
     }
 
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_HEIGHT_YN === "Y") {
-      if (val.SII_HEIGHT <= stepsArray.MEASUREMENT?.m_height) {
+      if (val.SII_HEIGHT < productInfo?.m_height) {
         setAlertMessage(
           "The entered height should not be greater than the selected material's maximum height."
         );
@@ -231,6 +231,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   useEffect(() => {
     setTimeout(
       function () {
+    console.log("testing");
         addToCartFunScene(
           { ...cookies, ...customization_info, locale: locale },
           dispatch
@@ -238,11 +239,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
       }.bind(this),
       100
     );
-  }, [stepsArray["MATERIAL_SELECTION"]?.["ITEM_CODE"]]);
-
-  
-  
-  
+  }, [stepsArray["MATERIAL_SELECTION"]]);
 
 
   const sliderSetting = {
