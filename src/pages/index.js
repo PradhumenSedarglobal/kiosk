@@ -425,6 +425,7 @@ export default function ProductPage(props) {
   };
 
   const handleDrawerOpen = () => {
+    dispatch(setStepIndex(11))
     setOpen(true);
   };
 
@@ -613,7 +614,7 @@ export default function ProductPage(props) {
             color="warning"
             aria-label="edit"
           >
-            <MenuIcon className="drawer" onClick={() => dispatch(setStepIndex(11))} />
+            <MenuIcon className="drawer"  />
 
           </Fab>
           {/* Burger Menu End  */}

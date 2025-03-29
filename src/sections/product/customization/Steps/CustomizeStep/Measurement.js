@@ -331,6 +331,13 @@ const Measurement = ({ data }) => {
           size="large"
           name="product_width"
           value={me_width}
+          onClick={()=>{
+            if(!hasUpdated){
+              setTimeout(()=>{
+                dispatch(setStepIndex(tourState.stepIndex + 1));
+              },1000)
+            }
+          }}
           onChange={(e) => {
             re.test(e.target.value)
               ? setMe_width(e.target.value)
@@ -338,11 +345,6 @@ const Measurement = ({ data }) => {
             re.test(e.target.value) &&
               measurementFun("product_width", e.target.value);
               setHasUpdated(true);
-              if(!hasUpdated){
-                setTimeout(()=>{
-                  dispatch(setStepIndex(tourState.stepIndex + 1));
-                },1000)
-              }
             }}
           helperText={
             isvalid.product_width &&

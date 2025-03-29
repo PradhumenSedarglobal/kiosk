@@ -305,7 +305,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
                       // p: 0.5,
                       borderRadius: '10px',
                       border:
-                        checked && `2px solid ${theme.palette.primary.main}`,
+                        checked && `3px solid ${theme.palette.primary.main}`,
                     })}
                     position="relative"
                   >
