@@ -426,7 +426,6 @@ export default function ProductPage(props) {
   };
 
   const handleDrawerOpen = () => {
-    dispatch(setStepIndex(11))
     setOpen(true);
   };
 

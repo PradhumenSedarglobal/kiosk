@@ -19,6 +19,7 @@ import { useAuthContext } from "@/auth/useAuthContext";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { setOrderList } from "@/redux/slices/customization";
 import { toast } from "react-toastify";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 const WhiteDeleteIcon = styled(DeleteIcon)(({ theme }) => ({
   color: "#fff",
@@ -41,21 +42,28 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   const dispatch = useDispatch();
 
   const removeCart = async (cartId) => {
+    console.log("cartId", cartId);
+  
     const response = await apiSSRV2DataService.Delete({
       path: `kiosk/cart/${cartId}`,
       param: { content: "customization", sys_id: 0 },
       cookies: cookies,
     });
-
+  
     if (response.data.complete) {
       toast.success("Item successfully removed from cart!", {
         position: "top-right",
         style: { background: 'linear-gradient(45deg, #d32f2f, #f44336)', color: 'white' },
       });
-
-      dispatch(setOrderList(response.data));
+  
+      // ✅ Update the cart list by filtering out the deleted item
+      dispatch(setOrderList({
+        ...response.data,
+        complete: cartData.complete.filter(item => item.SOL_SYS_ID !== cartId)
+      }));
     }
   };
+  
 
   const updateQuantity = async (cartId, updatedQty) => {
     if (updatedQty < 1) return; // Prevent negative or zero values
@@ -84,6 +92,7 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
 
   return (
     <Drawer
+      onClick={()=>{dispatch(setStepIndex(11))}}
       sx={{
         width: { md: drawerWidth, sm: "100%", xs: "100%" },
         flexShrink: 0,
