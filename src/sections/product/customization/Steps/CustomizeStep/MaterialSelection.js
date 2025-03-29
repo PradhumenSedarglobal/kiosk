@@ -30,6 +30,7 @@ import { useAuthContext } from "@/auth/useAuthContext";
 import MaterialSwiper from "./MaterialSelectionSwiper";
 import MainHeading from "@/app/components/MainHeading";
 import SubHeading from "@/app/components/SubHeading";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 const qs = require("qs");
 
 let img_path = "/assets/images/";
@@ -37,7 +38,8 @@ const item_img_path = process.env.NEXT_PUBLIC_ITEM_IMG_WEBP_PATH + "laptop/";
 const perPage = 15;
 
 const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
-  const { query, locale } = useRouter();
+  const locale = 'uae-en';
+  const { query } = useRouter();
   const { slug } = query;
   const { t: translate } = useTranslation();
   const dispatch = useDispatch();
@@ -84,6 +86,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   let SPI_PR_ITEM_CODE = productInfo.SPI_PR_ITEM_CODE
     ? productInfo.SPI_PR_ITEM_CODE
     : 0;
+  const tourState = useSelector((state) => state.tour);
 
    
     console.log("SPI_PR_ITEM_CODE",SPI_PR_ITEM_CODE);
@@ -95,7 +98,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
 
   
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
-      if (val.SII_WIDTH < productInfo?.m_width) {
+      if (val.SII_WIDTH <= stepsArray.MEASUREMENT?.m_width) {
         setAlertMessage(
           "The entered width should not be greater than the selected material's maximum width."
         );
@@ -103,13 +106,13 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
         // ✅ Automatically remove the alert after 5 seconds
         setTimeout(() => {
           setAlertMessage(null);
-          setTabChange(1); 
+          setTabChange(1); // Moves to the first page
         }, 4000);
       }
     }
 
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_HEIGHT_YN === "Y") {
-      if (val.SII_HEIGHT < productInfo?.m_height) {
+      if (val.SII_HEIGHT <= stepsArray.MEASUREMENT?.m_height) {
         setAlertMessage(
           "The entered height should not be greater than the selected material's maximum height."
         );
@@ -297,7 +300,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
               return (
                 <Grid item lg={4} md={4} sm={4} xs={6} xxs={6} key={index}>
                   <Box
-                    
+                    className="selectMaterial"
                     sx={(theme) => ({
                       // p: 0.5,
                       borderRadius: '10px',
@@ -310,6 +313,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
                       className="matrial_class"
                       onClick={(e) => {
                         updateTextureFun(elem);
+                        dispatch(setStepIndex(tourState.stepIndex + 1))
                       }}
                       style={{ cursor: "pointer" }}
                     >
@@ -366,7 +370,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
                 </Grid>
               );
             })}
-          <Grid item lg={12} md={12} sm={12} xs={12} xxs={12}>
+          <Grid   item lg={12} md={12} sm={12} xs={12} xxs={12}>
             {data?.SUB_CHILD.map((elem, index) => {
               if (elem?.SUB_CHILD && elem?.SUB_CHILD[0]) {
                 return (

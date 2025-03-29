@@ -20,6 +20,7 @@ import {
 import MainHeading from "./MainHeading";
 import ImageCard from "./ImageCard";
 import { useAuthContext } from "@/auth/useAuthContext";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 const fetchCategory = async (cancelToken) => {
   try {
@@ -60,9 +61,8 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
   const { cookies } = state;
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const globalSelectedCategory = useSelector(
-    (state) => state.customization.SelectedCategory
-  );
+  const globalSelectedCategory = useSelector((state) => state.customization.SelectedCategory);
+  const stepCount = useSelector((state) => state.step.value);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -95,6 +95,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
           setSelectedCategory(initialCategory);
           dispatch(removecart());
           dispatch(updateSelectedCategory(initialCategory));
+
         }
       })
       .catch((error) => setError(error))
@@ -111,6 +112,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
       dispatch(loadingfalse(true));
       setSelectedCategory(link);
       dispatch(updateSelectedCategory(link));
+      
       console.log("Category changed to:", link);
     },
     [dispatch]
@@ -128,6 +130,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
     () =>
       category.map((item, index) => (
         <Grid
+          className="category-container"
           item
           xs={6}
           sm={6}
@@ -155,6 +158,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
             selected={selectedCategory === item.link_url}
             functionname={handleChange}
             img={item.image_path}
+            step={stepCount}
           />
         </Grid>
       )),

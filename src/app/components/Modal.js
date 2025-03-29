@@ -17,10 +17,14 @@ import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied
 import { Alert, Box, Grid, AlertTitle } from "@mui/material";
 import axios from "axios";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
+import InstructionTooltip from "./InstructionTooltip";
+
 
 const Modal = () => {
   const dispatch = useDispatch();
-
+  const [isTooltipOpen, setIsTooltipOpen] = useState(true);
+  const ModalSelection = "Step 2: Now you need to select modal!";
+  const stepCount = useSelector((state) => state.step.value);
   const selectedCategory = useSelector(
     (state) => state.customization.SelectedCategory
   );
@@ -44,7 +48,7 @@ const Modal = () => {
   // ✅ Reset state when category changes
   useEffect(() => {
     dispatch(removecart());
-  }, [(selectedCategory && selectedModalData !== null), dispatch]);
+  }, [selectedCategory && selectedModalData !== null, dispatch]);
 
   // ✅ Fetch modal data when category changes
   useEffect(() => {
@@ -137,6 +141,13 @@ const Modal = () => {
 
   return (
     <>
+      {/* {isTooltipOpen && !loading && (
+        <InstructionTooltip
+          onClose={() => setIsTooltipOpen(false)}
+          message={ModalSelection}
+        />
+      )} */}
+
       {loading ? (
         <Box
           sx={{
@@ -154,83 +165,90 @@ const Modal = () => {
         </Box>
       ) : (
         <>
-        <MainHeading sx={{ mb: 2 }} title="Modal Selection" />
-        <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
-         
-
-          <Box
-            className="bigipads"
-            sx={{ height: { lg: "calc(100vh - 130px)" }, overflow: "auto" }}
-          >
-            <Grid
-              container
-              spacing={2}
-              sx={{alignItems: "start",
-              justifyContent: "start", 
-              pt:2,
-              px: 2, pb: { sm: 20, xs: 20, md: 5, lg: 5 } }}
+          <MainHeading sx={{ mb: 2 }} title="Modal Selection" />
+          <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
+            <Box
+              className="bigipads"
+              sx={{ height: { lg: "calc(100vh - 130px)" }, overflow: "auto" }}
             >
-              {/* ✅ Show message if no data */}
-              {!modalData?.model || modalData.model.length === 0 ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    height: "250px",
-                    textAlign: "center",
-                    borderRadius: "8px",
-                    padding: "20px",
-                  }}
-                >
-                  <Alert
-                    severity="warning"
-                    icon={<SentimentDissatisfiedIcon fontSize="large" />}
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  alignItems: "start",
+                  justifyContent: "start",
+                  pt: 2,
+                  px: 2,
+                  pb: { sm: 20, xs: 20, md: 5, lg: 5 },
+                }}
+              >
+                {/* ✅ Show message if no data */}
+                {!modalData?.model || modalData.model.length === 0 ? (
+                  <Box
                     sx={{
-                      maxWidth: "400px",
-                      color: "#ff9800",
-                      fontSize: "1rem",
-                      fontWeight: "bold",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      height: "250px",
+                      textAlign: "center",
+                      borderRadius: "8px",
+                      padding: "20px",
                     }}
                   >
-                    <AlertTitle>No Data Available</AlertTitle>
-                    Please try selecting a different category.
-                  </Alert>
-                </Box>
-              ) : (
-                modalData.model.map((item, index) => (
-                  <Grid item xs={6} sm={6} md={4} key={item.id || index}
-                  sx={{
-                    flex: "0 0 50%",
-                    "@media (min-width: 992px)": {
-                      flex: "0 0 calc(100% / 2)",
-                      maxWidth:"50% !important"
-                    },
-                    "@media (min-width: 768px) and (max-width: 991px)": {
-                      flex: "0 0 calc(100% / 4)",
-                    },
-                    "@media (max-width: 575px)": {
-                      flex: "0 0 calc(100% / 2)",
-                    },
-                  }}
-                  
-                  >
-                    <ImageCard
-                      category={selectedCategory}
-                      index={index}
-                      name={item.SPI_LINK_TITLE}
-                      link={item.SPI_LINK_URL}
-                      selected={selectedModalData === item.SPI_LINK_URL}
-                      functionname={handleChange}
-                      img={item.SPI_IMAGE_PATH}
-                    />
-                  </Grid>
-                ))
-              )}
-            </Grid>
+                    <Alert
+                      severity="warning"
+                      icon={<SentimentDissatisfiedIcon fontSize="large" />}
+                      sx={{
+                        maxWidth: "400px",
+                        color: "#ff9800",
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      <AlertTitle>No Data Available</AlertTitle>
+                      Please try selecting a different category.
+                    </Alert>
+                  </Box>
+                ) : (
+                  modalData.model.map((item, index) => (
+                    <Grid
+                      className="selectModal"
+                      item
+                      xs={6}
+                      sm={6}
+                      md={4}
+                      key={item.id || index}
+                      sx={{
+                        flex: "0 0 50%",
+                        "@media (min-width: 992px)": {
+                          flex: "0 0 calc(100% / 2)",
+                          maxWidth: "50% !important",
+                        },
+                        "@media (min-width: 768px) and (max-width: 991px)": {
+                          flex: "0 0 calc(100% / 4)",
+                        },
+                        "@media (max-width: 575px)": {
+                          flex: "0 0 calc(100% / 2)",
+                        },
+                      }}
+                    >
+                      <ImageCard
+                        category={selectedCategory}
+                        index={index}
+                        name={item.SPI_LINK_TITLE}
+                        link={item.SPI_LINK_URL}
+                        selected={selectedModalData === item.SPI_LINK_URL}
+                        functionname={handleChange}
+                        img={item.SPI_IMAGE_PATH}
+                        step={stepCount}
+                      />
+                    </Grid>
+                  ))
+                )}
+              </Grid>
+            </Box>
           </Box>
-        </Box>
         </>
       )}
     </>

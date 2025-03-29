@@ -24,6 +24,7 @@ import SideTab from "./tabination/sideTab";
 import { useAuthContext } from "@/auth/useAuthContext";
 import PopupModal from "@/app/components/PopupModal";
 import { decrementStep } from "@/redux/slices/stepSlice";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 
 const SceneCanvas3D = dynamic(() => import("../sceneCanvas3D"), {
@@ -48,7 +49,13 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   const [tabChange, setTabChange] = useState("1");
   const onNextHandle = (type) => {
     stepValidation();
-    
+    console.log("tabbbbbb",tabChange);
+    if(tabChange === "1"){
+      dispatch(setStepIndex(7));
+    }else if(tabChange === 2){
+      dispatch(setStepIndex(9));
+    }
+   
 
     let missing_step = Object.keys(missingStep);
     let cart_status =

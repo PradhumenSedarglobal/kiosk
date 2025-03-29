@@ -22,7 +22,9 @@ function getAll(path, param = "", asPath) {
 
       const country = countryName;
       const userId = USER_ID;
-      const localeParam = locale == "default" ? `${global}-en` : locale;
+      // const localeParam = locale == "default" ? `${global}-en` : locale;
+      const localeParam = "uae-en";
+      
 
       let path_url = `${path}?lang=${langName || ""}&site=${
         site || ""

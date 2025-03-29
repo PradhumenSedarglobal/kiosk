@@ -68,7 +68,8 @@ const MaterialSwiper = ({ item_info, updateTextureFun, item_img_path, elem, prod
                                 updateTextureFun(subColor.texture_info);
                             }}
                         >
-                            <Box
+                            <Box 
+                              
                                 component="div"
                                 sx={{
                                     border: (theme) =>

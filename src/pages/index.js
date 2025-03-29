@@ -65,6 +65,11 @@ import CartManager from "@/components/CartManager";
 import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import ModalGallary from "@/app/components/ModalGallary";
+import InstructionTooltip from "@/app/components/InstructionTooltip";
+import { setStepIndex, startTour } from "@/redux/slices/tourSlice";
+
+// Dynamically import Joyride to prevent SSR issues
+const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
 
 const SceneCanvas3D = dynamic(
   () => import("@/sections/product/customization/sceneCanvas3D"),
@@ -154,6 +159,22 @@ export default function ProductPage(props) {
   const [formClose, setFormClose] = useState(false);
   const [modalSliderImage, setModalSliderImage] = useState(null);
   const { query, locale } = useRouter();
+  const [activeStep, setActiveStep] = useState(0);
+
+  const steps = [
+    {
+      title: "Select Category",
+      description: "Click to select an item to proceed.",
+    },
+    {
+      title: "Fill Details",
+      description: "Fill in your details in the form below.",
+    },
+    {
+      title: "Review & Submit",
+      description: "Review your submission before confirming.",
+    },
+  ];
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
@@ -459,6 +480,46 @@ export default function ProductPage(props) {
     console.log("isCustomizationLoading", isCustomizationLoading);
   }, [stepCount === 1]);
 
+  // const [tourState, setTourState] = useState({
+  //   run: false,
+  //   stepIndex: 0, 
+  //   steps: [
+  //     {
+  //       target: ".step-select",
+  //       content: "Select your prefrence how you move forword with that!",
+  //       placement: "top",
+  //       spotlightPadding: 10,
+  //     },
+  //     {
+  //       target: ".category-container",
+  //       content: "As of now, select a category and move forward.",
+  //       placement: "top",
+  //       spotlightPadding: 10,
+  //     },
+  //     {
+  //       target: ".continue",
+  //       content: "Now click on continue button",
+  //       placement: "top",
+  //       spotlightPadding: 10,
+  //     },
+  //   ],
+  // });
+
+  // useEffect(() => {
+  //   setTourState((prev) => ({ ...prev, run: true, stepIndex: 0 }));
+  // }, []);
+
+  useEffect(() => {
+    dispatch(startTour()); // ✅ Start the tour when component loads
+  }, [dispatch]);
+
+
+  const tourState = useSelector((state) => state.tour);
+
+  console.log("tourState",tourState);
+
+  
+
   const renderStep = () => {
     switch (stepCount) {
       case 0:
@@ -482,8 +543,30 @@ export default function ProductPage(props) {
     }
   };
 
+
+
   return (
     <>
+     <Joyride
+      steps={tourState.steps}
+      stepIndex={tourState.stepIndex} // Ensure stepIndex updates properly
+      run={tourState.run}
+      continuous
+      showProgress
+      showSkipButton
+      spotlightClicks
+      disableScrolling
+      placement="auto"
+      styles={{
+        options: {
+          zIndex: 99999,
+          overlayColor: "rgba(0, 0, 0, 0.5)",
+          primaryColor: "#ff6600",
+        },
+      }}
+    />
+
+
       <Head>
         <title>Customization List Page</title>
       </Head>
@@ -530,7 +613,8 @@ export default function ProductPage(props) {
             color="warning"
             aria-label="edit"
           >
-            <MenuIcon />
+            <MenuIcon className="drawer" onClick={() => dispatch(setStepIndex(11))} />
+
           </Fab>
           {/* Burger Menu End  */}
 
@@ -836,9 +920,13 @@ export default function ProductPage(props) {
               {/* Continue/Add to Cart Button */}
               {stepCount < 5 ? (
                 <Button
+                  className={stepCount == 1 ?  "continue2" : "continue" }
                   size="large"
                   variant="outlined"
-                  onClick={() => dispatch(incrementStep(stepCount + 1))}
+                  onClick={() => {dispatch(incrementStep(stepCount + 1)) 
+                    setTimeout(() => {
+                      dispatch(setStepIndex(tourState.stepIndex + 1));
+                    }, 2000);}}
                   endIcon={<ArrowCircleRightIcon />}
                 >
                   Continue

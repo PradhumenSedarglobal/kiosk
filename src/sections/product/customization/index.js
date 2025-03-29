@@ -22,6 +22,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Thumbs } from "swiper/modules";
 import "swiper/css";
 import { useMediaQuery } from "@mui/material";
+import Joyride from "react-joyride";
 
 // @mui
 const SceneCanvas3D = dynamic(() => import("./sceneCanvas3D"), {
@@ -63,6 +64,7 @@ const CustomizationSection = () => {
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
   const dispatch = useDispatch();
+  const tourState = useSelector((state) => state.tour);
 
   // store thumbs swiper instance
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -129,64 +131,29 @@ const CustomizationSection = () => {
     },
   });
 
-  const actions = [
-    {
-      icon: (
-        <CustomLink
-          target="_blank"
-          link="https://twitter.com/intent/tweet?text=Sedar"
-          lang={locale}
-        >
-          <Iconify
-            pt={1}
-            sx={{ color: (theme) => theme.palette.common.black }}
-            width={30}
-            height={30}
-            icon="circum:twitter"
-          />
-        </CustomLink>
-      ),
-      name: "twitter",
-    },
-    {
-      icon: (
-        <CustomLink
-          target="_blank"
-          link="https://web.whatsapp.com/send?text=Sedar"
-          lang={locale}
-        >
-          <Iconify
-            pt={1}
-            sx={{ color: (theme) => theme.palette.common.black }}
-            width={30}
-            height={30}
-            icon="prime:whatsapp"
-          />
-        </CustomLink>
-      ),
-      name: "whatsapp",
-    },
-    {
-      icon: (
-        <CustomLink
-          target="_blank"
-          link="https://www.facebook.com/sharer/sharer.php?u"
-          lang={locale}
-        >
-          <Iconify
-            pt={1}
-            sx={{ color: (theme) => theme.palette.common.black }}
-            width={30}
-            height={30}
-            icon="circum:facebook"
-          />
-        </CustomLink>
-      ),
-      name: "facebook",
-    },
-  ];
+  
 
   return (
+    <>
+      <Joyride
+      steps={tourState.steps}
+      stepIndex={tourState.stepIndex} // Ensure stepIndex updates properly
+      run={tourState.run}
+      continuous
+      showProgress
+      showSkipButton
+      spotlightClicks
+      disableScrolling
+      placement="auto"
+      styles={{
+        options: {
+          zIndex: 99999,
+          overlayColor: "rgba(0, 0, 0, 0.5)",
+          primaryColor: "#ff6600",
+        },
+      }}
+    />
+
     <Box
       sx={{
         height: { xxs: "100dvh", xs: "100dvh", sm: "100dvh", md: "100vh" },
@@ -199,6 +166,7 @@ const CustomizationSection = () => {
         },
       }}
     >
+      
       <Grid container direction="row">
         <Grid item lg={7} md={7} sm={12} xs={12} xxs={12}>
           {!isDownxs && (
@@ -402,6 +370,7 @@ const CustomizationSection = () => {
         </Grid>
       </Grid>
     </Box>
+    </>
   );
 };
 

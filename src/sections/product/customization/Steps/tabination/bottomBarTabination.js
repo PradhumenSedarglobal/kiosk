@@ -24,6 +24,7 @@ import {
   resetState,
 } from "@/redux/slices/customization";
 import CircularProgress from "@mui/material/CircularProgress";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 const BottomBarTabination = ({
   setTabChange,
@@ -47,7 +48,7 @@ const BottomBarTabination = ({
   const { cookies } = state;
   const { langName } = cookies || {};
 
-  console.log("tabbbbbb",tabChange);
+ 
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -65,6 +66,8 @@ const BottomBarTabination = ({
     dispatch(showScanner(true));
     dispatch(decrementStep(0));
   };
+
+  const tourState = useSelector((state) => state.tour);
 
   return (
     <Box
@@ -167,7 +170,7 @@ const BottomBarTabination = ({
 
           <Grid item xs={5} pt={"0 !important"}>
             {isLoading ? (
-              <Box
+              <Box 
                 sx={{
                   display: "flex",
                   justifyContent: "flex-end",
@@ -205,12 +208,12 @@ const BottomBarTabination = ({
                 />
                 <style>
                   {`
-        @keyframes dot-pulse {
-          0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.5); opacity: 0.5; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-      `}
+                    @keyframes dot-pulse {
+                      0% { transform: scale(1); opacity: 1; }
+                      50% { transform: scale(1.5); opacity: 0.5; }
+                      100% { transform: scale(1); opacity: 1; }
+                    }
+                  `}
                 </style>
               </Box>
             ) : (
@@ -253,7 +256,7 @@ const BottomBarTabination = ({
               alignItems: "start",
             }}
           >
-            {tabChange !== 1 && (
+            {tabChange >= 1 && (
               <Button
                 size="large"
                 variant="outlined"
@@ -262,6 +265,7 @@ const BottomBarTabination = ({
                     console.log("tabChangetabChange", tabChange);
                     dispatch(removecart());
                     dispatch(loadingfalse(true));
+                    
                   }
 
                   onPreviousHandle("PREV");
@@ -272,7 +276,7 @@ const BottomBarTabination = ({
               </Button>
             )}
 
-            {tabChange === 1 && (
+            {/* {tabChange === 1 && (
               <Button
                 size="large"
                 variant="outlined"
@@ -281,7 +285,7 @@ const BottomBarTabination = ({
               >
                 Home
               </Button>
-            )}
+            )} */}
           </Grid>
           <Grid
             item
@@ -294,6 +298,13 @@ const BottomBarTabination = ({
           >
             {tabChange != "5" && priceArray.SOL_VALUE > 0 && (
               <Button
+              className={
+                tabChange === 1 ? "continue3" :
+                tabChange === 2 ? "continue4" :
+                tabChange === 3 ? "continue5" :
+                tabChange === 4 ? "continue6" :
+                "" 
+              }
                 size="large"
                 variant="outlined"
                 onClick={() => {

@@ -14,6 +14,7 @@ import { QrReader } from "react-qr-reader";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
 import { showScanner } from "@/redux/slices/scannerSlice";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 export default function ScanModal() {
   const [scaner, setScaner] = useState(false);
@@ -82,6 +83,7 @@ export default function ScanModal() {
           </IconButton>
 
           <Grid
+            className="starterPoint"
             container
             spacing={2}
             justifyContent="center"
@@ -102,7 +104,10 @@ export default function ScanModal() {
                 </Box>
               ) : (
                 <Card
-                  onClick={handleBarCodeClick}
+                  onClick={()=>{
+                    handleBarCodeClick();
+                    dispatch(setStepIndex(1));
+                  }}
                   variant="outlined"
                   sx={{
                     width: "100%",
@@ -135,7 +140,10 @@ export default function ScanModal() {
             {!scaner && (
               <Grid item xs={6} md={6} display="flex" justifyContent="center">
                 <Card
-                  onClick={() => handleManualClick()}
+                  onClick={() => {
+                    handleManualClick(); 
+                    dispatch(setStepIndex(1));
+                  }}
                   variant="outlined"
                   sx={{
                     width: "100%",

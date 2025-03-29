@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardMedia, CardContent, Typography } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 const ImageCard = ({
   functionname,
@@ -11,14 +12,27 @@ const ImageCard = ({
   name,
   selected,
   link,
+  step
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const fonts = useSelector((state) => state.font);
+  const dispatch = useDispatch();
+
+  const tourState = useSelector((state) => state.tour);
+
+
+  console.log("tourStatevlaue",tourState);
+  console.log("stepvvvvv",step);
+
+ 
 
   return (
     <Card
       ref={refName}
-      onClick={() => functionname(link)}
+      onClick={() => {
+        functionname(link);
+        dispatch(setStepIndex(tourState.stepIndex+1));
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       sx={{

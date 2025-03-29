@@ -22,6 +22,7 @@ import axios from "axios";
 import "react-phone-input-2/lib/style.css";
 import {
   removecart,
+  resetState,
   setCustomerSysId,
   setCustomerSystemId,
   setGeoLocationDetails,
@@ -35,6 +36,7 @@ import { decrementStep } from "@/redux/slices/stepSlice";
 import { addToCartFunScene } from "@/sections/product/customization/addToCartFunScene";
 import { NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES } from "@/utils/constant";
 import { toast } from "react-toastify";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 export default function PopupModal({ setAddToCartShow }) {
   const { state } = useAuthContext();
@@ -140,6 +142,8 @@ export default function PopupModal({ setAddToCartShow }) {
             total_price: response.data.total_price,
           })
         );
+
+        dispatch(resetState());
       }
 
       console.log("API Response OrderList:", response);
@@ -152,10 +156,12 @@ export default function PopupModal({ setAddToCartShow }) {
   };
 
   const onSubmit = async (data) => {
+      
     if (!data.customerName || !data.styleConsultantId || !phone) {
       toast.error("Please fill all required fields before submitting.");
       return;
     }
+
 
     try {
       const formData = new FormData();
@@ -203,6 +209,8 @@ export default function PopupModal({ setAddToCartShow }) {
               color: "white",
             },
           });
+
+          dispatch(setStepIndex(10));
 
           const handleAddToCart = async () => {
             try {
@@ -351,7 +359,7 @@ export default function PopupModal({ setAddToCartShow }) {
 
             {/* Submit Button */}
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-              <Button type="submit" size="large" variant="contained">
+              <Button className="submit" type="submit" size="large" variant="contained">
                 Submit
               </Button>
             </Box>

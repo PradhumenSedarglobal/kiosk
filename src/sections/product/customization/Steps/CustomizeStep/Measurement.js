@@ -13,6 +13,7 @@ import {
 import { useAuthContext } from "@/auth/useAuthContext";
 import MainHeading from "@/app/components/MainHeading";
 import SubHeading from "@/app/components/SubHeading";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 const re = /^\d*\.?\d*$/;
 
@@ -31,7 +32,7 @@ const Measurement = ({ data }) => {
   console.log("customization_info111",customization_info);
 
   const { stepsArray, editStepData, productInfo } = customization_info;
-
+  const [hasUpdated, setHasUpdated] = useState(false);
   let [me_width, setMe_width] = useState(productInfo.SPI_MIN_WIDTH);
   let [me_height, setMe_height] = useState(productInfo.SPI_MIN_HEIGHT);
   const [isvalid, setIivalid] = useState({
@@ -50,6 +51,7 @@ const Measurement = ({ data }) => {
   console.log("state.productInfo",productInfo);
   
   const fonts = useSelector((state) => state.font);
+  const tourState = useSelector((state) => state.tour);
 
   let restrict_to_material_width_yn =
     productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN
@@ -286,7 +288,7 @@ const Measurement = ({ data }) => {
   return (
     <>
     <SubHeading  title={data?.SPS_DESC} />
-    <Box sx={{ overflow: "hidden" }}>
+    <Box  sx={{ overflow: "hidden" }}>
 
       {/* <Box>
         <Typography
@@ -300,7 +302,7 @@ const Measurement = ({ data }) => {
         </Typography>
       </Box> */}
 
-      <Box  px={3} py={2} sx={{ overflow: "hidden"}}>
+      <Box className="selectMeasurment"  px={3} py={2} sx={{ overflow: "hidden"}}>
         {" "}
         {/* Hide overflow here */}
 
@@ -321,6 +323,7 @@ const Measurement = ({ data }) => {
           }}
         />
         <TextBox
+         
           ref={isFirstRender}
           fullWidth
           type="text"
@@ -334,7 +337,13 @@ const Measurement = ({ data }) => {
               : setMe_width("");
             re.test(e.target.value) &&
               measurementFun("product_width", e.target.value);
-          }}
+              setHasUpdated(true);
+              if(!hasUpdated){
+                setTimeout(()=>{
+                  dispatch(setStepIndex(tourState.stepIndex + 1));
+                },1000)
+              }
+            }}
           helperText={
             isvalid.product_width &&
             translate("product_width_validation", {

@@ -43,6 +43,7 @@ import orderInfoReducer from "./slices/payment-success"; //
 import scannerReducer from "./slices/scannerSlice";
 import fontReducer from "./slices/fontSlice";
 import stepReducer from "./slices/stepSlice";
+import tourReducer from "./slices/tourSlice";
 
 // ----------------------------------------------------------------------
 const rootReducer = combineReducers({
@@ -89,6 +90,7 @@ const rootReducer = combineReducers({
   scanner: scannerReducer,
   font: fontReducer,
   step: stepReducer,
+  tour: tourReducer,
 });
 
 export default rootReducer;
