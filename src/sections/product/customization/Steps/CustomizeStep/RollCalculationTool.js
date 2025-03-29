@@ -191,7 +191,7 @@ const RollCalculationTool = ({ data }) => {
           required
         />
       </Box>
-      <Box py={2}>
+      <Box px={3} py={2}>
         <Typography
          sx={{
           display: "flex",

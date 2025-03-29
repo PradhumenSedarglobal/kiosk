@@ -198,6 +198,7 @@ export default function ProductPage(props) {
     isCustomizationLoading,
     resetCanvasScene,
     productInfo,
+    modalDefaultItem
   } = useSelector((state) => state.customization);
 
   console.log("resetCanvasScene", resetCanvasScene);
@@ -207,8 +208,8 @@ export default function ProductPage(props) {
       const response = await apiSSRV2DataService.getAll({
         path: `kiosk/fetch_gallery`,
         param: {
-          category: "curtains-and-drapes",
-          item_code: "1008706",
+          category: SelectedCategory,
+          item_code: modalDefaultItem,
         },
         cookies: cookies,
         locale: locale,
@@ -221,7 +222,7 @@ export default function ProductPage(props) {
 
   useEffect(() => {
     getModalGallary();
-  }, [SelectedCategory, SelectedModal]);
+  }, [SelectedModal,SelectedCategory]);
 
   useEffect(() => {
     console.log("orderListnew", orderList);

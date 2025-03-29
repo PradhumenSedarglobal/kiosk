@@ -7,6 +7,7 @@ import {
   setCustomization,
   setHeaderResponse,
   setMaterialCustomization,
+  setModalDefaultItem,
   startCustomizationLoading,
   updateModalData,
   updateSelectedModal,
@@ -69,6 +70,8 @@ const Modal = () => {
 
           const firstModal =
             selectedModalData || response.data.result.model[0]?.SPI_LINK_URL;
+
+          dispatch(setModalDefaultItem(response.data.result.model[0]?.SPI_PR_ITEM_CODE));
 
           setSelectedModal(firstModal);
           dispatch(updateSelectedModal(firstModal));
