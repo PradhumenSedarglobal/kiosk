@@ -42,28 +42,28 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   const dispatch = useDispatch();
 
   const removeCart = async (cartId) => {
-    console.log("cartId", cartId);
-  
-    const response = await apiSSRV2DataService.Delete({
-      path: `kiosk/cart/${cartId}`,
-      param: { content: "customization", sys_id: 0 },
-      cookies: cookies,
+  console.log("cartId", cartId);
+
+  const response = await apiSSRV2DataService.Delete({
+    path: `kiosk/cart/${cartId}`,
+    param: { content: "customization", sys_id: 0 },
+    cookies: cookies,
+  });
+
+  if (response.data.complete) {
+    toast.success("Item successfully removed from cart!", {
+      position: "top-right",
+      style: { background: 'linear-gradient(45deg, #d32f2f, #f44336)', color: 'white' },
     });
-  
-    if (response.data.complete) {
-      toast.success("Item successfully removed from cart!", {
-        position: "top-right",
-        style: { background: 'linear-gradient(45deg, #d32f2f, #f44336)', color: 'white' },
-      });
-  
-      // ✅ Update the cart list by filtering out the deleted item
-      dispatch(setOrderList({
-        ...response.data,
-        complete: cartData.complete.filter(item => item.SOL_SYS_ID !== cartId)
-      }));
-    }
-  };
-  
+
+    // ✅ Update the cart list by filtering out the deleted item
+    dispatch(setOrderList({
+      ...response.data,
+      complete: cartData.complete.filter(item => item.SOL_SYS_ID !== cartId)
+    }));
+  }
+};
+
 
   const updateQuantity = async (cartId, updatedQty) => {
     if (updatedQty < 1) return; // Prevent negative or zero values

@@ -121,6 +121,8 @@ export default function PopupModal({ setAddToCartShow }) {
 
   const fetchOrderList = async (customerId, userId) => {
     try {
+      dispatch(setOrderList(null));
+
       const response = await axios.get(
         `https://migapi.sedarglobal.com/order/orderList?lang=en&site=100001&country=uae&visitorId=${customerId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=`,
         {
@@ -134,6 +136,8 @@ export default function PopupModal({ setAddToCartShow }) {
       );
 
       if (response) {
+
+        
      
         dispatch(
           setOrderList({
