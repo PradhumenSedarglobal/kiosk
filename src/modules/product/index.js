@@ -167,7 +167,7 @@ const ProductGridModule = ({
             });
           }
         } catch (error) {
-          console.log("slkdfkjsf", error);
+          console.log("error", error);
           enqueueSnackbar(`${translate("SomethingWentWrong")}`, {
             variant: "error",
           });
@@ -208,7 +208,7 @@ const ProductGridModule = ({
           });
         }
       } catch (error) {
-        console.log("TESTERRIR", error);
+        console.log("error", error);
         enqueueSnackbar(`${translate("SomethingWentWrong")}`, {
           variant: "error",
         });
@@ -262,7 +262,6 @@ const ProductGridModule = ({
           locale,
         })
         .then((response) => {
-          console.log("responseresponse", response);
           if (response.status === 200) {
             handleSetSteps(response?.data);
             setIsStepLoading(false);

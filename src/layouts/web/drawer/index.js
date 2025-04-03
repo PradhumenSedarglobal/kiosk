@@ -40,7 +40,7 @@ const DrawerBox = ({ open, handleClose, layout }) => {
     currentLang,
     languageDropDown,
   } = cookies || {};
-  console.log(languageDropDown,'languageDropDown');
+ 
   const { push, asPath, locale } = useRouter();
   const [expanded, setExpanded] = useState("panel1");
   const [countryCollapse, setCountryCollapse] = useState(true);

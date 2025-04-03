@@ -9,7 +9,7 @@ const AnnouncementModule = dynamic(() => import("@/modules/announcement"), {
 });
 
 const ProfileLayout = ({ children, mt = 6, layout }) => {
-  console.log(enq_type, 'enquiry_type3');
+ 
 
   return (
     <SnackbarProvider>

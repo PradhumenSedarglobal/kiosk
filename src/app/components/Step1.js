@@ -41,7 +41,7 @@ const fetchCategory = async (cancelToken) => {
 
 export async function getServerSideProps({ req }) {
 
-  console.log('Request Headers:', req.headers);
+ 
   // Get the IP address
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   
@@ -56,7 +56,7 @@ export async function getServerSideProps({ req }) {
 }
 
 const Step1 = ({ successValue, stepcount,userIp }) => {
-  console.log("userIp",userIp);
+
   const { state } = useAuthContext();
   const { cookies } = state;
   const [category, setCategory] = useState([]);
@@ -69,16 +69,6 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
 
-  // const getIpAddress = async () => {
-  //   try {
-  //     const res = await fetch("https://api.ipify.org?format=json");
-  //     const data = await res.json();
-  //     dispatch(setIp(data.ip));
-  //     console.log("Your IP:", data.ip);
-  //   } catch (err) {
-  //     console.error("Failed to fetch IP address:", err);
-  //   }
-  // };
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -112,8 +102,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
       dispatch(loadingfalse(true));
       setSelectedCategory(link);
       dispatch(updateSelectedCategory(link));
-      
-      console.log("Category changed to:", link);
+
     },
     [dispatch]
   );

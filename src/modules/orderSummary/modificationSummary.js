@@ -200,7 +200,6 @@ const ModificationSummary = (props) => {
         }
       } catch (error) { }
     } else {
-      console.log(promoCode);
       setPromoCodeErroStatus(false);
     }
   };

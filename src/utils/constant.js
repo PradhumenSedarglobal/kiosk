@@ -761,7 +761,7 @@ export const ProductCommonList = (props) => {
     translate,
   } = props;
 
-  console.log(props, 'ProductCommonList');
+ 
   let CREATE_SPI_COMMON_STANDARD_List = [];
 
   if (data && data.length > 0) {

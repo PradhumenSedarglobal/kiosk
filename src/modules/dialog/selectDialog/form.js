@@ -75,7 +75,7 @@ const SelectDialogForm = ({
   const dispatch = useDispatch();
   const { t: translate } = useTranslation();
   const [openTooltip, setOpenTooltip] = React.useState(false);
-    console.log(product_width, 'product_width');
+
   const handleCloseTooltip = () => {
     setOpenTooltip(false);
   };
@@ -97,10 +97,10 @@ const SelectDialogForm = ({
       productSelectDialogDetail &&
       formik?.values?.STEPS
     ) {
-      console.log(formik.values, 'formik.values100Form');
+      
       // alert();
       if (!steps?.result?.tempOrder?.line_result?.SOL_SYS_ID) {
-        console.log(formik.values, 'formik.values101');
+    
         dispatch(
           addToCart({
             ...formik.values,
@@ -173,7 +173,7 @@ const SelectDialogForm = ({
         );
         handleApiCall();
       } else {
-        console.log(formik.values, 'formik.values174');
+       
         dispatch(
           updateAddToCart({
             SOL_SYS_ID: steps?.result?.tempOrder?.line_result?.SOL_SYS_ID,
@@ -282,7 +282,7 @@ const SelectDialogForm = ({
     },
   ];
 
-  console.log(steps, 'steps');
+
   const setDefaultWidthHeight = () => {
     if (min) {
       const getWidth = find(product_width, { width: min });

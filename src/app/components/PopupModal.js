@@ -90,7 +90,6 @@ export default function PopupModal({ setAddToCartShow }) {
         }
       );
 
-      console.log("coooookkkk", getAllCookies);
 
       dispatch(setGeoLocationDetails(response.data));
 
@@ -103,7 +102,7 @@ export default function PopupModal({ setAddToCartShow }) {
     }
   };
 
-  console.log("cookies", cookies);
+
 
   const {
     register,
@@ -150,7 +149,7 @@ export default function PopupModal({ setAddToCartShow }) {
         dispatch(resetState());
       }
 
-      console.log("API Response OrderList:", response);
+
     } catch {}
   };
 
@@ -176,8 +175,6 @@ export default function PopupModal({ setAddToCartShow }) {
       formData.append("cust_first_name", data.customerName);
       formData.append("salesman", data.styleConsultantId);
       formData.append("visitorId", cookies.visitorId);
-
-      console.log("Submitting FormData:", Object.fromEntries(formData));
 
       const response = await axios.post(
         "https://migapi.sedarglobal.com/kiosk/sign_up",
@@ -228,7 +225,7 @@ export default function PopupModal({ setAddToCartShow }) {
                 },
                 dispatch
               );
-              console.log(result);
+         
             } catch (error) {
               console.error("Failed to add to cart:", error);
             } finally {

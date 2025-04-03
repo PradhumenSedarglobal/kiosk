@@ -37,7 +37,7 @@ async function getAll({ path, param = "", asPath, cookies = {}, locale }) {
         }&detect_country=${detect_country || ""}&locale=${localeParam || ""
         }&${asPath}`;
     }
-    console.log("getStatcicPath V@SSR", path_url, param);
+    
     const response = await axiosInstance.get(path_url);
     return response?.data;
   } catch (error) {

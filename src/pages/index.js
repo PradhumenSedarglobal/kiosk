@@ -201,8 +201,6 @@ export default function ProductPage(props) {
     modalDefaultItem
   } = useSelector((state) => state.customization);
 
-  console.log("resetCanvasScene", resetCanvasScene);
-
   const getModalGallary = async () => {
     if (SelectedCategory !== null && SelectedModal !== null) {
       const response = await apiSSRV2DataService.getAll({
@@ -216,7 +214,7 @@ export default function ProductPage(props) {
       });
 
       setModalSliderImage(response.result);
-      console.log("gallary Response", response.result);
+    
     }
   };
 
@@ -289,7 +287,6 @@ export default function ProductPage(props) {
         }
       }, 100);
 
-      console.log("setImageUrls", imageUrls);
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
@@ -299,7 +296,6 @@ export default function ProductPage(props) {
   //   console.log("stepCount", stepCount);
   // }, [stepCount]);
 
-  console.log("get step data", props);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -398,19 +394,16 @@ export default function ProductPage(props) {
 
   useEffect(() => {
     if (thumbsSwiper) {
-      console.log("ThumbsSwiper updated:", thumbsSwiper);
       thumbsSwiper.update();
     }
   }, [thumbsSwiper]);
 
   const handleThumbnailClick = (index) => {
-    console.log("Thumbnail clicked:", index);
 
     if (!thumbsSwiper || !mainSwiper) {
       console.warn("Swiper instances are not ready. Retrying...");
       setTimeout(() => {
         if (thumbsSwiper && mainSwiper) {
-          console.log("Retrying slideTo", index);
           thumbsSwiper.slideTo(index);
           mainSwiper.slideTo(index);
         } else {
@@ -475,11 +468,9 @@ export default function ProductPage(props) {
     }, 1000);
   };
 
-  useEffect(() => {
-    console.log("steeeeep", stepCount);
-    console.log("testing", stepCount === 0 || stepCount === 1);
-    console.log("isCustomizationLoading", isCustomizationLoading);
-  }, [stepCount === 1]);
+  // useEffect(() => {
+
+  // }, [stepCount === 1]);
 
   // const [tourState, setTourState] = useState({
   //   run: false,
@@ -709,7 +700,7 @@ export default function ProductPage(props) {
                                 ? "calc(100vh - 510px)"
                                 : isMobile
                                 ? "calc(100vh - 340px)"
-                                : "calc(99vh)",
+                                : "calc(97vh)",
                               position: "relative",
                             }}
                           />
@@ -731,7 +722,7 @@ export default function ProductPage(props) {
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
-                              height: "calc(98vh)",
+                              height: "calc(99vh)",
                               backgroundImage:
                                 "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
                               backgroundSize: "cover",

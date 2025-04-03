@@ -42,7 +42,6 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   const dispatch = useDispatch();
 
   const removeCart = async (cartId) => {
-  console.log("cartId", cartId);
 
   const response = await apiSSRV2DataService.Delete({
     path: `kiosk/cart/${cartId}`,

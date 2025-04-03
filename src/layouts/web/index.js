@@ -28,7 +28,6 @@ const BottomFooter = dynamic(() => import("./mobile/bottomFooter"), {
 
 const WebLayout = (props) => {
   const { children, layout } = props;
-  console.log(layout,'layout');
   
   const { locale, pathname } = useRouter();
   const [openDrawer, setOpenDrawer] = React.useState(false);

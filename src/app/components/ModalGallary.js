@@ -38,12 +38,12 @@ const ModalGallary = ({ modalSliderImage, isTablet, isMobile }) => {
               alt={`Slider Image ${index + 1}`}
               style={{
                 width: "100%",
-                objectFit: "cover",
+                objectFit: "fill",
                 height: isTablet
                   ? "calc(100vh - 510px)"
                   : isMobile
                   ? "calc(100vh - 340px)"
-                  : "calc(99vh)",
+                  : "calc(98.5vh)",
               }}
             />
           </SwiperSlide>

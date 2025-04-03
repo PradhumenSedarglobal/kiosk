@@ -169,7 +169,7 @@ const admitadInvoice = (order_info, email_id) => {
       orderedItem: orderedItem,
     });
 
-    console.log(orderedItem, "orderedItem", ADMITAD.Invoice.referencesOrder);
+  
     ADMITAD.Tracking.processPositions();
     window.orderedItem = [];
     store.remove("utm_source_url");

@@ -27,7 +27,6 @@ function getAll(path, param = "", asPath) {
     
     return axiosInstance.get(path_url);
   } catch (error) {
-    console.log("apiSSGV2DataServiceapiSSGV2DataService", param?.locale);
     console.error("getAll Error", error);
   }
 }

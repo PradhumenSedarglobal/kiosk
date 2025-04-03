@@ -323,7 +323,6 @@ const Measurement = ({ data }) => {
           }}
         />
         <TextBox
-         
           ref={isFirstRender}
           fullWidth
           type="text"
@@ -331,13 +330,7 @@ const Measurement = ({ data }) => {
           size="large"
           name="product_width"
           value={me_width}
-          onClick={()=>{
-            if(!hasUpdated){
-              setTimeout(()=>{
-                dispatch(setStepIndex(tourState.stepIndex + 1));
-              },1000)
-            }
-          }}
+          onClick={() => dispatch(setStepIndex(tourState.stepIndex + 1))}
           onChange={(e) => {
             re.test(e.target.value)
               ? setMe_width(e.target.value)

@@ -51,7 +51,7 @@ const SeoHeader = ({ data, router }) => {
                 categoryDataContent = '';
             }
         }
-        //console.log(country_iso,'country_iso');
+       
         const mapObj = {
             '[CATEGORY_NAME]': categoryDataContent  || '',
             '[COUNTRY]': country_iso,

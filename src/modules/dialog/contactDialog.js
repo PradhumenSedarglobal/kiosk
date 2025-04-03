@@ -32,7 +32,7 @@ const enquiry_t_list = {
   REMAIL: "email",
 };
 const ContactDialog = ({ open, handleOpenClose = () => { }, selectedDesc='',artCode='',enquiry_type='' }) => {
-  console.log(selectedDesc,artCode,enquiry_type,'dsadasdasd');
+ 
   const { push, locale,pathname } = useRouter()
   const { state } = useAuthContext();
   const {enqueueSnackbar} = useSnackbar();
@@ -96,7 +96,7 @@ const ContactDialog = ({ open, handleOpenClose = () => { }, selectedDesc='',artC
       data["category_code"] = values.category_code?.value;
       data["content"] = "contact";
       for (var key in values) {
-        console.log('key',key);
+ 
         if (key == "category_code") {
           data["category_code"] = values.category_code?.value ? values.category_code?.value : "";
         } else if (key == "country") {
@@ -127,7 +127,7 @@ const ContactDialog = ({ open, handleOpenClose = () => { }, selectedDesc='',artC
         }
       }
       await apiClientV2DataService.post({ path: 'user/enquiry', data: data, locale, isCountry: false }).then((response) => {
-        console.log(response,'response',response.status == 200,response.data.return_status == '0');
+     
         if (response.status == 200 || response.data.return_status == '0') {
           let page_name = enquiry_t_list[values.enquiry_type]
             ? enquiry_t_list[values.enquiry_type]

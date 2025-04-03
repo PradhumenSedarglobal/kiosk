@@ -19,11 +19,6 @@ const ImageCard = ({
   const dispatch = useDispatch();
 
   const tourState = useSelector((state) => state.tour);
-
-
-  console.log("tourStatevlaue",tourState);
-  console.log("stepvvvvv",step);
-
  
 
   return (

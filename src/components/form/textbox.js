@@ -41,6 +41,7 @@ const TextBox = (props) => {
     bottomTextSx,
     maxLength,
     inputMode,
+    onClick
   } = props;
 
   return (
@@ -69,6 +70,7 @@ const TextBox = (props) => {
       <TextField
         inputRef={inputRef}
         inputMode={inputMode}
+        onClick={onClick} 
         sx={(theme) => ({
           "& .MuiInputLabel-root": {
             fontFamily: theme.fontFaces.helveticaNeueMedium,
