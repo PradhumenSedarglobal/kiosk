@@ -30,13 +30,18 @@ const initialState = {
   resetScene: null,
   resetCanvasScene:null,
   modalGallary:null,
-  modalDefaultItem:null
+  modalDefaultItem:null,
+  categoryGallary:null
 };
 
 const slice = createSlice({
   name: "customization",
   initialState,
   reducers: {
+
+    setCategoryGallary(state,action){
+      state.categoryGallary = action.payload
+    },
 
     setModalDefaultItem(state,action){
       state.modalDefaultItem = action.payload
@@ -306,7 +311,8 @@ export const {
   setcanvasImg,
   setresetSceanCanvas,
   setmodalGallary,
-  setModalDefaultItem
+  setModalDefaultItem,
+  setCategoryGallary
 } = slice.actions;
 
 // GET Faqs PAGE DATA

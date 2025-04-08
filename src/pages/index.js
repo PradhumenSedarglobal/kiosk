@@ -198,7 +198,8 @@ export default function ProductPage(props) {
     isCustomizationLoading,
     resetCanvasScene,
     productInfo,
-    modalDefaultItem
+    modalDefaultItem,
+    categoryGallary
   } = useSelector((state) => state.customization);
 
   const getModalGallary = async () => {
@@ -221,6 +222,11 @@ export default function ProductPage(props) {
   useEffect(() => {
     getModalGallary();
   }, [SelectedModal,SelectedCategory]);
+
+  useEffect(()=>{
+    console.log("categoryGallaryyyy",categoryGallary);
+    // console.log(categoryGallary.fillter(SelectedCategory));
+  },[SelectedCategory]);
 
   useEffect(() => {
     console.log("orderListnew", orderList);

@@ -4,30 +4,33 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import SubStepImport from "../SubStepImport";
-import MainHeading from "@/app/components/MainHeading";
+import { useSelector } from "@/redux/store";
+
+import { borderSection } from '../../sceneCanvas3D';
 import SubHeading from "@/app/components/SubHeading";
+
 const BorderOption = ({ data, formik, elem }) => {
+
+  const { stepsArray } = useSelector((state) => state.customization);
+
+  let step_name = data.SS_CODE_NAME ? data.SS_CODE_NAME : false;
+
+
+
+
   return (
-    <>
-      <SubHeading  title={data?.SPS_DESC} />
-    <Box sx={{display:"flex",position:"relative"}}>
-      {/* <Box>
-        <Typography
-          sx={(theme) => ({
-            fontFamily: theme.fontFaces.helveticaNeueBold,
-            fontSize: theme.typography.typography15,
-            color: theme.palette.common.black,
-          })}
-        >
-          {data && data?.SPS_DESC}
-        </Typography>
-      </Box> */}
-      <Box  px={3} py={2}>
+    <Box>
+      <Box py={3}>
+
+
+         <SubHeading  title={data && data?.SPS_DESC} />
+      </Box>
+      <Box py={2}>
         <Grid container spacing={1}>
           {data &&
             data?.SUB_CHILD.map((elem, index) => {
               return (
-                <Grid item lg={4} md={4} sm={4} xs={6} xxs={6} key={index}>
+                <Grid item lg={6} md={6} sm={4} xs={6} xxs={6} key={index}>
                   <SelectCardImage
                     formik={formik}
                     elem={elem}
@@ -39,9 +42,11 @@ const BorderOption = ({ data, formik, elem }) => {
                 </Grid>
               );
             })}
+
+
           <Grid item lg={12} md={12} sm={12} xs={12} xxs={12}>
             {data?.SUB_CHILD.map((elem, index) => {
-              if (elem?.SUB_CHILD && elem?.SUB_CHILD[0]) {
+              if (elem?.SUB_CHILD && elem?.SUB_CHILD[0] && stepsArray && stepsArray[step_name] && elem?.SUB_CHILD[0]['SPS_SPS_SYS_ID'] == stepsArray[step_name]['SPS_SYS_ID']) {
                 return (
                   <SubStepImport key={index} data={elem} formik={formik} />
                 );
@@ -51,7 +56,6 @@ const BorderOption = ({ data, formik, elem }) => {
         </Grid>
       </Box>
     </Box>
-    </>
   );
 };
 

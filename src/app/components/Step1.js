@@ -14,6 +14,7 @@ import {
   updateSelectedCategory,
   resetState,
   loadingfalse,
+  setCategoryGallary,
 } from "@/redux/slices/customization";
 
 // Custom Components
@@ -92,6 +93,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
   
       hasFetched.current = true;
       setCategory(data.result);
+      dispatch(setCategoryGallary(data.result));
   
       if (data.result.length > 0) {
         const initialCategory = globalSelectedCategory || data.result[0].link_url;
