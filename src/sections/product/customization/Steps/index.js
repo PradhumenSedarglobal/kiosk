@@ -260,7 +260,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   return (
     <>
 
-      {showAddToCart && <PopupModal setAddToCartShow={setAddToCartShow}  />}
+      {showAddToCart && <PopupModal setTabChange={setTabChange} setAddToCartShow={setAddToCartShow}  />}
 
      
         {tabChange != "preview" && (

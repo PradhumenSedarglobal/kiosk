@@ -57,7 +57,7 @@ const BottomBarTabination = ({
   const { cookies } = state;
   const { langName } = cookies || {};
 
-  console.log("customerSysIddddddddddd",customerSysId);
+  console.log("tabChangeeeeeeeeee",tabChange);
 
  
 

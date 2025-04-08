@@ -41,7 +41,7 @@ import { toast } from "react-toastify";
 import { setStepIndex } from "@/redux/slices/tourSlice";
 import { useRouter } from "next/router";
 
-export default function PopupModal({ setAddToCartShow }) {
+export default function PopupModal({ setAddToCartShow,setTabChange }) {
   const { state } = useAuthContext();
   const { cookies } = state;
   const { locale, query } = useRouter();
@@ -125,6 +125,8 @@ export default function PopupModal({ setAddToCartShow }) {
   const handleSuccessClose = () => setSuccessOpen(false);
   const handleErrorClose = () => setErrorOpen(false);
 
+  const paramKeys = Object.keys(query);
+
   const fetchOrderList = async (customerId, userId) => {
     try {
       dispatch(setOrderList(null));
@@ -142,8 +144,6 @@ export default function PopupModal({ setAddToCartShow }) {
       );
 
       if (response) {
-
-        
      
         dispatch(
           setOrderList({
@@ -153,7 +153,13 @@ export default function PopupModal({ setAddToCartShow }) {
           })
         );
 
-        dispatch(resetState());
+        if(paramKeys.length < 0){
+          dispatch(resetState());
+        }else{
+          setTabChange(1);
+        }
+
+        
       }
 
 
@@ -236,9 +242,18 @@ export default function PopupModal({ setAddToCartShow }) {
             } catch (error) {
               console.error("Failed to add to cart:", error);
             } finally {
+
               setTimeout(() => {
-                dispatch(removecart());
-                dispatch(decrementStep(0));
+                
+                
+                if(paramKeys.length > 0){
+                  setTabChange(1);
+                }else{
+                  dispatch(removecart());
+                  dispatch(decrementStep(0));
+                }
+
+                
                 fetchOrderList(cookies.visitorId, response.data.cust_sys_id);
               }, 2000);
             }
