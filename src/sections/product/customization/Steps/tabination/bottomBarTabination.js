@@ -26,7 +26,7 @@ import {
   setCustomerSystemId,
   setGeoLocationDetails,
   setOrderList,
-  loadingfalse
+  loadingfalse,
 } from "@/redux/slices/customization";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -47,7 +47,7 @@ const BottomBarTabination = ({
   setFormClose,
   setAddToCartShow,
   customerSysId,
-  customization_info
+  customization_info,
 }) => {
   const { t: translate } = useTranslation();
   const { locale, query } = useRouter();
@@ -57,9 +57,9 @@ const BottomBarTabination = ({
   const { cookies } = state;
   const { langName } = cookies || {};
 
-  console.log("tabChangeeeeeeeeee",tabChange);
+  const paramKeys = Object.keys(query);
 
- 
+  console.log("tabChangeeeeeeeeee", tabChange);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -78,11 +78,12 @@ const BottomBarTabination = ({
     dispatch(decrementStep(0));
   };
 
-   
   const handleAddToCartIfVistiorId = async () => {
     try {
-      console.log("Dispatching removecart and decrementStep before fetchOrderList");
-  
+      console.log(
+        "Dispatching removecart and decrementStep before fetchOrderList"
+      );
+
       const result = await addToCartFunScene(
         {
           ...cookies,
@@ -96,20 +97,25 @@ const BottomBarTabination = ({
     } catch (error) {
       console.error("Failed to add to cart:", error);
     }
-  
+
     // Ensure customerId and userId are defined before use
     if (!cookies.visitorId || !customerSysId) {
       console.error("Missing customerId or userId");
       return;
     }
-  
-    // Ensure dispatching occurs before the API request
-    dispatch(removecart());
-    dispatch(decrementStep(0));
-    console.log("VisitorIdUserId", cookies.visitorId, customerSysId);
-  
-    try {
 
+    // Ensure dispatching occurs before the API request
+
+    if (paramKeys.length > 0) {
+      setTabChange(1);
+    } else {
+      dispatch(removecart());
+      dispatch(decrementStep(0));
+    }
+
+    console.log("VisitorIdUserId", cookies.visitorId, customerSysId);
+
+    try {
       dispatch(setOrderList(null));
 
       const response = await axios.get(
@@ -123,7 +129,7 @@ const BottomBarTabination = ({
           withCredentials: false,
         }
       );
-  
+
       dispatch(
         setOrderList({
           complete: response.data.complete,
@@ -132,12 +138,17 @@ const BottomBarTabination = ({
         })
       );
 
-      dispatch(resetState());
+      if (paramKeys.length > 0) {
+        setTabChange(1);
+      }else{
+        dispatch(resetState());
+      }
+
+     
     } catch (error) {
       console.error("Failed to fetch order list:", error);
     }
   };
-  
 
   const tourState = useSelector((state) => state.tour);
 
@@ -242,7 +253,7 @@ const BottomBarTabination = ({
 
           <Grid item xs={5} pt={"0 !important"}>
             {isLoading ? (
-              <Box 
+              <Box
                 sx={{
                   display: "flex",
                   justifyContent: "flex-end",
@@ -337,7 +348,6 @@ const BottomBarTabination = ({
                     console.log("tabChangetabChange", tabChange);
                     dispatch(removecart());
                     dispatch(loadingfalse(true));
-                    
                   }
 
                   onPreviousHandle("PREV");
@@ -370,13 +380,17 @@ const BottomBarTabination = ({
           >
             {tabChange != "5" && priceArray.SOL_VALUE > 0 && (
               <Button
-              className={
-                tabChange === 1 ? "continue3" :
-                tabChange === 2 ? "continue4" :
-                tabChange === 3 ? "continue5" :
-                tabChange === 4 ? "continue6" :
-                "" 
-              }
+                className={
+                  tabChange === 1
+                    ? "continue3"
+                    : tabChange === 2
+                    ? "continue4"
+                    : tabChange === 3
+                    ? "continue5"
+                    : tabChange === 4
+                    ? "continue6"
+                    : ""
+                }
                 size="large"
                 variant="outlined"
                 onClick={() => {
@@ -392,7 +406,11 @@ const BottomBarTabination = ({
               <Button
                 size="large"
                 variant="outlined"
-                onClick={() => !customerSysId ? handleAddToCart() : handleAddToCartIfVistiorId()}
+                onClick={() =>
+                  !customerSysId
+                    ? handleAddToCart()
+                    : handleAddToCartIfVistiorId()
+                }
                 startIcon={<LocalMallIcon color="black" />}
               >
                 Add To Cart
