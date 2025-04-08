@@ -541,7 +541,7 @@ export default function ProductPage(props) {
     <>
      <Joyride
       steps={tourState.steps}
-      stepIndex={tourState.stepIndex} // Ensure stepIndex updates properly
+      stepIndex={tourState.stepIndex} 
       run={tourState.run}
       continuous
       showProgress
@@ -633,7 +633,7 @@ export default function ProductPage(props) {
                   // xs: "calc(100vw - 200px)",  // Mobile (375px+)
                   // sm: "calc(100vw - 300px)",  // Tablet (600px+)
                   // md: "calc(100vw - 500px)",  // Small laptops (900px+)
-                  lg: "calc(100vw - 58%)", // Large screens (1200px+)
+                  lg: "calc(100vw - 55%)", // Large screens (1200px+)
                 },
 
                 // Media Query (Only if necessary)
@@ -652,6 +652,16 @@ export default function ProductPage(props) {
 
           {/* Swiper Slider with 3d Rendor Section Start */}
           <main>
+          {/* <Box
+            sx={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "calc(100vw - 42%)",
+              zIndex: 0,
+              backgroundColor: "white",
+            }}
+          > */}
             {/* Main Swiper -> pass thumbs swiper instance */}
             <Swiper
               style={{
@@ -700,7 +710,7 @@ export default function ProductPage(props) {
                                 ? "calc(100vh - 510px)"
                                 : isMobile
                                 ? "calc(100vh - 340px)"
-                                : "calc(97vh)",
+                                : "calc(100vh - 5px)",
                               position: "relative",
                             }}
                           />
@@ -765,7 +775,7 @@ export default function ProductPage(props) {
                       className="swiper-image"
                       style={{
                         width: "100%",
-                        objectFit: "cover",
+                        objectFit: "fill",
                         height: isTablet
                           ? "calc(100vh - 510px)"
                           : isMobile
@@ -839,6 +849,7 @@ export default function ProductPage(props) {
                 ))}
               </Swiper>
             )}
+            {/* </Box> */}
           </main>
           {/* Swiper Slider with 3d Rendor Section End */}
         </Grid>

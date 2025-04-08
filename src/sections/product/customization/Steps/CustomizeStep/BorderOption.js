@@ -10,7 +10,7 @@ const BorderOption = ({ data, formik, elem }) => {
   return (
     <>
       <SubHeading  title={data?.SPS_DESC} />
-    <Box>
+    <Box sx={{display:"flex",position:"relative"}}>
       {/* <Box>
         <Typography
           sx={(theme) => ({

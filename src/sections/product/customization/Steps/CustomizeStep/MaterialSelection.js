@@ -48,7 +48,8 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   const listInnerRef = useRef(null);
   const sliderRef = useRef(null);
   const [alertMessage, setAlertMessage] = useState(null);
-  //  const [materialList, setMaterialList] = useState([]);
+  const [selectDefault,setSelectDefault] = useState(false);
+  const selectedRef = useRef(null);
 
   const selectedCategory = useSelector((state) => state.customization.SelectedCategory);
   const selectedModalData = useSelector((state) => state.customization.SelectedModal);
@@ -70,6 +71,8 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     filterOption,
     materialList,
   } = customization_info;
+
+
   
 
   
@@ -88,10 +91,10 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     : 0;
   const tourState = useSelector((state) => state.tour);
 
-   
-    console.log("SPI_PR_ITEM_CODE",SPI_PR_ITEM_CODE);
-    console.log("SPI_PR_ITEM_CODE111111",materialList);
 
+  // useEffect(()=>{
+  //   selectedRef.current.click();
+  // },[]);
 
 
   const updateTextureFun = async (val) => {
@@ -224,7 +227,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
           updateTextureImg(materialCustomization.selected_item);
           updateTextureFun(materialCustomization.selected_item);
         }.bind(this),
-        500
+        1000
       );
     } else if (page == 0) {
     }
@@ -300,6 +303,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
               return (
                 <Grid item lg={4} md={4} sm={4} xs={6} xxs={6} key={index}>
                   <Box
+                    ref={selectedRef}
                     className="selectMaterial"
                     sx={(theme) => ({
                       // p: 0.5,

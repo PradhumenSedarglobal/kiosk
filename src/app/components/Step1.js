@@ -21,23 +21,10 @@ import MainHeading from "./MainHeading";
 import ImageCard from "./ImageCard";
 import { useAuthContext } from "@/auth/useAuthContext";
 import { setStepIndex } from "@/redux/slices/tourSlice";
+import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
+import { useRouter } from "next/router";
 
-const fetchCategory = async (cancelToken) => {
-  try {
-    const response = await axios.get(
-      `https://migapi.sedarglobal.com/kiosk/categories`,
-      { cancelToken }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isCancel(error)) {
-      console.log("Request canceled:", error.message);
-    } else {
-      console.error("Error fetching categories:", error);
-    }
-    throw error;
-  }
-};
+
 
 export async function getServerSideProps({ req }) {
 
@@ -68,6 +55,25 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
+  const { locale, query } = useRouter();
+
+
+  const fetchCategory = async () => {
+ 
+    try {
+      const response = await apiSSRV2DataService.getAll({
+        path: `kiosk/categories`,
+        locale: locale,
+      });
+
+  
+      return response; // Ensure response.data exists
+    } catch (error) {
+      console.error("Error fetching category:", error);
+      return null; // Return null to avoid undefined issues
+    }
+  
+  };
 
 
   useEffect(() => {
@@ -76,21 +82,30 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
     const cancelToken = axios.CancelToken.source();
     setLoading(true);
 
-    fetchCategory(cancelToken.token)
-      .then((data) => {
-        hasFetched.current = true;
-        setCategory(data.result);
-        if (data.result.length > 0) {
-          const initialCategory = globalSelectedCategory || data.result[0].link_url;
-          setSelectedCategory(initialCategory);
-          dispatch(removecart());
-          dispatch(updateSelectedCategory(initialCategory));
-
-        }
-      })
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
-
+    fetchCategory()
+    .then((data) => {
+      console.log("Fetched Data:", data); // Check if data is received
+      if (!data || !data.result) {
+        console.error("No valid data received:", data);
+        return;
+      }
+  
+      hasFetched.current = true;
+      setCategory(data.result);
+  
+      if (data.result.length > 0) {
+        const initialCategory = globalSelectedCategory || data.result[0].link_url;
+        setSelectedCategory(initialCategory);
+        dispatch(removecart());
+        dispatch(updateSelectedCategory(initialCategory));
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+      setError(error);
+    })
+    .finally(() => setLoading(false));
+  
     // getIpAddress();
 
     return () => cancelToken.cancel();

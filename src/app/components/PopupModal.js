@@ -14,6 +14,8 @@ import {
   TextField,
   Grid,
   Button,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,11 +39,12 @@ import { addToCartFunScene } from "@/sections/product/customization/addToCartFun
 import { NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES } from "@/utils/constant";
 import { toast } from "react-toastify";
 import { setStepIndex } from "@/redux/slices/tourSlice";
+import { useRouter } from "next/router";
 
 export default function PopupModal({ setAddToCartShow }) {
   const { state } = useAuthContext();
   const { cookies } = state;
-  const locale = "uae-en";
+  const { locale, query } = useRouter();
   const [open, setOpen] = useState(true);
   const [successOpen, setSuccessOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
@@ -59,6 +62,10 @@ export default function PopupModal({ setAddToCartShow }) {
 
   const ip = customization_info.ip;
   const geoDetails = customization_info.geoLocationDetails;
+
+  const theme = useTheme();
+  const xs = useMediaQuery(theme.breakpoints.down("xs"));
+  const sm = useMediaQuery(theme.breakpoints.down("sm"));
 
   const getCountry = async (val) => {
     try {
@@ -123,7 +130,7 @@ export default function PopupModal({ setAddToCartShow }) {
       dispatch(setOrderList(null));
 
       const response = await axios.get(
-        `https://migapi.sedarglobal.com/order/orderList?lang=en&site=100001&country=uae&visitorId=${customerId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&detect_country=`,
+        `https://migapi.sedarglobal.com/kiosk/order/orderList?lang=en&site=100001&country=uae&visitorId=${customerId}&userId=${userId}&currency=AED&ccy_decimal=0&cn_iso=AE&locale=${locale}&$detect_country=`,
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -289,7 +296,11 @@ export default function PopupModal({ setAddToCartShow }) {
 
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Customer Name */}
-            <Grid container spacing={2} mt={2} alignItems="center">
+            <Grid container 
+              sx={{
+                paddingLeft: sm || xs ? "60px" : '',
+              }} 
+              spacing={2} mt={2} alignItems="center">
               <Grid item xs={12} sm={4}>
                 <Typography sx={{ fontWeight: 700, textAlign: "right" }}>
                   Customer Name:
@@ -310,7 +321,9 @@ export default function PopupModal({ setAddToCartShow }) {
             </Grid>
 
             {/* Style Consultant Id */}
-            <Grid container spacing={2} mt={2} alignItems="center">
+            <Grid container  sx={{
+              paddingLeft: sm || xs ? "60px" : '',
+            }}  spacing={2} mt={2} alignItems="center">
               <Grid item xs={12} sm={4}>
                 <Typography sx={{ fontWeight: 700, textAlign: "right" }}>
                   Consultant Id:
@@ -331,7 +344,9 @@ export default function PopupModal({ setAddToCartShow }) {
             </Grid>
 
             {/* Mobile No */}
-            <Grid container spacing={2} mt={2} alignItems="center">
+            <Grid container  sx={{
+              paddingLeft: sm || xs ? "60px" : '',
+            }}  spacing={2} mt={2} alignItems="center">
               <Grid item xs={12} sm={4}>
                 <Typography sx={{ fontWeight: 700, textAlign: "right" }}>
                   Mobile No:

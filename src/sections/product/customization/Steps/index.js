@@ -39,7 +39,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   const { cookies } = state;
   const { locale, query } = useRouter();
   const { slug } = query;
-  const { productInfo, stepsArray, priceArray, customization,ShowformModal } =
+  const { productInfo, stepsArray, priceArray, customization,ShowformModal,customerSysId } =
     customization_info;
   const [successPopup, setSuccessPopup] = useState(false);
   const [missingStep, setMissingStep] = useState({});
@@ -246,6 +246,8 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
 
 
   const handleAddToCart = () => {
+
+
     if(!showAddToCart){
       setAddToCartShow(true);
     } 
@@ -515,6 +517,8 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
         handleSubmit={handleSubmit}
         formClose={formClose}
         setFormClose={setFormClose}
+        customerSysId={customerSysId}
+        customization_info={customization_info}
       />
 
        

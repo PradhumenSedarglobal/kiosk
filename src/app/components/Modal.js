@@ -19,6 +19,7 @@ import { Alert, Box, Grid, AlertTitle } from "@mui/material";
 import axios from "axios";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import InstructionTooltip from "./InstructionTooltip";
+import { useRouter } from "next/router";
 
 
 const Modal = () => {
@@ -37,6 +38,8 @@ const Modal = () => {
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { locale, query } = useRouter();
+  
 
   // ✅ Clear cart and start loading on category change
   const debouncedRemoveCart = useCallback(
@@ -60,18 +63,27 @@ const Modal = () => {
         setLoading(true);
         debouncedRemoveCart();
 
-        const response = await axios.get(
-          `https://migapi.sedarglobal.com/kiosk/categories?category=${selectedCategory}`,
-          { cancelToken: source.token }
-        );
+        // const response = await axios.get(
+        //   `https://migapi.sedarglobal.com/kiosk/categories?category=${selectedCategory}`,
+        //   { cancelToken: source.token }
+        // );
 
-        if (response?.data?.result?.model?.length > 0) {
-          dispatch(updateModalData(response.data.result));
+         const response = await apiSSRV2DataService.getAll({
+                    path: `kiosk/categories`,
+                    param: {
+                      category: selectedCategory,
+                    },
+                    locale: locale,
+                  });
+          console.log("response",response);
+
+        if (response?.result?.model?.length > 0) {
+          dispatch(updateModalData(response.result));
 
           const firstModal =
-            selectedModalData || response.data.result.model[0]?.SPI_LINK_URL;
+            selectedModalData || response.result.model[0]?.SPI_LINK_URL;
 
-          dispatch(setModalDefaultItem(response.data.result.model[0]?.SPI_PR_ITEM_CODE));
+          dispatch(setModalDefaultItem(response?.result.model[0]?.SPI_PR_ITEM_CODE));
 
           setSelectedModal(firstModal);
           dispatch(updateSelectedModal(firstModal));
@@ -239,7 +251,7 @@ const Modal = () => {
                       <ImageCard
                         category={selectedCategory}
                         index={index}
-                        name={item.SPI_LINK_TITLE}
+                        name={item.SPI_TOOLTIP}
                         link={item.SPI_LINK_URL}
                         selected={selectedModalData === item.SPI_LINK_URL}
                         functionname={handleChange}

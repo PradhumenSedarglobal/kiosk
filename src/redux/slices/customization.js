@@ -84,6 +84,7 @@ const slice = createSlice({
         orderList: state.orderList,
         SelectedCategory: state.SelectedCategory,
         SelectedModal: state.SelectedModal,
+        customerSysId: state.customerSysId,
       }
     },
 
@@ -91,7 +92,8 @@ const slice = createSlice({
       return{
         ...initialState,
         SelectedCategory: state.SelectedCategory,
-        orderList: state.orderList
+        orderList: state.orderList,
+        customerSysId: state.customerSysId,
       }
     },
 

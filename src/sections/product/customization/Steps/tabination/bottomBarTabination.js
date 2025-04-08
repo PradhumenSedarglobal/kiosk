@@ -18,13 +18,20 @@ import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import { useEffect, useState } from "react";
 import PopupModal from "@/app/components/PopupModal";
+import { addToCartFunScene } from "@/sections/product/customization/addToCartFunScene";
 import {
-  loadingfalse,
   removecart,
   resetState,
+  setCustomerSysId,
+  setCustomerSystemId,
+  setGeoLocationDetails,
+  setOrderList,
+  loadingfalse
 } from "@/redux/slices/customization";
+
 import CircularProgress from "@mui/material/CircularProgress";
 import { setStepIndex } from "@/redux/slices/tourSlice";
+import axios from "axios";
 
 const BottomBarTabination = ({
   setTabChange,
@@ -39,6 +46,8 @@ const BottomBarTabination = ({
   formClose,
   setFormClose,
   setAddToCartShow,
+  customerSysId,
+  customization_info
 }) => {
   const { t: translate } = useTranslation();
   const { locale, query } = useRouter();
@@ -47,6 +56,8 @@ const BottomBarTabination = ({
   const { state } = useAuthContext();
   const { cookies } = state;
   const { langName } = cookies || {};
+
+  console.log("customerSysIddddddddddd",customerSysId);
 
  
 
@@ -66,6 +77,67 @@ const BottomBarTabination = ({
     dispatch(showScanner(true));
     dispatch(decrementStep(0));
   };
+
+   
+  const handleAddToCartIfVistiorId = async () => {
+    try {
+      console.log("Dispatching removecart and decrementStep before fetchOrderList");
+  
+      const result = await addToCartFunScene(
+        {
+          ...cookies,
+          ...customization_info,
+          locale: locale,
+          customerSysIdnew: customerSysId,
+          cart_status: "COMPLETED",
+        },
+        dispatch
+      );
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+    }
+  
+    // Ensure customerId and userId are defined before use
+    if (!cookies.visitorId || !customerSysId) {
+      console.error("Missing customerId or userId");
+      return;
+    }
+  
+    // Ensure dispatching occurs before the API request
+    dispatch(removecart());
+    dispatch(decrementStep(0));
+    console.log("VisitorIdUserId", cookies.visitorId, customerSysId);
+  
+    try {
+
+      dispatch(setOrderList(null));
+
+      const response = await axios.get(
+        `https://migapi.sedarglobal.com/kiosk/order/orderList?lang=en&site=100001&country=uae&visitorId=${cookies.visitorId}&userId=${customerSysId}&currency=AED&ccy_decimal=0&cn_iso=AE&locale=${locale}&$detect_country=`,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            Accept: "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          withCredentials: false,
+        }
+      );
+  
+      dispatch(
+        setOrderList({
+          complete: response.data.complete,
+          cart_count: response.data.cart_count,
+          total_price: response.data.total_price,
+        })
+      );
+
+      dispatch(resetState());
+    } catch (error) {
+      console.error("Failed to fetch order list:", error);
+    }
+  };
+  
 
   const tourState = useSelector((state) => state.tour);
 
@@ -320,7 +392,7 @@ const BottomBarTabination = ({
               <Button
                 size="large"
                 variant="outlined"
-                onClick={() => handleAddToCart()}
+                onClick={() => !customerSysId ? handleAddToCart() : handleAddToCartIfVistiorId()}
                 startIcon={<LocalMallIcon color="black" />}
               >
                 Add To Cart
