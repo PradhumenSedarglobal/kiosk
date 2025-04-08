@@ -400,6 +400,7 @@ export default function ProductPage(props) {
 
   const handleThumbnailClick = (index) => {
 
+
     if (!thumbsSwiper || !mainSwiper) {
       console.warn("Swiper instances are not ready. Retrying...");
       setTimeout(() => {
@@ -652,16 +653,7 @@ export default function ProductPage(props) {
 
           {/* Swiper Slider with 3d Rendor Section Start */}
           <main>
-          {/* <Box
-            sx={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "calc(100vw - 42%)",
-              zIndex: 0,
-              backgroundColor: "white",
-            }}
-          > */}
+        
             {/* Main Swiper -> pass thumbs swiper instance */}
             <Swiper
               style={{
@@ -689,6 +681,7 @@ export default function ProductPage(props) {
                             modalSliderImage={modalSliderImage}
                             isTablet={isTablet}
                             isMobile={isMobile}
+                            activeIndex={activeIndex}
                           />
                         ) : (
                           <Typography
@@ -796,7 +789,7 @@ export default function ProductPage(props) {
             </Swiper>
 
             {/* Thumbs Swiper -> store swiper instance */}
-            {stepCount !== 0 && stepCount !== 1 && !isCustomizationLoading && (
+          
               <Swiper
                 modules={[Thumbs]}
                 watchSlidesProgress
@@ -816,7 +809,45 @@ export default function ProductPage(props) {
                   1024: { slidesPerView: 6, spaceBetween: 15 },
                 }}
               >
-                {imageUrls.map((src, index) => (
+               {/* Category thumb images */}
+              {(stepCount === 0 || stepCount === 1) &&
+                materialList !== null &&
+                modalSliderImage?.map((src, index) => (
+                  <SwiperSlide key={index}>
+                    <img
+                      src={src.SLI_IMAGE_PATH}
+                      height={90}
+                      width={100}
+                      breakpoints={{
+                        320: {
+                          style: {
+                            height: 70,
+                            width: 70,
+                          },
+                        },
+                      }}
+                      style={{
+                        border:
+                          activeIndex === index
+                            ? "2px solid orange" // Highlight the active image with orange
+                            : "2px solid transparent", // Default border for non-active thumbnails
+                        marginTop: "1px",
+                        cursor: "pointer", // Add cursor to indicate clickable element
+                        transition: "border 0.3s ease-in-out", // Add smooth transition to avoid blinking effect
+                      }}
+                      onClick={() => {
+                        setActiveIndex(index); // Set active index on click
+                        handleThumbnailClick(index); // Handle thumbnail click (keep the original logic)
+                      }}
+                      alt={`Thumbnail ${index + 1}`}
+                    />
+                  </SwiperSlide>
+                ))}
+
+
+
+                {/* 3d modal thumb images */}
+                {stepCount !== 0 && stepCount !== 1 && !isCustomizationLoading && imageUrls.map((src, index) => (
                   <SwiperSlide key={index}>
                     <img
                       src={src}
@@ -832,24 +863,24 @@ export default function ProductPage(props) {
                       }}
                       style={{
                         border:
-                          index === 0
-                            ? "2px solid orange"
+                          index === activeIndex
+                            ? "2px solid orange" // Apply orange border only to active thumbnail
                             : activeIndex === index
                             ? "2px solid #010101"
                             : "",
                         marginTop: "1px",
                       }}
                       onClick={() => {
-                        handleThumbnailClick(index),
-                          index === 0 ? setShow3d(true) : setShow3d(false);
+                        handleThumbnailClick(index);
+                        setShow3d(index === 0); // Show 3D if index === 0, else hide it
                       }}
                       alt={`Thumbnail ${index + 1}`}
                     />
                   </SwiperSlide>
                 ))}
+
               </Swiper>
-            )}
-            {/* </Box> */}
+      
           </main>
           {/* Swiper Slider with 3d Rendor Section End */}
         </Grid>
