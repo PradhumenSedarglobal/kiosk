@@ -399,7 +399,7 @@ export default function ProductPage(props) {
   }, [thumbsSwiper]);
 
   const handleThumbnailClick = (index) => {
-
+    console.log("activeIndex",activeIndex);
 
     if (!thumbsSwiper || !mainSwiper) {
       console.warn("Swiper instances are not ready. Retrying...");
@@ -536,6 +536,7 @@ export default function ProductPage(props) {
     }
   };
 
+ 
 
 
   return (
@@ -799,6 +800,7 @@ export default function ProductPage(props) {
                 loop={false}
                 allowSlideNext={true}
                 slideToClickedSlide
+                initialSlide={activeIndex}
                 style={{
                   marginLeft: "3px",
                 }}
@@ -829,15 +831,15 @@ export default function ProductPage(props) {
                       style={{
                         border:
                           activeIndex === index
-                            ? "2px solid orange" // Highlight the active image with orange
-                            : "2px solid transparent", // Default border for non-active thumbnails
+                            ? "2px solid orange" 
+                            : "2px solid transparent", 
                         marginTop: "1px",
                         cursor: "pointer", // Add cursor to indicate clickable element
-                        transition: "border 0.3s ease-in-out", // Add smooth transition to avoid blinking effect
+                        transition: "border 0.3s ease-in-out", 
                       }}
                       onClick={() => {
                         setActiveIndex(index); // Set active index on click
-                        handleThumbnailClick(index); // Handle thumbnail click (keep the original logic)
+                        // handleThumbnailClick(index); 
                       }}
                       alt={`Thumbnail ${index + 1}`}
                     />
@@ -863,22 +865,20 @@ export default function ProductPage(props) {
                       }}
                       style={{
                         border:
-                          index === activeIndex
-                            ? "2px solid orange" // Apply orange border only to active thumbnail
-                            : activeIndex === index
-                            ? "2px solid #010101"
-                            : "",
+                        activeIndex === index
+                        ? "2px solid orange"
+                        : "",
                         marginTop: "1px",
                       }}
                       onClick={() => {
-                        handleThumbnailClick(index);
-                        setShow3d(index === 0); // Show 3D if index === 0, else hide it
+                        setActiveIndex(index);
+                        handleThumbnailClick(index),
+                          index === 0 ? setShow3d(true) : setShow3d(false);
                       }}
                       alt={`Thumbnail ${index + 1}`}
                     />
                   </SwiperSlide>
                 ))}
-
               </Swiper>
       
           </main>
