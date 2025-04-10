@@ -43,7 +43,7 @@ const ModalGallary = ({ modalSliderImage, isTablet, isMobile, activeIndex }) => 
                   ? "calc(100vh - 510px)"
                   : isMobile
                   ? "calc(100vh - 340px)"
-                  : "calc(100vh - 130px)",
+                  : "calc(100vh - 110px)",
               }}
             />
           </SwiperSlide>

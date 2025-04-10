@@ -35,10 +35,14 @@ const Modal = () => {
   );
   const modalData = useSelector((state) => state.customization.ModalData);
 
+  console.log("modalDataaaaa",modalData);
+
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { locale, query } = useRouter();
+  const [selectedItemCode,setSelectedItemCode] = useState();
+  const [productCode,setProductCode] = useState();
   
 
   // ✅ Clear cart and start loading on category change
@@ -60,7 +64,7 @@ const Modal = () => {
 
     const fetchData = async () => {
       try {
-        setLoading(true);
+        // setLoading(true);
         debouncedRemoveCart();
 
         // const response = await axios.get(
@@ -83,7 +87,13 @@ const Modal = () => {
           const firstModal =
             selectedModalData || response.result.model[0]?.SPI_LINK_URL;
 
-          dispatch(setModalDefaultItem(response?.result.model[0]?.SPI_PR_ITEM_CODE));
+          console.log("sssssssssss",selectedItemCode);
+          console.log("sssssssssss2",productCode);
+
+          dispatch(setModalDefaultItem({
+            itemId: selectedItemCode ? selectedItemCode : response?.result.model[0]?.SPI_PR_ITEM_CODE,
+            productId: productCode
+          }));
 
           setSelectedModal(firstModal);
           dispatch(updateSelectedModal(firstModal));
@@ -98,7 +108,7 @@ const Modal = () => {
           console.error("Failed to fetch categories:", error);
         }
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -147,7 +157,13 @@ const Modal = () => {
   };
 
   // ✅ Handle modal change and state reset
-  const handleChange = async (link) => {
+  const handleChange = async (link,selectedItemCode,productCode) => {
+
+    console.log("bothid",selectedItemCode,productCode);
+
+    setProductCode(productCode);
+    setSelectedItemCode(selectedItemCode);
+    console.log("modalData",modalData);
     if (selectedModalData !== link) {
       dispatch(updateSelectedModal(link));
       await getStep(link);
@@ -184,7 +200,7 @@ const Modal = () => {
           <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
             <Box
               className="bigipads"
-              sx={{ height: { lg: "calc(100vh - 130px)" }, overflow: "auto" }}
+              sx={{ height: { lg: "calc(100vh - 180px)" }, overflow: "auto" }}
             >
               <Grid
                 container
@@ -256,6 +272,8 @@ const Modal = () => {
                         selected={selectedModalData === item.SPI_LINK_URL}
                         functionname={handleChange}
                         img={item.SPI_IMAGE_PATH}
+                        selectedItemCode={item.SPI_PR_ITEM_CODE}
+                        productCode={item.SII_CODE}
                         step={stepCount}
                       />
                     </Grid>

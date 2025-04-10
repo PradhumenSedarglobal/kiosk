@@ -31,7 +31,8 @@ const initialState = {
   resetCanvasScene:null,
   modalGallary:null,
   modalDefaultItem:null,
-  categoryGallary:null
+  categoryGallary:null,
+  categoryDefaultImg:null,
 };
 
 const slice = createSlice({
@@ -39,13 +40,21 @@ const slice = createSlice({
   initialState,
   reducers: {
 
+    setCategoryDefaultImg(state,action){
+      state.categoryDefaultImg = action.payload
+    },
+
     setCategoryGallary(state,action){
       state.categoryGallary = action.payload
     },
 
-    setModalDefaultItem(state,action){
-      state.modalDefaultItem = action.payload
+    setModalDefaultItem(state, action) {
+      state.modalDefaultItem = {
+        itemId: action.payload.itemId,
+        productId: action.payload.productId
+      };
     },
+    
 
     setmodalGallary(state,action){
       state.modalGallary = action.payload;
@@ -90,6 +99,9 @@ const slice = createSlice({
         SelectedCategory: state.SelectedCategory,
         SelectedModal: state.SelectedModal,
         customerSysId: state.customerSysId,
+        categoryGallary: state.categoryGallary,
+        categoryDefaultImg: state.categoryDefaultImg,
+        modalDefaultItem:state.modalDefaultItem
       }
     },
 
@@ -99,6 +111,9 @@ const slice = createSlice({
         SelectedCategory: state.SelectedCategory,
         orderList: state.orderList,
         customerSysId: state.customerSysId,
+        categoryGallary: state.categoryGallary,
+        categoryDefaultImg: state.categoryDefaultImg,
+        modalDefaultItem: state.modalDefaultItem
       }
     },
 
@@ -312,7 +327,8 @@ export const {
   setresetSceanCanvas,
   setmodalGallary,
   setModalDefaultItem,
-  setCategoryGallary
+  setCategoryGallary,
+  setCategoryDefaultImg
 } = slice.actions;
 
 // GET Faqs PAGE DATA

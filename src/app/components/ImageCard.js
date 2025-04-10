@@ -12,7 +12,10 @@ const ImageCard = ({
   name,
   selected,
   link,
-  step
+  step,
+  itemcode,
+  selectedItemCode,
+  productCode
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const fonts = useSelector((state) => state.font);
@@ -25,7 +28,7 @@ const ImageCard = ({
     <Card
       ref={refName}
       onClick={() => {
-        functionname(link);
+        functionname(link,selectedItemCode,productCode);
         dispatch(setStepIndex(tourState.stepIndex+1));
       }}
       onMouseEnter={() => setIsHovered(true)}

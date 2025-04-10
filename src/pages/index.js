@@ -7,6 +7,7 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import {
   removecart,
   resetState,
+  setCategoryDefaultImg,
   setCustomization,
   setHeaderResponse,
 } from "@/redux/slices/customization";
@@ -158,8 +159,10 @@ export default function ProductPage(props) {
   const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
   const [formClose, setFormClose] = useState(false);
   const [modalSliderImage, setModalSliderImage] = useState(null);
+  const [modalSliderImageLoading, setModalSliderImageLoading] = useState(false);
   const { query, locale } = useRouter();
   const [activeStep, setActiveStep] = useState(0);
+
 
   const steps = [
     {
@@ -199,34 +202,51 @@ export default function ProductPage(props) {
     resetCanvasScene,
     productInfo,
     modalDefaultItem,
-    categoryGallary
+    categoryGallary,
+    categoryDefaultImg
   } = useSelector((state) => state.customization);
 
   const getModalGallary = async () => {
     if (SelectedCategory !== null && SelectedModal !== null) {
+      setModalSliderImageLoading(true);
       const response = await apiSSRV2DataService.getAll({
         path: `kiosk/fetch_gallery`,
         param: {
           category: SelectedCategory,
-          item_code: modalDefaultItem,
+          item: modalDefaultItem?.productId,
+          product: modalDefaultItem?.itemId,
         },
         cookies: cookies,
         locale: locale,
       });
 
-      setModalSliderImage(response.result);
-    
+      if(response.result.length > 0){
+        setModalSliderImage(response.result);
+      }
+
+      setModalSliderImageLoading(false);
+      
     }
   };
 
   useEffect(() => {
     getModalGallary();
-  }, [SelectedModal,SelectedCategory]);
+  }, [SelectedModal, SelectedCategory]);
 
-  useEffect(()=>{
-    console.log("categoryGallaryyyy",categoryGallary);
-    // console.log(categoryGallary.fillter(SelectedCategory));
-  },[SelectedCategory]);
+  useEffect(() => {
+    const filteredGallery = categoryGallary?.filter((item) =>
+      item.link_url === SelectedCategory
+    );
+
+    if (filteredGallery && filteredGallery.length > 0) {
+      const firstImagePath = filteredGallery[0].image_path;
+        dispatch(setCategoryDefaultImg(firstImagePath));
+      console.log("filteredGallery", firstImagePath);
+    } else {
+      console.log("No categories found matching the selected category");
+    }
+
+  }, [SelectedCategory]);
 
   useEffect(() => {
     console.log("orderListnew", orderList);
@@ -292,7 +312,6 @@ export default function ProductPage(props) {
           thumbsSwiper.update(); // Ensure it's properly updated
         }
       }, 100);
-
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
@@ -301,7 +320,6 @@ export default function ProductPage(props) {
   // useEffect(() => {
   //   console.log("stepCount", stepCount);
   // }, [stepCount]);
-
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -405,7 +423,7 @@ export default function ProductPage(props) {
   }, [thumbsSwiper]);
 
   const handleThumbnailClick = (index) => {
-    console.log("activeIndex",activeIndex);
+    console.log("activeIndex", activeIndex);
 
     if (!thumbsSwiper || !mainSwiper) {
       console.warn("Swiper instances are not ready. Retrying...");
@@ -481,7 +499,7 @@ export default function ProductPage(props) {
 
   // const [tourState, setTourState] = useState({
   //   run: false,
-  //   stepIndex: 0, 
+  //   stepIndex: 0,
   //   steps: [
   //     {
   //       target: ".step-select",
@@ -509,22 +527,19 @@ export default function ProductPage(props) {
   // }, []);
 
   useEffect(() => {
-    dispatch(startTour()); // ✅ Start the tour when component loads
+    dispatch(startTour());
   }, [dispatch]);
-
 
   const tourState = useSelector((state) => state.tour);
 
-  console.log("tourState",tourState);
-
-  
+  console.log("tourState", tourState);
 
   const renderStep = () => {
     switch (stepCount) {
       case 0:
         return <Step1 />;
       case 1:
-        return <Modal />;
+        return <Modal getModalGallary={getModalGallary} />;
       case 2:
         return (
           <TabinationStepsSection
@@ -542,30 +557,34 @@ export default function ProductPage(props) {
     }
   };
 
- 
-
+  const formatCategory = (category) => {
+    return category
+      .replace(/-/g, ' ') // Replace hyphens with spaces
+      .replace(/\b\w/g, (char) => char.toUpperCase()) 
+      .replace(/\s+/g, ' ') // Remove extra spaces if any
+      .trim(); // Remove leading/trailing spaces
+  };
 
   return (
     <>
-     <Joyride
-      steps={tourState.steps}
-      stepIndex={tourState.stepIndex} 
-      run={tourState.run}
-      continuous
-      showProgress
-      showSkipButton
-      spotlightClicks
-      disableScrolling
-      placement="auto"
-      styles={{
-        options: {
-          zIndex: 99999,
-          overlayColor: "rgba(0, 0, 0, 0.5)",
-          primaryColor: "#ff6600",
-        },
-      }}
-    />
-
+      <Joyride
+        steps={tourState.steps}
+        stepIndex={tourState.stepIndex}
+        run={tourState.run}
+        continuous
+        showProgress
+        showSkipButton
+        spotlightClicks
+        disableScrolling
+        placement="auto"
+        styles={{
+          options: {
+            zIndex: 99999,
+            overlayColor: "rgba(0, 0, 0, 0.5)",
+            primaryColor: "#ff6600",
+          },
+        }}
+      />
 
       <Head>
         <title>Customization List Page</title>
@@ -613,8 +632,7 @@ export default function ProductPage(props) {
             color="warning"
             aria-label="edit"
           >
-            <MenuIcon className="drawer"  />
-
+            <MenuIcon className="drawer" />
           </Fab>
           {/* Burger Menu End  */}
 
@@ -660,7 +678,6 @@ export default function ProductPage(props) {
 
           {/* Swiper Slider with 3d Rendor Section Start */}
           <main>
-        
             {/* Main Swiper -> pass thumbs swiper instance */}
             <Swiper
               style={{
@@ -684,12 +701,57 @@ export default function ProductPage(props) {
                       {(stepCount === 0 || stepCount === 1) &&
                         materialList !== null &&
                         (modalSliderImage?.length > 0 ? (
-                          <ModalGallary
-                            modalSliderImage={modalSliderImage}
-                            isTablet={isTablet}
-                            isMobile={isMobile}
-                            activeIndex={activeIndex}
-                          />
+                          <>
+                              {modalSliderImageLoading 
+                              ?  
+                              <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "calc(99vh)",
+                                backgroundImage:
+                                  "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                                position: "relative",
+                                "&::before": {
+                                  content: '""',
+                                  position: "absolute",
+                                  top: 0,
+                                  left: 0,
+                                  width: "100%",
+                                  height: "100%",
+                                  backgroundColor: "rgba(0, 0, 0, 0.6)", // Darker overlay for better contrast
+                                  backdropFilter: "blur(5px)", // Subtle blur effect
+                                  zIndex: 0,
+                                },
+                              }}
+                            >
+                              <img
+                                src="/loadernew.gif"
+                                style={{
+                                  objectFit: "contain",
+                                  height: "100px",
+                                  zIndex: 1,
+                                  position: "relative",
+                                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                                  padding: "10px",
+                                  borderRadius: "8px",
+                                  boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                                }}
+                                alt="Loading..."
+                              />
+                            </Box>
+                              : <ModalGallary
+                              modalSliderImage={modalSliderImage}
+                              isTablet={isTablet}
+                              isMobile={isMobile}
+                              activeIndex={activeIndex}
+                            />}
+                              
+                          </>
                         ) : (
                           <Typography
                             sx={{
@@ -702,8 +764,7 @@ export default function ProductPage(props) {
                               backgroundColor: "rgba(245, 175, 12, 0.5)",
                               color: "#ef9c00",
                               textShadow: "2px 2px 5px rgba(245, 186, 24, 0.5)",
-                              background:
-                                "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
+                              background:categoryDefaultImg && categoryDefaultImg ? `url(${categoryDefaultImg})` : "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
                               backgroundSize: "cover",
                               backgroundRepeat: "no-repeat",
                               height: isTablet
@@ -780,7 +841,7 @@ export default function ProductPage(props) {
                           ? "calc(100vh - 510px)"
                           : isMobile
                           ? "calc(100vh - 340px)"
-                          : "calc(100vh - 130px)",
+                          : "calc(100vh - 110px)",
                         cursor: "pointer",
                       }}
                       alt={`Image ${index + 1}`}
@@ -796,28 +857,28 @@ export default function ProductPage(props) {
             </Swiper>
 
             {/* Thumbs Swiper -> store swiper instance */}
-          
-              <Swiper
-                modules={[Thumbs]}
-                watchSlidesProgress
-                onSwiper={setThumbsSwiper}
-                // spaceBetween={5}
-                slidesPerView={6}
-                loop={false}
-                allowSlideNext={true}
-                slideToClickedSlide
-                initialSlide={activeIndex}
-                style={{
-                  marginLeft: "3px",
-                }}
-                breakpoints={{
-                  320: { slidesPerView: 4, spaceBetween: 8 },
-                  480: { slidesPerView: 4, spaceBetween: 10 },
-                  768: { slidesPerView: 5, spaceBetween: 10 },
-                  1024: { slidesPerView: 6, spaceBetween: 15 },
-                }}
-              >
-               {/* Category thumb images */}
+
+            <Swiper
+              modules={[Thumbs]}
+              watchSlidesProgress
+              onSwiper={setThumbsSwiper}
+              // spaceBetween={5}
+              slidesPerView={6}
+              loop={false}
+              allowSlideNext={true}
+              slideToClickedSlide
+              initialSlide={activeIndex}
+              style={{
+                marginLeft: "3px",
+              }}
+              breakpoints={{
+                320: { slidesPerView: 4, spaceBetween: 8 },
+                480: { slidesPerView: 4, spaceBetween: 10 },
+                768: { slidesPerView: 5, spaceBetween: 10 },
+                1024: { slidesPerView: 6, spaceBetween: 15 },
+              }}
+            >
+              {/* Category thumb images */}
               {(stepCount === 0 || stepCount === 1) &&
                 materialList !== null &&
                 modalSliderImage?.map((src, index) => (
@@ -837,25 +898,26 @@ export default function ProductPage(props) {
                       style={{
                         border:
                           activeIndex === index
-                            ? "2px solid orange" 
-                            : "2px solid transparent", 
+                            ? "2px solid orange"
+                            : "2px solid transparent",
                         marginTop: "1px",
                         cursor: "pointer", // Add cursor to indicate clickable element
-                        transition: "border 0.3s ease-in-out", 
+                        transition: "border 0.3s ease-in-out",
                       }}
                       onClick={() => {
                         setActiveIndex(index); // Set active index on click
-                        // handleThumbnailClick(index); 
+                        // handleThumbnailClick(index);
                       }}
                       alt={`Thumbnail ${index + 1}`}
                     />
                   </SwiperSlide>
                 ))}
 
-
-
-                {/* 3d modal thumb images */}
-                {stepCount !== 0 && stepCount !== 1 && !isCustomizationLoading && imageUrls.map((src, index) => (
+              {/* 3d modal thumb images */}
+              {stepCount !== 0 &&
+                stepCount !== 1 &&
+                !isCustomizationLoading &&
+                imageUrls.map((src, index) => (
                   <SwiperSlide key={index}>
                     <img
                       src={src}
@@ -870,10 +932,7 @@ export default function ProductPage(props) {
                         },
                       }}
                       style={{
-                        border:
-                        activeIndex === index
-                        ? "2px solid orange"
-                        : "",
+                        border: activeIndex === index ? "2px solid orange" : "",
                         marginTop: "1px",
                       }}
                       onClick={() => {
@@ -885,8 +944,7 @@ export default function ProductPage(props) {
                     />
                   </SwiperSlide>
                 ))}
-              </Swiper>
-      
+            </Swiper>
           </main>
           {/* Swiper Slider with 3d Rendor Section End */}
         </Grid>
@@ -905,9 +963,8 @@ export default function ProductPage(props) {
           }}
         >
           {renderStep()}
-
           {/* Bottom Bar */}
-          {stepCount != 2 && (
+          {stepCount !== 2 && (
             <Box
               sx={{
                 height: "auto",
@@ -927,64 +984,144 @@ export default function ProductPage(props) {
                 boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                 padding: "10px",
                 display: "flex",
-                justifyContent: "space-between", // Center buttons
-                gap: "8px",
-                flexWrap: "nowrap", // Prevent wrapping
-                overflowX: "auto", // Allow horizontal scroll if needed
+                flexDirection: "column", // Changed to column for vertical layout
+                alignItems: "center", // Center content horizontally
+                gap: "10px", // Added space between elements
               }}
             >
-              {/* Previous/Home Button */}
-              {stepCount > 0 ? (
-                <Button
-                  size="large"
-                  variant="outlined"
-                  onClick={() => {
-                    previousStep();
-                    dispatch(removecart());
-                  }}
-                  startIcon={<ArrowCircleLeftIcon />}
-                >
-                  Previous
-                </Button>
-              ) : (
-                <Button
-                  size="large"
-                  variant="outlined"
-                  onClick={handleHome}
-                  startIcon={<ArrowCircleLeftIcon />}
-                >
-                  Home
-                </Button>
-              )}
+              {/* Price Section */}
+              <Box
+                sx={{
+                  width: "100%",
+                  backgroundColor: "#fff",
+                  position: {
+                    lg: "unset",
+                    xl: "unset",
+                    xs: "fixed",
+                    md: "fixed",
+                    sm: "fixed",
+                  },
+                  overflow: "hidden",
+                  bottom: { xs: 0, md: 0, sm: 0 },
+                  left: 0,
+                  zIndex: 1000,
+                  // boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",
+                  pb: "10px",
+                }}
+              >
+                 <Grid
+                container
+                spacing={2}
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{
+                  backgroundColor: "white",
+                  paddingRight: "10px",
+                  paddingLeft: "10px",
+                }}
+              >
+                <Grid item xs={7} pt={"0 !important"}>
+                  <Typography
+                    sx={{
+                      fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+                      color: "#010101",
+                      paddingTop: "25px",
+                      textAlign: "start",
+                      fontSize: "16px !important",
+                      // paddingLeft: "20px",
+                    }}
+                    gutterBottom
+                    variant="p"
+                    component="div"
+                  >
+                   {SelectedCategory ? formatCategory(SelectedCategory) : null}
+                  </Typography>
+                </Grid>
+                <Grid item xs={5} pt={"0 !important"}>
+                <Typography
+                    sx={{
+                      fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+                      color: "#010101",
+                      paddingTop: "25px",
+                      textAlign: "end",
+                      fontSize: "16px !important",
+                      // paddingLeft: "20px",
+                    }}
+                    gutterBottom
+                    variant="p"
+                    component="div"
+                  >
+                    {translate("Total")} {translate(cookies?.CCYCODE || "AED")}{" "}
+                    0.00
+                  </Typography>
+                </Grid>
+              </Grid>
+              </Box>
+             
 
-              {/* Continue/Add to Cart Button */}
-              {stepCount < 5 ? (
-                <Button
-                  className={stepCount == 1 ?  "continue2" : "continue" }
-                  size="large"
-                  variant="outlined"
-                  onClick={() => {dispatch(incrementStep(stepCount + 1)) 
-                    setTimeout(() => {
-                      dispatch(setStepIndex(tourState.stepIndex + 1));
-                    }, 2000);}}
-                  endIcon={<ArrowCircleRightIcon />}
-                >
-                  Continue
-                </Button>
-              ) : (
-                <Button
-                  sx={{
-                    backgroundColor: "#ef9c00",
-                    color: "#f5ece0",
-                  }}
-                  onClick={addToCart}
-                  size="large"
-                  variant="contained"
-                  endIcon={<LocalMallIcon />}
-                >
-                  Add To Cart
-                </Button>
-              )}
+              {/* Button Row */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                {/* Previous/Home Button */}
+                {stepCount > 0 ? (
+                  <Button
+                    size="large"
+                    variant="outlined"
+                    onClick={() => {
+                      previousStep();
+                      dispatch(removecart());
+                    }}
+                    startIcon={<ArrowCircleLeftIcon />}
+                  >
+                    Previous
+                  </Button>
+                ) : (
+                  <Button
+                    size="large"
+                    variant="outlined"
+                    onClick={handleHome}
+                    startIcon={<ArrowCircleLeftIcon />}
+                  >
+                    Home
+                  </Button>
+                )}
+
+                {/* Continue/Add to Cart Button */}
+                {stepCount < 5 ? (
+                  <Button
+                    className={stepCount === 1 ? "continue2" : "continue"}
+                    size="large"
+                    variant="outlined"
+                    onClick={() => {
+                      dispatch(incrementStep(stepCount + 1));
+                      setTimeout(() => {
+                        dispatch(setStepIndex(tourState.stepIndex + 1));
+                      }, 2000);
+                    }}
+                    endIcon={<ArrowCircleRightIcon />}
+                  >
+                    Continue
+                  </Button>
+                ) : (
+                  <Button
+                    sx={{
+                      backgroundColor: "#ef9c00",
+                      color: "#f5ece0",
+                    }}
+                    onClick={addToCart}
+                    size="large"
+                    variant="contained"
+                    endIcon={<LocalMallIcon />}
+                  >
+                    Add To Cart
+                  </Button>
+                )}
+              </Box>
             </Box>
           )}
         </Grid>

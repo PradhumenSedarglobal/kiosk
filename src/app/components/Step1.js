@@ -15,6 +15,7 @@ import {
   resetState,
   loadingfalse,
   setCategoryGallary,
+  setCategoryDefaultImg,
 } from "@/redux/slices/customization";
 
 // Custom Components
@@ -50,6 +51,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const globalSelectedCategory = useSelector((state) => state.customization.SelectedCategory);
+  const categoryGallary = useSelector((state) => state.customization.categoryGallary);
   const stepCount = useSelector((state) => state.step.value);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
@@ -93,13 +95,15 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
   
       hasFetched.current = true;
       setCategory(data.result);
-      dispatch(setCategoryGallary(data.result));
+      console.log("setCategoryGallary",data.result);
+    
   
       if (data.result.length > 0) {
         const initialCategory = globalSelectedCategory || data.result[0].link_url;
         setSelectedCategory(initialCategory);
         dispatch(removecart());
         dispatch(updateSelectedCategory(initialCategory));
+        dispatch(setCategoryGallary(data.result));
       }
     })
     .catch((error) => {
@@ -113,16 +117,27 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
     return () => cancelToken.cancel();
   }, [dispatch, globalSelectedCategory]);
 
-  const handleChange = useCallback(
-    (link) => {
-      dispatch(resetState());
-      dispatch(loadingfalse(true));
-      setSelectedCategory(link);
-      dispatch(updateSelectedCategory(link));
+  const handleChange = useCallback((link) => {
+    
+  
+    // Dispatch actions
+    dispatch(resetState());
+    dispatch(loadingfalse(true));
+    setSelectedCategory(link); // Update the selected category state
+    dispatch(updateSelectedCategory(link)); // Update the Redux store with the selected category
 
-    },
-    [dispatch]
-  );
+    // First, filter the categoryGallary for the selected category
+    const filteredGallery = categoryGallary?.filter((item) => item.link_url === link);
+  
+    if (filteredGallery && filteredGallery.length > 0) {
+      const firstImagePath = filteredGallery[0].image_path;
+      dispatch(setCategoryDefaultImg(firstImagePath));
+      console.log("filteredGallery", firstImagePath); // Log the first image path for debugging
+    } else {
+      console.log("No categories found matching the selected category");
+    }
+
+  }, [categoryGallary, dispatch]);
 
   useEffect(() => {
     if (successValue) {
@@ -200,7 +215,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
         <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
           <Box
             sx={{
-              height: { lg: "calc(100vh - 130px)" },
+              height: { lg: "calc(100vh - 180px)" },
               overflow: "auto",
               pt: "20px",
             }}
