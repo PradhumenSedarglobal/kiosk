@@ -21,6 +21,7 @@ import { Provider } from "react-redux";
 import "simplebar/dist/simplebar.css";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
+import "@/styles/loader.css"
 // import dynamic from "next/dynamic";
 import CartProvider from "@/provider/cart/cartProvider";
 import ToastProvider from "@/app/components/ToastProvider";

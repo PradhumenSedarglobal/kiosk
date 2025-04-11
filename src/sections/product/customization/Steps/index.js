@@ -46,9 +46,24 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   const [missingPopup, setMissingPopup] = useState(false);
   const [showAddToCart,setAddToCartShow] = useState(false);
 
+  const [errorValidation, setErrorValidation] = useState({});
+
+  let m_width = productInfo.m_width ? parseInt(productInfo.m_width) : 0;
+  let m_height = productInfo.m_height ? parseInt(productInfo.m_height) : 0;
+  let restrict_to_material_width_yn = productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN ? productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN : 'N';
+  let restrict_to_material_height_yn = productInfo.SPI_RESTRICT_TO_MATERIAL_HEIGHT_YN ? productInfo.SPI_RESTRICT_TO_MATERIAL_HEIGHT_YN : 'N';
+
+  console.log("missingSteppppp",missingStep);
+  console.log("errorValidation",errorValidation);
+  console.log("missingPopup",missingPopup);
+
   const [tabChange, setTabChange] = useState("1");
   const onNextHandle = (type) => {
     stepValidation();
+
+    let missing_step = Object.keys(missingStep);
+    let error_validation = Object.keys(errorValidation);
+
     console.log("tabbbbbb",tabChange);
     if(tabChange === "1"){
       dispatch(setStepIndex(7));
@@ -57,7 +72,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
     }
    
 
-    let missing_step = Object.keys(missingStep);
+
     let cart_status =
       type == "ADDTOCART" &&
       priceArray.SOL_VALUE > 0 &&
@@ -119,33 +134,26 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   };
 
   const stepValidation = () => {
-    customization &&
-      customization["CHILD"] &&
-      customization["CHILD"][1].filter((curElem, i) => {
-        curElem.CHILD_STEP.filter((childElem) => {
-          if (
-            validation_steps_type.indexOf(childElem.SS_DATA_SOURCE) >= 0 &&
-            childElem.SS_CODE_NAME &&
-            stepsArray[childElem.SS_CODE_NAME] == undefined
-          ) {
-            let validation = [];
-            let new_data = Object.assign(
-              { ...childElem },
-              { parent_index: i + 1 }
-            );
-            validation[childElem.SS_CODE_NAME] = new_data;
-            setMissingStep({ ...missingStep, ...validation });
-          } else if (missingStep && missingStep[childElem.SS_CODE_NAME]) {
-            delete missingStep[childElem.SS_CODE_NAME];
-            setMissingStep(missingStep);
-          }
-          if (childElem.SUB_CHILD && childElem.SUB_CHILD.length > 0) {
-            filteFun(childElem.SUB_CHILD, childElem, i);
-          }
-        });
-      });
-  };
+    customization && customization['CHILD'] && customization['CHILD'][1].filter((curElem, i) => {
+      curElem.CHILD_STEP.filter((childElem) => {
+        if (validation_steps_type.indexOf(childElem.SS_DATA_SOURCE) >= 0 && childElem.SS_CODE_NAME && stepsArray[childElem.SS_CODE_NAME] == undefined) {
+          let validation = [];
+          let new_data = Object.assign({ ...childElem }, { parent_index: i + 1 });
+          validation[childElem.SS_CODE_NAME] = new_data;
+          setMissingStep({ ...missingStep, ...validation });
+        } else if (missingStep && missingStep[childElem.SS_CODE_NAME]) {
+          delete missingStep[childElem.SS_CODE_NAME];
+          setMissingStep(missingStep);
+        }
+        if (childElem.SUB_CHILD && childElem.SUB_CHILD.length > 0) {
+          filteFun(childElem.SUB_CHILD, childElem, i);
+        }
+      })
+    });
+
+  }
   const filteFun = (child_data, parent, parent_index) => {
+    console.log("missingSteppp",missingStep);
     child_data.filter((childElem) => {
       let parent_id = stepsArray[parent.SS_CODE_NAME]
         ? stepsArray[parent.SS_CODE_NAME].SPS_SYS_ID
@@ -172,6 +180,29 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
       }
     });
   };
+
+  useEffect(() => {
+
+    if (stepsArray['MATERIAL_SELECTION'] && stepsArray['MATERIAL_SELECTION']['material_info'] && parseInt(stepsArray['MATERIAL_SELECTION']['material_info']['SII_WIDTH']) < m_width && restrict_to_material_width_yn == 'Y') {
+      setErrorValidation({ ...errorValidation, MATERIAL_SELECTION: { mgs: translate('alertMessageMaxWidth_mgs'), parent_index: 2 } });
+      setMissingPopup(true);
+    } else if (stepsArray['MATERIAL_SELECTION'] && stepsArray['MATERIAL_SELECTION']['material_info'] && parseInt(stepsArray['MATERIAL_SELECTION']['material_info']['SII_LENGTH']) < m_height && restrict_to_material_height_yn == 'Y') {
+      setErrorValidation({ ...errorValidation, MATERIAL_SELECTION: { mgs: translate('alertMessageMaxHeight_mgs'), parent_index: 2 } });
+      setMissingPopup(true);
+      //setValidationModal(true);
+    }else if (stepsArray['TYPE_OF_MOTOR'] && parseInt(stepsArray['TYPE_OF_MOTOR']['SPS_MIN_WIDTH']) > m_width) {
+      setErrorValidation({ ...errorValidation, TYPE_OF_MOTOR: { mgs: translate('motor_width_validation'), parent_index: 3 } });
+      setMissingPopup(true);
+    }
+    else if (stepsArray['TYPE_OF_MOTOR'] && parseInt(stepsArray['TYPE_OF_MOTOR']['SPS_MAX_HEIGHT']) < m_height) {
+      setErrorValidation({ ...errorValidation, TYPE_OF_MOTOR: { mgs: translate('motor_height_validation'), parent_index: 3 } });
+      setMissingPopup(true);
+    } else {
+      console.log(33333, 'ValidationPopup');
+      setErrorValidation({})
+      //  customize_state.error_step_validation.TYPE_OF_MOTOR ? delete customize_state.error_step_validation.TYPE_OF_MOTOR : '';
+    }
+  }, [m_width, stepsArray['MATERIAL_SELECTION'], stepsArray['TYPE_OF_MOTOR']]);
 
   // useEffect(() => {
   //   stepValidation();
@@ -248,7 +279,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   const handleAddToCart = () => {
 
 
-    if(!showAddToCart){
+    if(!showAddToCart && Object.keys(errorValidation).length === 0){
       setAddToCartShow(true);
     } 
   }

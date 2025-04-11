@@ -15,12 +15,11 @@ import {
 import ImageCard from "@/app/components/ImageCard";
 import MainHeading from "@/app/components/MainHeading";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
-import { Alert, Box, Grid, AlertTitle } from "@mui/material";
+import { Alert, Box, Grid, AlertTitle, useMediaQuery } from "@mui/material";
 import axios from "axios";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import InstructionTooltip from "./InstructionTooltip";
 import { useRouter } from "next/router";
-
 
 const Modal = () => {
   const dispatch = useDispatch();
@@ -35,15 +34,17 @@ const Modal = () => {
   );
   const modalData = useSelector((state) => state.customization.ModalData);
 
-  console.log("modalDataaaaa",modalData);
+  console.log("modalDataaaaa", modalData);
 
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { locale, query } = useRouter();
-  const [selectedItemCode,setSelectedItemCode] = useState();
-  const [productCode,setProductCode] = useState();
-  
+  const [selectedItemCode, setSelectedItemCode] = useState();
+  const [productCode, setProductCode] = useState();
+
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
+  const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
   // ✅ Clear cart and start loading on category change
   const debouncedRemoveCart = useCallback(
@@ -72,14 +73,14 @@ const Modal = () => {
         //   { cancelToken: source.token }
         // );
 
-         const response = await apiSSRV2DataService.getAll({
-                    path: `kiosk/categories`,
-                    param: {
-                      category: selectedCategory,
-                    },
-                    locale: locale,
-                  });
-          console.log("response",response);
+        const response = await apiSSRV2DataService.getAll({
+          path: `kiosk/categories`,
+          param: {
+            category: selectedCategory,
+          },
+          locale: locale,
+        });
+        console.log("response", response);
 
         if (response?.result?.model?.length > 0) {
           dispatch(updateModalData(response.result));
@@ -87,13 +88,17 @@ const Modal = () => {
           const firstModal =
             selectedModalData || response.result.model[0]?.SPI_LINK_URL;
 
-          console.log("sssssssssss",selectedItemCode);
-          console.log("sssssssssss2",productCode);
+          console.log("sssssssssss", selectedItemCode);
+          console.log("sssssssssss2", productCode);
 
-          dispatch(setModalDefaultItem({
-            itemId: selectedItemCode ? selectedItemCode : response?.result.model[0]?.SPI_PR_ITEM_CODE,
-            productId: productCode
-          }));
+          dispatch(
+            setModalDefaultItem({
+              itemId: selectedItemCode
+                ? selectedItemCode
+                : response?.result.model[0]?.SPI_PR_ITEM_CODE,
+              productId: productCode,
+            })
+          );
 
           setSelectedModal(firstModal);
           dispatch(updateSelectedModal(firstModal));
@@ -157,13 +162,12 @@ const Modal = () => {
   };
 
   // ✅ Handle modal change and state reset
-  const handleChange = async (link,selectedItemCode,productCode) => {
-
-    console.log("bothid",selectedItemCode,productCode);
+  const handleChange = async (link, selectedItemCode, productCode) => {
+    console.log("bothid", selectedItemCode, productCode);
 
     setProductCode(productCode);
     setSelectedItemCode(selectedItemCode);
-    console.log("modalData",modalData);
+    console.log("modalData", modalData);
     if (selectedModalData !== link) {
       dispatch(updateSelectedModal(link));
       await getStep(link);
@@ -185,14 +189,25 @@ const Modal = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "calc(100vh - 130px)",
+            height: isTablet
+              ? "calc(100vh - 510px)"
+              : isMobile
+              ? "calc(100vh - 340px)"
+              : "calc(100vh - 5px)",
+            backgroundColor: "#f5f5f5",
           }}
         >
-          <img
-            src="/loadernew.gif"
-            style={{ objectFit: "cover", height: "100px" }}
-            alt="Loading..."
-          />
+          <div className="loader2">
+            <ul className="hexagon-container">
+              <li className="hexagon hex_1"></li>
+              <li className="hexagon hex_2"></li>
+              <li className="hexagon hex_3"></li>
+              <li className="hexagon hex_4"></li>
+              <li className="hexagon hex_5"></li>
+              <li className="hexagon hex_6"></li>
+              <li className="hexagon hex_7"></li>
+            </ul>
+          </div>
         </Box>
       ) : (
         <>

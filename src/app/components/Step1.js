@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { Box, Modal, Typography, Grid } from "@mui/material";
+import { Box, Modal, Typography, Grid, useMediaQuery } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import {
@@ -44,6 +44,7 @@ export async function getServerSideProps({ req }) {
   };
 }
 
+
 const Step1 = ({ successValue, stepcount,userIp }) => {
 
   const { state } = useAuthContext();
@@ -59,6 +60,9 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
   const { locale, query } = useRouter();
+
+    const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
+    const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
 
   const fetchCategory = async () => {
@@ -195,20 +199,31 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
       )}
 
       {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "calc(100vh - 130px)",
-          }}
-        >
-          <img
-            src="/loadernew.gif"
-            style={{ objectFit: "cover", height: "100px" }}
-            alt="Loading..."
-          />
-        </Box>
+       <Box
+       sx={{
+         display: "flex",
+         justifyContent: "center",
+         alignItems: "center",
+         height: isTablet
+           ? "calc(100vh - 510px)"
+           : isMobile
+           ? "calc(100vh - 340px)"
+           : "calc(100vh - 5px)",
+         backgroundColor: "#f5f5f5",
+       }}
+     >
+       <div className="loader2">
+         <ul className="hexagon-container">
+           <li className="hexagon hex_1"></li>
+           <li className="hexagon hex_2"></li>
+           <li className="hexagon hex_3"></li>
+           <li className="hexagon hex_4"></li>
+           <li className="hexagon hex_5"></li>
+           <li className="hexagon hex_6"></li>
+           <li className="hexagon hex_7"></li>
+         </ul>
+       </div>
+     </Box>
       ) : (
         <>
         <MainHeading title="Category Selection" />
@@ -234,5 +249,6 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
     </>
   );
 };
+
 
 export default React.memo(Step1);

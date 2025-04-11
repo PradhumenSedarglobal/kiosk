@@ -163,7 +163,6 @@ export default function ProductPage(props) {
   const { query, locale } = useRouter();
   const [activeStep, setActiveStep] = useState(0);
 
-
   const steps = [
     {
       title: "Select Category",
@@ -203,7 +202,7 @@ export default function ProductPage(props) {
     productInfo,
     modalDefaultItem,
     categoryGallary,
-    categoryDefaultImg
+    categoryDefaultImg,
   } = useSelector((state) => state.customization);
 
   const getModalGallary = async () => {
@@ -220,12 +219,11 @@ export default function ProductPage(props) {
         locale: locale,
       });
 
-      if(response.result.length > 0){
+      if (response.result.length > 0) {
         setModalSliderImage(response.result);
       }
 
       setModalSliderImageLoading(false);
-      
     }
   };
 
@@ -234,18 +232,17 @@ export default function ProductPage(props) {
   }, [SelectedModal, SelectedCategory]);
 
   useEffect(() => {
-    const filteredGallery = categoryGallary?.filter((item) =>
-      item.link_url === SelectedCategory
+    const filteredGallery = categoryGallary?.filter(
+      (item) => item.link_url === SelectedCategory
     );
 
     if (filteredGallery && filteredGallery.length > 0) {
       const firstImagePath = filteredGallery[0].image_path;
-        dispatch(setCategoryDefaultImg(firstImagePath));
+      dispatch(setCategoryDefaultImg(firstImagePath));
       console.log("filteredGallery", firstImagePath);
     } else {
       console.log("No categories found matching the selected category");
     }
-
   }, [SelectedCategory]);
 
   useEffect(() => {
@@ -559,9 +556,9 @@ export default function ProductPage(props) {
 
   const formatCategory = (category) => {
     return category
-      .replace(/-/g, ' ') // Replace hyphens with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()) 
-      .replace(/\s+/g, ' ') // Remove extra spaces if any
+      .replace(/-/g, " ") // Replace hyphens with spaces
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+      .replace(/\s+/g, " ") // Remove extra spaces if any
       .trim(); // Remove leading/trailing spaces
   };
 
@@ -687,7 +684,6 @@ export default function ProductPage(props) {
               className="previewImage"
               modules={[Thumbs]}
               thumbs={{ swiper: thumbsSwiper }}
-              // spaceBetween={10}
               slidesPerView={1}
               allowTouchMove={false}
               loop={false}
@@ -699,136 +695,107 @@ export default function ProductPage(props) {
                   {index === 0 ? (
                     <>
                       {(stepCount === 0 || stepCount === 1) &&
-                        materialList !== null &&
-                        (modalSliderImage?.length > 0 ? (
+                        materialList !== null && (
                           <>
-                              {modalSliderImageLoading 
-                              ?  
-                              <Box
+                            {modalSliderImageLoading ? (
+                               <Box
+                               sx={{
+                                 display: "flex",
+                                 justifyContent: "center",
+                                 alignItems: "center",
+                                 height: isTablet
+                                   ? "calc(100vh - 510px)"
+                                   : isMobile
+                                   ? "calc(100vh - 340px)"
+                                   : "calc(100vh - 5px)",
+                                 backgroundColor: "#f5f5f5",
+                               }}
+                             >
+                               <div className="loader2">
+                                 <ul className="hexagon-container">
+                                   <li className="hexagon hex_1"></li>
+                                   <li className="hexagon hex_2"></li>
+                                   <li className="hexagon hex_3"></li>
+                                   <li className="hexagon hex_4"></li>
+                                   <li className="hexagon hex_5"></li>
+                                   <li className="hexagon hex_6"></li>
+                                   <li className="hexagon hex_7"></li>
+                                 </ul>
+                               </div>
+                             </Box>
+                            ) : modalSliderImage?.length > 0 ? (
+                              <ModalGallary
+                                modalSliderImage={modalSliderImage}
+                                isTablet={isTablet}
+                                isMobile={isMobile}
+                                activeIndex={activeIndex}
+                              />
+                            ) : (
+                              <Typography
+                                sx={{
+                                  fontFamily:
+                                    fonts.Helvetica_Neue_Bold.fontFamily,
+                                  fontSize: "1rem",
+                                  fontWeight: "bold",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "end",
+                                  backgroundColor: "rgba(245, 175, 12, 0.5)",
+                                  color: "#ef9c00",
+                                  textShadow:
+                                    "2px 2px 5px rgba(245, 186, 24, 0.5)",
+                                  background: categoryDefaultImg
+                                    ? `url(${categoryDefaultImg})`
+                                    : "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
+                                  backgroundSize: "cover",
+                                  backgroundRepeat: "no-repeat",
+                                  height: isTablet
+                                    ? "calc(100vh - 510px)"
+                                    : isMobile
+                                    ? "calc(100vh - 340px)"
+                                    : "calc(100vh - 5px)",
+                                  position: "relative",
+                                }}
+                              />
+                            )}
+                          </>
+                        )}
+
+                      {stepCount !== 0 && stepCount !== 1 && (
+                        <>
+                          {isCustomizationLoading ? (
+                            <Box
                               sx={{
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                height: "calc(99vh)",
-                                backgroundImage:
-                                  "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat",
-                                position: "relative",
-                                "&::before": {
-                                  content: '""',
-                                  position: "absolute",
-                                  top: 0,
-                                  left: 0,
-                                  width: "100%",
-                                  height: "100%",
-                                  backgroundColor: "rgba(0, 0, 0, 0.6)", // Darker overlay for better contrast
-                                  backdropFilter: "blur(5px)", // Subtle blur effect
-                                  zIndex: 0,
-                                },
+                                height: isTablet
+                                  ? "calc(100vh - 510px)"
+                                  : isMobile
+                                  ? "calc(100vh - 340px)"
+                                  : "calc(100vh - 5px)",
+                                backgroundColor: "#f5f5f5",
                               }}
                             >
-                              <img
-                                src="/loadernew.gif"
-                                style={{
-                                  objectFit: "contain",
-                                  height: "100px",
-                                  zIndex: 1,
-                                  position: "relative",
-                                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                  padding: "10px",
-                                  borderRadius: "8px",
-                                  boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-                                }}
-                                alt="Loading..."
-                              />
+                              <div className="loader2">
+                                <ul className="hexagon-container">
+                                  <li className="hexagon hex_1"></li>
+                                  <li className="hexagon hex_2"></li>
+                                  <li className="hexagon hex_3"></li>
+                                  <li className="hexagon hex_4"></li>
+                                  <li className="hexagon hex_5"></li>
+                                  <li className="hexagon hex_6"></li>
+                                  <li className="hexagon hex_7"></li>
+                                </ul>
+                              </div>
                             </Box>
-                              : <ModalGallary
-                              modalSliderImage={modalSliderImage}
-                              isTablet={isTablet}
-                              isMobile={isMobile}
-                              activeIndex={activeIndex}
-                            />}
-                              
-                          </>
-                        ) : (
-                          <Typography
-                            sx={{
-                              fontFamily: fonts.Helvetica_Neue_Bold.fontFamily,
-                              fontSize: "1rem",
-                              fontWeight: "bold",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "end",
-                              backgroundColor: "rgba(245, 175, 12, 0.5)",
-                              color: "#ef9c00",
-                              textShadow: "2px 2px 5px rgba(245, 186, 24, 0.5)",
-                              background:categoryDefaultImg && categoryDefaultImg ? `url(${categoryDefaultImg})` : "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
-                              backgroundSize: "cover",
-                              backgroundRepeat: "no-repeat",
-                              height: isTablet
-                                ? "calc(100vh - 510px)"
-                                : isMobile
-                                ? "calc(100vh - 340px)"
-                                : "calc(100vh - 5px)",
-                              position: "relative",
-                            }}
-                          />
-                        ))}
-
-                      {stepCount !== 0 &&
-                        stepCount !== 1 &&
-                        !isCustomizationLoading && (
-                          <SceneCanvas3D
-                            {...(data2 && data2.length > 0 ? data2[0] : {})}
-                          />
-                        )}
-
-                      {stepCount !== 0 &&
-                        stepCount !== 1 &&
-                        isCustomizationLoading && (
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              height: "calc(99vh)",
-                              backgroundImage:
-                                "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
-                              backgroundRepeat: "no-repeat",
-                              position: "relative",
-                              "&::before": {
-                                content: '""',
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                backgroundColor: "rgba(0, 0, 0, 0.6)", // Darker overlay for better contrast
-                                backdropFilter: "blur(5px)", // Subtle blur effect
-                                zIndex: 0,
-                              },
-                            }}
-                          >
-                            <img
-                              src="/loadernew.gif"
-                              style={{
-                                objectFit: "contain",
-                                height: "100px",
-                                zIndex: 1,
-                                position: "relative",
-                                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                padding: "10px",
-                                borderRadius: "8px",
-                                boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-                              }}
-                              alt="Loading..."
+                          ) : (
+                            <SceneCanvas3D
+                              {...(data2 && data2.length > 0 ? data2[0] : {})}
                             />
-                          </Box>
-                        )}
+                          )}
+                        </>
+                      )}
                     </>
                   ) : (
                     <img
@@ -857,12 +824,10 @@ export default function ProductPage(props) {
             </Swiper>
 
             {/* Thumbs Swiper -> store swiper instance */}
-
             <Swiper
               modules={[Thumbs]}
               watchSlidesProgress
               onSwiper={setThumbsSwiper}
-              // spaceBetween={5}
               slidesPerView={6}
               loop={false}
               allowSlideNext={true}
@@ -901,12 +866,11 @@ export default function ProductPage(props) {
                             ? "2px solid orange"
                             : "2px solid transparent",
                         marginTop: "1px",
-                        cursor: "pointer", // Add cursor to indicate clickable element
+                        cursor: "pointer",
                         transition: "border 0.3s ease-in-out",
                       }}
                       onClick={() => {
-                        setActiveIndex(index); // Set active index on click
-                        // handleThumbnailClick(index);
+                        setActiveIndex(index);
                       }}
                       alt={`Thumbnail ${index + 1}`}
                     />
@@ -937,8 +901,8 @@ export default function ProductPage(props) {
                       }}
                       onClick={() => {
                         setActiveIndex(index);
-                        handleThumbnailClick(index),
-                          index === 0 ? setShow3d(true) : setShow3d(false);
+                        handleThumbnailClick(index);
+                        index === 0 ? setShow3d(true) : setShow3d(false);
                       }}
                       alt={`Thumbnail ${index + 1}`}
                     />
@@ -1009,55 +973,56 @@ export default function ProductPage(props) {
                   pb: "10px",
                 }}
               >
-                 <Grid
-                container
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{
-                  backgroundColor: "white",
-                  paddingRight: "10px",
-                  paddingLeft: "10px",
-                }}
-              >
-                <Grid item xs={7} pt={"0 !important"}>
-                  <Typography
-                    sx={{
-                      fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-                      color: "#010101",
-                      paddingTop: "25px",
-                      textAlign: "start",
-                      fontSize: "16px !important",
-                      // paddingLeft: "20px",
-                    }}
-                    gutterBottom
-                    variant="p"
-                    component="div"
-                  >
-                   {SelectedCategory ? formatCategory(SelectedCategory) : null}
-                  </Typography>
+                <Grid
+                  container
+                  spacing={2}
+                  justifyContent="space-between"
+                  alignItems="center"
+                  sx={{
+                    backgroundColor: "white",
+                    paddingRight: "10px",
+                    paddingLeft: "10px",
+                  }}
+                >
+                  <Grid item xs={7} pt={"0 !important"}>
+                    <Typography
+                      sx={{
+                        fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+                        color: "#010101",
+                        paddingTop: "25px",
+                        textAlign: "start",
+                        fontSize: "16px !important",
+                        // paddingLeft: "20px",
+                      }}
+                      gutterBottom
+                      variant="p"
+                      component="div"
+                    >
+                      {SelectedCategory
+                        ? formatCategory(SelectedCategory)
+                        : null}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={5} pt={"0 !important"}>
+                    <Typography
+                      sx={{
+                        fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+                        color: "#010101",
+                        paddingTop: "25px",
+                        textAlign: "end",
+                        fontSize: "16px !important",
+                        // paddingLeft: "20px",
+                      }}
+                      gutterBottom
+                      variant="p"
+                      component="div"
+                    >
+                      {translate("Total")}{" "}
+                      {translate(cookies?.CCYCODE || "AED")} 0.00
+                    </Typography>
+                  </Grid>
                 </Grid>
-                <Grid item xs={5} pt={"0 !important"}>
-                <Typography
-                    sx={{
-                      fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-                      color: "#010101",
-                      paddingTop: "25px",
-                      textAlign: "end",
-                      fontSize: "16px !important",
-                      // paddingLeft: "20px",
-                    }}
-                    gutterBottom
-                    variant="p"
-                    component="div"
-                  >
-                    {translate("Total")} {translate(cookies?.CCYCODE || "AED")}{" "}
-                    0.00
-                  </Typography>
-                </Grid>
-              </Grid>
               </Box>
-             
 
               {/* Button Row */}
               <Box
