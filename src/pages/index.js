@@ -610,6 +610,13 @@ export default function ProductPage(props) {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             margin: 0,
+            height: isTablet
+              ? "calc(100vh - 510px)"
+              : isMobile
+              ? "calc(100vh - 340px)"
+              : "calc(100vh - 5px)",
+            position: "relative",
+            overflow: "hidden"
           }}
         >
           {/* Burger Menu Icon Start */}
