@@ -10,6 +10,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   margin: -80px 0px 0px -80px;
   background-color: transparent;
   border-radius: 50%;
+  z-index: 9999999;
   border: 2px solid #E3E4DC;
 }
 .loader2:before {
@@ -24,7 +25,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   left: -2px;
   box-sizing: border-box;
   clip: rect(0px, 35px, 35px, 0px);
-  z-index: 10;
+  z-index: 9999999;
   animation: rotate infinite;
   animation-duration: 3s;
   animation-timing-function: linear;
@@ -41,7 +42,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   left: -2px;
   box-sizing: border-box;
   clip: rect(0px, 164px, 150px, 0px);
-  z-index: 9;
+  z-index: 9999999;
   animation: rotate2 3s linear infinite;
 }
 
@@ -49,6 +50,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   position: relative;
   top: 33px;
   left: 41px;
+  z-index: 9999999;
   border-radius: 50%;
 }
 
@@ -56,6 +58,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   position: absolute;
   width: 40px;
   height: 23px;
+  z-index: 9999999;
   background-color: #daa812;
 }
 .hexagon:before {
@@ -65,6 +68,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   left: 0;
   width: 0;
   height: 0;
+  z-index: 9999999;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   border-bottom: 11.5px solid #daa812;
@@ -76,6 +80,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   left: 0;
   width: 0;
   height: 0;
+  z-index: 1111111;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   border-top: 11.5px solid #daa812;

@@ -26,14 +26,10 @@ import { setStepIndex } from "@/redux/slices/tourSlice";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { useRouter } from "next/router";
 
-
-
 export async function getServerSideProps({ req }) {
-
- 
   // Get the IP address
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  
+  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
   // For better accuracy, you can check and return the actual IP from the x-forwarded-for header.
   const userIp = ip; // In case of multiple IPs, take the first one.
 
@@ -44,15 +40,17 @@ export async function getServerSideProps({ req }) {
   };
 }
 
-
-const Step1 = ({ successValue, stepcount,userIp }) => {
-
+const Step1 = ({ successValue, stepcount, userIp }) => {
   const { state } = useAuthContext();
   const { cookies } = state;
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const globalSelectedCategory = useSelector((state) => state.customization.SelectedCategory);
-  const categoryGallary = useSelector((state) => state.customization.categoryGallary);
+  const globalSelectedCategory = useSelector(
+    (state) => state.customization.SelectedCategory
+  );
+  const categoryGallary = useSelector(
+    (state) => state.customization.categoryGallary
+  );
   const stepCount = useSelector((state) => state.step.value);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
@@ -61,27 +59,22 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
   const dispatch = useDispatch();
   const { locale, query } = useRouter();
 
-    const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
-    const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
-
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
+  const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
   const fetchCategory = async () => {
- 
     try {
       const response = await apiSSRV2DataService.getAll({
         path: `kiosk/categories`,
         locale: locale,
       });
 
-  
       return response; // Ensure response.data exists
     } catch (error) {
       console.error("Error fetching category:", error);
       return null; // Return null to avoid undefined issues
     }
-  
   };
-
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -90,58 +83,60 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
     setLoading(true);
 
     fetchCategory()
-    .then((data) => {
-      console.log("Fetched Data:", data); // Check if data is received
-      if (!data || !data.result) {
-        console.error("No valid data received:", data);
-        return;
-      }
-  
-      hasFetched.current = true;
-      setCategory(data.result);
-      console.log("setCategoryGallary",data.result);
-    
-  
-      if (data.result.length > 0) {
-        const initialCategory = globalSelectedCategory || data.result[0].link_url;
-        setSelectedCategory(initialCategory);
-        dispatch(removecart());
-        dispatch(updateSelectedCategory(initialCategory));
-        dispatch(setCategoryGallary(data.result));
-      }
-    })
-    .catch((error) => {
-      console.error("Fetch error:", error);
-      setError(error);
-    })
-    .finally(() => setLoading(false));
-  
+      .then((data) => {
+        console.log("Fetched Data:", data); // Check if data is received
+        if (!data || !data.result) {
+          console.error("No valid data received:", data);
+          return;
+        }
+
+        hasFetched.current = true;
+        setCategory(data.result);
+        console.log("setCategoryGallary", data.result);
+
+        if (data.result.length > 0) {
+          const initialCategory =
+            globalSelectedCategory || data.result[0].link_url;
+          setSelectedCategory(initialCategory);
+          dispatch(removecart());
+          dispatch(updateSelectedCategory(initialCategory));
+          dispatch(setCategoryGallary(data.result));
+        }
+      })
+      .catch((error) => {
+        console.error("Fetch error:", error);
+        setError(error);
+      })
+      .finally(() => setLoading(false));
+
     // getIpAddress();
 
     return () => cancelToken.cancel();
   }, [dispatch, globalSelectedCategory]);
 
-  const handleChange = useCallback((link) => {
-    
-  
-    // Dispatch actions
-    dispatch(resetState());
-    dispatch(loadingfalse(true));
-    setSelectedCategory(link); // Update the selected category state
-    dispatch(updateSelectedCategory(link)); // Update the Redux store with the selected category
+  const handleChange = useCallback(
+    (link) => {
+      // Dispatch actions
+      dispatch(resetState());
+      dispatch(loadingfalse(true));
+      setSelectedCategory(link); // Update the selected category state
+      dispatch(updateSelectedCategory(link)); // Update the Redux store with the selected category
 
-    // First, filter the categoryGallary for the selected category
-    const filteredGallery = categoryGallary?.filter((item) => item.link_url === link);
-  
-    if (filteredGallery && filteredGallery.length > 0) {
-      const firstImagePath = filteredGallery[0].image_path;
-      dispatch(setCategoryDefaultImg(firstImagePath));
-      console.log("filteredGallery", firstImagePath); // Log the first image path for debugging
-    } else {
-      console.log("No categories found matching the selected category");
-    }
+      // First, filter the categoryGallary for the selected category
+      const filteredGallery = categoryGallary?.filter(
+        (item) => item.link_url === link
+      );
 
-  }, [categoryGallary, dispatch]);
+      if (filteredGallery && filteredGallery.length > 0) {
+        const firstImagePath = filteredGallery[0].image_path;
+        dispatch(setCategoryDefaultImg(firstImagePath));
+        console.log("filteredGallery", firstImagePath); // Log the first image path for debugging
+      } else {
+        console.log("No categories found matching the selected category");
+      }
+    },
+    [categoryGallary, dispatch]
+  );
 
   useEffect(() => {
     if (successValue) {
@@ -165,7 +160,7 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
             flex: "0 0 50%",
             "@media (min-width: 992px)": {
               flex: "0 0 calc(100% / 2)",
-              maxWidth:"50% !important"
+              maxWidth: "50% !important",
             },
             "@media (min-width: 768px) and (max-width: 991px)": {
               flex: "0 0 calc(100% / 4)",
@@ -199,56 +194,50 @@ const Step1 = ({ successValue, stepcount,userIp }) => {
       )}
 
       {loading ? (
-       <Box
-       sx={{
-         display: "flex",
-         justifyContent: "center",
-         alignItems: "center",
-         height: isTablet
-           ? "calc(100vh - 510px)"
-           : isMobile
-           ? "calc(100vh - 340px)"
-           : "calc(100vh - 5px)",
-         backgroundColor: "#f5f5f5",
-       }}
-     >
-       <div className="loader2">
-         <ul className="hexagon-container">
-           <li className="hexagon hex_1"></li>
-           <li className="hexagon hex_2"></li>
-           <li className="hexagon hex_3"></li>
-           <li className="hexagon hex_4"></li>
-           <li className="hexagon hex_5"></li>
-           <li className="hexagon hex_6"></li>
-           <li className="hexagon hex_7"></li>
-         </ul>
-       </div>
-     </Box>
+        <Box
+          sx={{
+            position: "relative",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "calc(100vh - 130px)",
+          }}
+        >
+          <div className="loader2">
+            <ul className="hexagon-container">
+              <li className="hexagon hex_1"></li>
+              <li className="hexagon hex_2"></li>
+              <li className="hexagon hex_3"></li>
+              <li className="hexagon hex_4"></li>
+              <li className="hexagon hex_5"></li>
+              <li className="hexagon hex_6"></li>
+              <li className="hexagon hex_7"></li>
+            </ul>
+          </div>
+        </Box>
       ) : (
         <>
-        <MainHeading title="Category Selection" />
-        <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
-          <Box
-            sx={{
-              height: { lg: "calc(100vh - 180px)" },
-              overflow: "auto",
-              pt: "20px",
-            }}
-          >
-            <Grid
-              container
-              spacing={2}
-              sx={{ px: 2, pb: { sm: 20, xs: 20, md: 5, lg: 5 } }}
+          <MainHeading title="Category Selection" />
+          <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
+            <Box
+              sx={{
+                height: { lg: "calc(100vh - 180px)" },
+                overflow: "auto",
+                pt: "20px",
+              }}
             >
-              {categoryList}
-            </Grid>
+              <Grid
+                container
+                spacing={2}
+                sx={{ px: 2, pb: { sm: 20, xs: 20, md: 5, lg: 5 } }}
+              >
+                {categoryList}
+              </Grid>
+            </Box>
           </Box>
-        </Box>
         </>
       )}
     </>
   );
 };
-
 
 export default React.memo(Step1);
