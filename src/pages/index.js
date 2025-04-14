@@ -653,7 +653,7 @@ export default function ProductPage(props) {
                 fontFamily: fonts.Helvetica_Neue_Regular.style.fontFamily,
                 fontWeight: "700",
                 padding: "8px 16px",
-                position: "absolute",
+                position: "fixed",
                 zIndex: 999,
                 marginLeft: "5px",
                 top: "10px",
@@ -1048,6 +1048,9 @@ export default function ProductPage(props) {
                       dispatch(setStepIndex(tourState.stepIndex - 1));
                       previousStep();
                       dispatch(removecart());
+                      if(stepCount === 2){
+                        dispatch(resetState());
+                      }
                     }}
                     startIcon={<ArrowCircleLeftIcon />}
                   >

@@ -276,12 +276,13 @@ const Measurement = ({ data }) => {
 
 
 
-  useEffect(() => {
-    if (isFirstRender.current && me_width) {
-      isFirstRender.current = false; // Mark as initialized
-      measurementFun("product_width", me_width); // Trigger onChange logic
-    }
-  }, []);
+   useEffect(() => {
+      if (isFirstRender.current && me_width && me_height) {
+        isFirstRender.current = false;
+        measurementFun("product_width", me_width);
+        measurementFun("product_height", me_height);
+      }
+    }, [me_width, me_height]);
   
   
 

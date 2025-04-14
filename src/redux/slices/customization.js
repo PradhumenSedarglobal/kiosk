@@ -332,21 +332,21 @@ export const {
 } = slice.actions;
 
 // GET Faqs PAGE DATA
-export function getCustomization(params = {}) {
-  return async (dispatch) => {
-    dispatch(slice.actions.startCustomizationLoading());
-    try {
-      const response = await dispatch(
-        apiDataService.getAll(`v2/getSteps`, params)
-      );
+// export function getCustomization(params = {}) {
+//   return async (dispatch) => {
+//     dispatch(slice.actions.startCustomizationLoading());
+//     try {
+//       const response = await dispatch(
+//         apiDataService.getAll(`v2/getSteps`, params)
+//       );
 
-      dispatch(slice.actions.setCustomization(response?.data));
-    } catch (error) {
-      console.error(error);
-      dispatch(slice.actions.hasCustomizationError(error));
-    }
-  };
-}
+//       dispatch(slice.actions.setCustomization(response?.data));
+//     } catch (error) {
+//       console.error(error);
+//       dispatch(slice.actions.hasCustomizationError(error));
+//     }
+//   };
+// }
 
 export function getMaterialCustomization({ params = {}, paramsId = {} }) {
   return async (dispatch) => {

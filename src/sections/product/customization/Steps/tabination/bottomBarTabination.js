@@ -19,6 +19,7 @@ import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import { useEffect, useState } from "react";
 import PopupModal from "@/app/components/PopupModal";
 import { addToCartFunScene } from "@/sections/product/customization/addToCartFunScene";
+import { toast } from "react-toastify";
 import {
   removecart,
   resetState,
@@ -94,6 +95,18 @@ const BottomBarTabination = ({
         },
         dispatch
       );
+
+      toast.success("Add to cart successfully!", {
+        position: "top-right",
+        style: {
+          background: "linear-gradient(45deg,rgb(22, 160, 54),rgb(97, 238, 72))",
+          color: "white",
+        },
+      });
+
+      dispatch(resetState());
+
+
     } catch (error) {
       console.error("Failed to add to cart:", error);
     }
@@ -149,6 +162,10 @@ const BottomBarTabination = ({
       console.error("Failed to fetch order list:", error);
     }
   };
+
+  useEffect(()=>{
+      console.log('render');
+  },[priceArray.SOL_VALUE]);
 
   const tourState = useSelector((state) => state.tour);
 

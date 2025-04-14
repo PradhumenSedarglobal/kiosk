@@ -170,7 +170,7 @@ const Modal = () => {
     console.log("modalData", modalData);
     if (selectedModalData !== link) {
       dispatch(updateSelectedModal(link));
-      await getStep(link);
+      // await getStep(link);
     }
   };
 

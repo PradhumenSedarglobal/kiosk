@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { TextBox } from "@/components/form";
@@ -14,6 +14,7 @@ import SubHeading from "@/app/components/SubHeading";
 const re = /^\d*\.?\d*$/;
 
 const RollCalculationTool = ({ data }) => {
+  const isFirstRender = useRef(true);
   const { t: translate } = useTranslation();
   const dispatch = useDispatch();
   const { query,locale } = useRouter();
@@ -49,21 +50,28 @@ const RollCalculationTool = ({ data }) => {
 
 
   const rollCalculationfun = (type, value) => {
+    console.log("this function called");
     let m_width = me_width;
     let m_height = me_height;
     //let val = parseInt(value);
     let val = value;
 
+    console.log("this function called2",val);
+
     if (val == NaN) {
       return false;
     }
 
+
+
     if (type == 'product_width') {
       m_width = val;
       setMe_width(val);
+      setMe_height(me_height);
       toggleValidation(type, val);
     } else if (type == 'product_height') {
       m_height = val;
+      setMe_width(me_width);
       setMe_height(val);
       toggleValidation(type, val);
     } else if (type != 'product_width' && type != 'product_height' && type > 0 && val > 0) {
@@ -73,20 +81,26 @@ const RollCalculationTool = ({ data }) => {
       setMe_height(val);
 
     }
+    
+    setTimeout(()=>{
+      let measurement_data = { ...data, m_width: m_width, m_height: m_height }
+      console.log("this function called3",measurement_data);
 
-    let measurement_data = { ...data, m_width: m_width, m_height: m_height }
 
-    if (m_height > 0 && m_width > 0 && !isNaN(m_width) && !isNaN(m_height)) {
-      measurement_data['UOM_CODE'] = stepsArray.MATERIAL_SELECTION ? stepsArray.MATERIAL_SELECTION.material_info.SII_UOM_CODE : 0;
-      measurement_data['ITEM_CODE'] = stepsArray.MATERIAL_SELECTION ? stepsArray.MATERIAL_SELECTION.material_info.SII_CODE : 0;
-
-      if (m_width < MIN_WIDTH || m_width > MAX_WIDTH || m_height < MIN_HEIGHT || m_height > MAX_HEIGHT && stepsArray && stepsArray.ROLL_CALCULATION) {
-        dispatch(deleteCustomizationStep(['ROLL_CALCULATION']))
-      } else {
-        dispatch(setCustomizationFun(measurement_data));
-        measurementText(m_width, m_height);
+      if (m_height > 0 && m_width > 0 && !isNaN(m_width) && !isNaN(m_height)) {
+        console.log("in this");
+        measurement_data['UOM_CODE'] = stepsArray.MATERIAL_SELECTION ? stepsArray.MATERIAL_SELECTION.material_info.SII_UOM_CODE : 0;
+        measurement_data['ITEM_CODE'] = stepsArray.MATERIAL_SELECTION ? stepsArray.MATERIAL_SELECTION.material_info.SII_CODE : 0;
+  
+        if (m_width < MIN_WIDTH || m_width > MAX_WIDTH || m_height < MIN_HEIGHT || m_height > MAX_HEIGHT && stepsArray && stepsArray.ROLL_CALCULATION) {
+          dispatch(deleteCustomizationStep(['ROLL_CALCULATION']))
+        } else {
+          dispatch(setCustomizationFun(measurement_data));
+          measurementText(m_width, m_height);
+        }
       }
-    }
+    },1000);
+   
   }
 
   const toggleValidation = (name, value) => {
@@ -103,6 +117,11 @@ const RollCalculationTool = ({ data }) => {
 
   useEffect(() => {
 
+    console.log("roller width",me_width);
+
+    setMe_width(productInfo.SPI_MIN_WIDTH);
+    setMe_height(productInfo.SPI_MIN_HEIGHT);
+
     if (editStepData.info_result && editStepData.info_result.ROLL_CALCULATION && editStepData.info_result.ROLL_CALCULATION.SOI_WIDTH > 0 && editStepData.info_result.ROLL_CALCULATION.SOI_HEIGHT > 0) {
       setTimeout(function () {
         rollCalculationfun(editStepData.info_result.ROLL_CALCULATION.SOI_WIDTH, editStepData.info_result.ROLL_CALCULATION.SOI_HEIGHT);
@@ -113,7 +132,20 @@ const RollCalculationTool = ({ data }) => {
       }.bind(this), 500);
     }
 
+    setTimeout(()=>{
+      rollCalculationfun("product_width", me_width);
+      rollCalculationfun("product_height", me_height);
+    },2000);
+
   }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current && me_width && me_height) {
+      isFirstRender.current = false;
+      rollCalculationfun("product_width", me_width);
+      rollCalculationfun("product_height", me_height);
+    }
+  }, [me_width, me_height]);
 
   useEffect(() => {
     if (isvalid.product_width == false && isvalid.product_height == false && me_width && me_height) {
@@ -160,6 +192,7 @@ const RollCalculationTool = ({ data }) => {
           }}
         />
         <TextBox
+          ref={isFirstRender}
           fullWidth
           type="text"
           variant="outlined"
@@ -247,7 +280,7 @@ const RollCalculationTool = ({ data }) => {
 />
 
       </Box>
-      <Box>
+      <Box px={3}>
         {priceArray && priceArray.ROLL_CALC > 0 ?
           <Typography
             className="recommended_mgs"
