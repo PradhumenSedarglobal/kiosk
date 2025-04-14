@@ -150,7 +150,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
 
     material_data["SUB_CHILD"] = "";
 
-    dispatch(loadingfalse(false));
+    // dispatch(loadingfalse(false));
 
     dispatch(setCustomizationFun(material_data));
   };

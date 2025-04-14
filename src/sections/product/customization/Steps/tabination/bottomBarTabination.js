@@ -347,7 +347,7 @@ const BottomBarTabination = ({
                   if (tabChange === "1") {
                     console.log("tabChangetabChange", tabChange);
                     dispatch(removecart());
-                    dispatch(loadingfalse(true));
+                    // dispatch(loadingfalse(true));
                   }
 
                   onPreviousHandle("PREV");

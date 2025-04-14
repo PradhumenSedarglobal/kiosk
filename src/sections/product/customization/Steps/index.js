@@ -118,6 +118,13 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
 
   const onPreviousHandle = () => {
     console.log("tabChange",tabChange);
+
+    if(tabChange === "1"){
+      dispatch(setStepIndex(5));
+    }else if(tabChange === 2){
+      dispatch(setStepIndex(7));
+    }
+
     if (tabChange != "1") {
 
       setTabChange((tabChange) => Number(tabChange) - 1);

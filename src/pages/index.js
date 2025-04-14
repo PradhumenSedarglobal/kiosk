@@ -1045,6 +1045,7 @@ export default function ProductPage(props) {
                     size="large"
                     variant="outlined"
                     onClick={() => {
+                      dispatch(setStepIndex(tourState.stepIndex - 1));
                       previousStep();
                       dispatch(removecart());
                     }}

@@ -238,6 +238,8 @@ const Measurement = ({ data }) => {
   }, [MIN_WIDTH, MAX_HEIGHT]);
 
   useEffect(() => {
+
+    console.log("width change",me_width);
  
     if (isvalid.product_width == false && isvalid.product_height == false) {
      

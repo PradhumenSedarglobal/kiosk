@@ -186,15 +186,10 @@ const Modal = () => {
       {loading ? (
         <Box
           sx={{
-            display: "flex",
+            position: "relative",
             justifyContent: "center",
             alignItems: "center",
-            height: isTablet
-              ? "calc(100vh - 510px)"
-              : isMobile
-              ? "calc(100vh - 340px)"
-              : "calc(100vh - 5px)",
-            backgroundColor: "#f5f5f5",
+            height: "calc(100vh - 130px)",
           }}
         >
           <div className="loader2">

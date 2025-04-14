@@ -180,7 +180,7 @@ const SceneCanvas3D = (props) => {
     group_obj = new THREE.Group();
   };
   const loadScene = () => {
-    dispatch(loadingfalse(true)); 
+
     const background3dImage = textureLoader.load(scene_path);
     var background_OCC_Img = props.SSC_OCC_IMAGE_PATH
       ? textureLoader.load(props.SSC_OCC_IMAGE_PATH)
@@ -206,6 +206,7 @@ const SceneCanvas3D = (props) => {
     background3dImage.anisotropy = 100;
     mesh3d.name = "background3dImage";
     scene.add(mesh3d);
+ 
   };
 
   const loadOBJ = () => {
