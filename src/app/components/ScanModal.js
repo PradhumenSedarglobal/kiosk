@@ -58,6 +58,7 @@ export default function ScanModal() {
         }}
       >
         <Box
+          className="starterPoint"
           sx={{
             maxWidth: "90vw",
             maxHeight: "90vh",
@@ -83,7 +84,7 @@ export default function ScanModal() {
           </IconButton>
 
           <Grid
-            className="starterPoint"
+            
             container
             spacing={2}
             justifyContent="center"

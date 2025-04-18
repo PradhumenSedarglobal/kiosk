@@ -30,7 +30,6 @@ import { useAuthContext } from "@/auth/useAuthContext";
 import MaterialSwiper from "./MaterialSelectionSwiper";
 import MainHeading from "@/app/components/MainHeading";
 import SubHeading from "@/app/components/SubHeading";
-import { setStepIndex } from "@/redux/slices/tourSlice";
 const qs = require("qs");
 
 let img_path = "/assets/images/";
@@ -48,8 +47,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   const listInnerRef = useRef(null);
   const sliderRef = useRef(null);
   const [alertMessage, setAlertMessage] = useState(null);
-  const [selectDefault,setSelectDefault] = useState(false);
-  const selectedRef = useRef(null);
+  //  const [materialList, setMaterialList] = useState([]);
 
   const selectedCategory = useSelector((state) => state.customization.SelectedCategory);
   const selectedModalData = useSelector((state) => state.customization.SelectedModal);
@@ -71,8 +69,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     filterOption,
     materialList,
   } = customization_info;
-
-
   
 
   
@@ -89,12 +85,11 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   let SPI_PR_ITEM_CODE = productInfo.SPI_PR_ITEM_CODE
     ? productInfo.SPI_PR_ITEM_CODE
     : 0;
-  const tourState = useSelector((state) => state.tour);
 
+   
+    console.log("SPI_PR_ITEM_CODE",SPI_PR_ITEM_CODE);
+    console.log("SPI_PR_ITEM_CODE111111",materialList);
 
-  // useEffect(()=>{
-  //   selectedRef.current.click();
-  // },[]);
 
 
   const updateTextureFun = async (val) => {
@@ -128,15 +123,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
       }
     }
     
-
-    
-     
-
-
-    console.log("this function invok",val);
-    console.log("productInfooooooo",productInfo);
-    console.log("stepsArrayyyyyyy",stepsArray);
-
     let material_data = {
       ...data,
       ITEM_CODE: val.SII_CODE,
@@ -150,7 +136,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
 
     material_data["SUB_CHILD"] = "";
 
-    // dispatch(loadingfalse(false));
+    dispatch(loadingfalse(false));
 
     dispatch(setCustomizationFun(material_data));
   };
@@ -227,24 +213,13 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
           updateTextureImg(materialCustomization.selected_item);
           updateTextureFun(materialCustomization.selected_item);
         }.bind(this),
-        1000
+        500
       );
     } else if (page == 0) {
     }
   }, [materialCustomization]);
 
-  useEffect(() => {
-    setTimeout(
-      function () {
-    console.log("testing");
-        addToCartFunScene(
-          { ...cookies, ...customization_info, locale: locale },
-          dispatch
-        );
-      }.bind(this),
-      100
-    );
-  }, [stepsArray["MATERIAL_SELECTION"]]);
+  
 
 
   const sliderSetting = {
@@ -303,13 +278,12 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
               return (
                 <Grid item lg={4} md={4} sm={4} xs={6} xxs={6} key={index}>
                   <Box
-                    ref={selectedRef}
-                    className="selectMaterial"
+                    
                     sx={(theme) => ({
                       // p: 0.5,
                       borderRadius: '10px',
                       border:
-                        checked && `3px solid ${theme.palette.primary.main}`,
+                        checked && `2px solid ${theme.palette.primary.main}`,
                     })}
                     position="relative"
                   >
@@ -317,7 +291,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
                       className="matrial_class"
                       onClick={(e) => {
                         updateTextureFun(elem);
-                        dispatch(setStepIndex(tourState.stepIndex + 1))
                       }}
                       style={{ cursor: "pointer" }}
                     >
@@ -374,7 +347,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
                 </Grid>
               );
             })}
-          <Grid   item lg={12} md={12} sm={12} xs={12} xxs={12}>
+          <Grid item lg={12} md={12} sm={12} xs={12} xxs={12}>
             {data?.SUB_CHILD.map((elem, index) => {
               if (elem?.SUB_CHILD && elem?.SUB_CHILD[0]) {
                 return (

@@ -368,18 +368,37 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
-                <PhoneInput
-                  country={"ae"}
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  inputStyle={{ width: "100%" }}
-                  containerStyle={{ width: "100%" }}
-                  inputProps={{
-                    name: "phone",
-                    required: true,
-                    autoFocus: true,
-                  }}
-                />
+              <PhoneInput
+  country={"ae"}
+  value={phone}
+  onChange={handlePhoneChange}
+  inputStyle={{
+    width: "100%",
+    height: "40px",
+    borderRadius: "10px",
+    border: "1px solid rgba(0, 0, 0, 0.23)",
+    fontSize: "16px",
+  }}
+  containerStyle={{ width: "100%" }}
+  inputProps={{
+    name: "phone",
+    required: true,
+    autoFocus: true,
+  }}
+  buttonStyle={{
+    borderRadius: "10px 0 0 10px", // Only left corners rounded
+    border: "1px solid rgba(0, 0, 0, 0.23)",
+    borderRight: "none", // Remove right border to blend with input
+    backgroundColor: "white",
+    height: "40px", // Match input height
+    padding: "0 0 0 8px", // Adjust padding if needed
+  }}
+  buttonClass="custom-flag-button" // Add a custom class for hover/focus states
+  dropdownStyle={{
+    borderRadius: "0 10px 10px 0", // For dropdown container
+  }}
+/>
+
                 {errors.phone && (
                   <Typography color="error" variant="body2">
                     {errors.phone.message}

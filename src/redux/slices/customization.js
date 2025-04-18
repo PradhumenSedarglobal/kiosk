@@ -33,12 +33,17 @@ const initialState = {
   modalDefaultItem:null,
   categoryGallary:null,
   categoryDefaultImg:null,
+  stepChildCount:0,
 };
 
 const slice = createSlice({
   name: "customization",
   initialState,
   reducers: {
+
+    setStepChildCount(state,action){
+      state.stepChildCount = action.payload;
+    },
 
     setCategoryDefaultImg(state,action){
       state.categoryDefaultImg = action.payload
@@ -328,25 +333,11 @@ export const {
   setmodalGallary,
   setModalDefaultItem,
   setCategoryGallary,
-  setCategoryDefaultImg
+  setCategoryDefaultImg,
+  setStepChildCount
 } = slice.actions;
 
-// GET Faqs PAGE DATA
-// export function getCustomization(params = {}) {
-//   return async (dispatch) => {
-//     dispatch(slice.actions.startCustomizationLoading());
-//     try {
-//       const response = await dispatch(
-//         apiDataService.getAll(`v2/getSteps`, params)
-//       );
 
-//       dispatch(slice.actions.setCustomization(response?.data));
-//     } catch (error) {
-//       console.error(error);
-//       dispatch(slice.actions.hasCustomizationError(error));
-//     }
-//   };
-// }
 
 export function getMaterialCustomization({ params = {}, paramsId = {} }) {
   return async (dispatch) => {

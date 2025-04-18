@@ -28,6 +28,7 @@ const Measurement = ({ data }) => {
   const { state } = useAuthContext();
   const { cookies } = state;
   const isFirstRender = useRef(true);
+  const calledOnce = useRef(false);
 
   console.log("customization_info111",customization_info);
 
@@ -158,12 +159,15 @@ const Measurement = ({ data }) => {
         ? stepsArray.MATERIAL_SELECTION.material_info.SII_CODE
         : 0;
 
+        console.log('measurmentsss',m_width,m_width,m_height,m_height,stepsArray.MEASUREMENT);
+
       if (
         m_width < MIN_WIDTH ||
         m_width > MAX_WIDTH ||
         m_height < MIN_HEIGHT ||
         (m_height > MAX_HEIGHT && stepsArray && stepsArray.MEASUREMENT)
       ) {
+        console.log('measurmentsss delete',m_width,m_width,m_height,m_height,stepsArray.MEASUREMENT);
         //setIivalid({ product_width: true, product_height: true });
         dispatch(deleteCustomizationStep(["MEASUREMENT"]));
       } else {
@@ -238,11 +242,9 @@ const Measurement = ({ data }) => {
   }, [MIN_WIDTH, MAX_HEIGHT]);
 
   useEffect(() => {
-
-    console.log("width change",me_width);
- 
-    if (isvalid.product_width == false && isvalid.product_height == false) {
-     
+    
+    if (isvalid.product_width == false && isvalid.product_height == false && me_width > 0 && me_height >0) {
+    
       setTimeout(
         function () {
           addToCartFunScene(
@@ -255,36 +257,16 @@ const Measurement = ({ data }) => {
     }
   }, [isvalid.product_width, isvalid.product_height, me_width, me_height]);
 
+  const[firstLoad,setFirstLoad] = useState(false);
 
+  useEffect(()=>{
+     if(!firstLoad){
+        measurementFun("product_width",productInfo.SPI_MIN_WIDTH);
+        setFirstLoad(true);
+     }
+      
+  },[]);
 
-
-  useEffect(() => {
-    if (productInfo.SPI_MAX_WIDTH < stepsArray.MEASUREMENT?.m_width) {
-      console.log("check width called");
-      setMe_width(0);
-      measurementFun("product_width", stepsArray.MEASUREMENT?.m_width);
-    }
-  }, [MAX_WIDTH < me_width]); 
-
-  useEffect(() => {
-    if (productInfo.SPI_MAX_HEIGHT < stepsArray.MEASUREMENT?.m_height) {
-      console.log("check width called");
-      setMe_width(0);
-      measurementFun("product_height", stepsArray.MEASUREMENT?.m_height);
-    }
-  }, [MAX_HEIGHT < me_height]); 
-
-
-
-   useEffect(() => {
-      if (isFirstRender.current && me_width && me_height) {
-        isFirstRender.current = false;
-        measurementFun("product_width", me_width);
-        measurementFun("product_height", me_height);
-      }
-    }, [me_width, me_height]);
-  
-  
 
   
 

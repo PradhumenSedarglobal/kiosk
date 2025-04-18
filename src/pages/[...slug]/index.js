@@ -2,10 +2,7 @@ import PdpShema from "@/modules/PdpSchema";
 import PlpSchema from "@/modules/PlpSchema";
 import React, { useState } from "react";
 
-import {
-  setCustomization,
-  setHeaderResponse,
-} from "@/redux/slices/customization";
+
 import { useDispatch } from "@/redux/store";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES } from "@/utils/constant";
@@ -34,7 +31,12 @@ import { useSelector } from "react-redux";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
 import Fab from "@mui/material/Fab";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Thumbs } from "swiper/modules";
+
+
+import {
+  setCustomization,
+  setHeaderResponse,
+} from "@/redux/slices/customization";
 
 export const getServerSideProps = async (context) => {
   console.time("getServerSideProps");
@@ -319,7 +321,7 @@ export const getServerSideProps = async (context) => {
     slug?.length <= 7
   ) {
     const customizationRes = await apiSSRV2DataService.getAll({
-      path: `v2/getSteps`,
+      path: `kiosk/get_steps`,
       param: {
         content: "customization",
         slug_url: customization_slug_url,

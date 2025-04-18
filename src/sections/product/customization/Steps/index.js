@@ -56,6 +56,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   console.log("missingSteppppp",missingStep);
   console.log("errorValidation",errorValidation);
   console.log("missingPopup",missingPopup);
+  console.log(data,'5XXXXX');
 
   const [tabChange, setTabChange] = useState("1");
   const onNextHandle = (type) => {
@@ -72,7 +73,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
     }
    
 
-
+console.log(type, '&&', priceArray.SOL_VALUE, '&&', missing_step.length,'7XXXXX');
     let cart_status =
       type == "ADDTOCART" &&
       priceArray.SOL_VALUE > 0 &&
@@ -93,6 +94,8 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
 
     setTimeout(
       function () {
+        console.log(cart_status,'9XXXXX');
+
         if (cart_status == "COMPLETED" && type == "ADDTOCART") {
           addToCartFunScene(
             { ...cookies, ...customization_info, locale: locale },
@@ -128,6 +131,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
     if (tabChange != "1") {
 
       setTabChange((tabChange) => Number(tabChange) - 1);
+      console.log(tabChange,'13XXXXX');
 
       addToCartFunScene(
         { ...cookies, ...customization_info, locale: locale },
@@ -211,6 +215,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
     }
   }, [m_width, stepsArray['MATERIAL_SELECTION'], stepsArray['TYPE_OF_MOTOR']]);
 
+ 
   // useEffect(() => {
   //   stepValidation();
    
@@ -224,6 +229,23 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   //     500
   //   );
   // }, [tabChange]);
+
+
+
+  useEffect(() => {
+ 
+    if(Object.keys(stepsArray).length > 4){
+    stepValidation();
+
+        addToCartFunScene(
+          { ...cookies, ...customization_info, locale: locale },
+          dispatch
+        );
+       
+    }
+    
+
+  }, [stepsArray]);
 
   const actions = [
     {
@@ -292,7 +314,7 @@ const TabinationStepsSection = ({ formik, data, handleOpen, open,handleSubmit,fo
   }
 
   
-  console.log("data1",data);
+  // console.log("data1",data);
 
 
   return (

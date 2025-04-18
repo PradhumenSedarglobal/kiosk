@@ -11,6 +11,9 @@ import {
   Chip,
   Typography,
   Button,
+  MenuItem,
+  Select,
+  FormControl,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
@@ -20,10 +23,16 @@ import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { setOrderList } from "@/redux/slices/customization";
 import { toast } from "react-toastify";
 import { setStepIndex } from "@/redux/slices/tourSlice";
+// ... other imports remain the same ...
 
-const WhiteDeleteIcon = styled(DeleteIcon)(({ theme }) => ({
-  color: "#fff",
-}));
+const languages = [
+  { code: "en", name: "English" },
+  { code: "ar", name: "Arabic" },
+  { code: "zh", name: "Chinese" },
+  { code: "ru", name: "Russian" },
+  { code: "fr", name: "French" },
+  { code: "es", name: "Spanish" },
+];
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -35,63 +44,75 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const drawerWidth = 400;
 
 const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
+  // ... existing state and functions ...
+
+  const [selectedLanguage, setSelectedLanguage] = React.useState("en");
+
+  const handleLanguageChange = (event) => {
+    setSelectedLanguage(event.target.value);
+    // You can add additional logic here to change the app's language
+    // For example: dispatch an action to update the language in Redux
+  };
+
   const theme = useTheme();
-  const fonts = useSelector((state) => state.font);
-  const { state } = useAuthContext();
-  const { cookies } = state;
-  const dispatch = useDispatch();
-
-  const removeCart = async (cartId) => {
-
-  const response = await apiSSRV2DataService.Delete({
-    path: `kiosk/cart/${cartId}`,
-    param: { content: "customization", sys_id: 0 },
-    cookies: cookies,
-  });
-
-  if (response.data.complete) {
-    toast.success("Item successfully removed from cart!", {
-      position: "top-right",
-      style: { background: 'linear-gradient(45deg, #d32f2f, #f44336)', color: 'white' },
-    });
-
-    // ✅ Update the cart list by filtering out the deleted item
-    dispatch(setOrderList({
-      ...response.data,
-      complete: cartData.complete.filter(item => item.SOL_SYS_ID !== cartId)
-    }));
-  }
-};
-
-
-  const updateQuantity = async (cartId, updatedQty) => {
-    if (updatedQty < 1) return; // Prevent negative or zero values
-
-    const response = await apiSSRV2DataService.post({
-      path: `kiosk/order/cart/updateLineTable/${cartId}`,
-      data: {
-        line_type: "ORDER_QTY",
-        line_value: updatedQty,
-        soh_sys_id: 0,
-        content: "customization",
-        sys_id: 0,
-      },
+    const fonts = useSelector((state) => state.font);
+    const { state } = useAuthContext();
+    const { cookies } = state;
+    const dispatch = useDispatch();
+  
+    const removeCart = async (cartId) => {
+  
+    const response = await apiSSRV2DataService.Delete({
+      path: `kiosk/cart/${cartId}`,
+      param: { content: "customization", sys_id: 0 },
       cookies: cookies,
     });
-
+  
     if (response.data.complete) {
-      toast.success("Item quantity updated successfully!", {
+      toast.success("Item successfully removed from cart!", {
         position: "top-right",
-        style: { background: 'linear-gradient(45deg, #16a085, #1abc9c)', color: 'white' },
+        style: { background: 'linear-gradient(45deg, #d32f2f, #f44336)', color: 'white' },
       });
-
-      dispatch(setOrderList(response.data));
+  
+      // ✅ Update the cart list by filtering out the deleted item
+      dispatch(setOrderList({
+        ...response.data,
+        complete: cartData.complete.filter(item => item.SOL_SYS_ID !== cartId)
+      }));
     }
   };
+  
+  
+    const updateQuantity = async (cartId, updatedQty) => {
+      if (updatedQty < 1) return; // Prevent negative or zero values
+  
+      const response = await apiSSRV2DataService.post({
+        path: `kiosk/order/cart/updateLineTable/${cartId}`,
+        data: {
+          line_type: "ORDER_QTY",
+          line_value: updatedQty,
+          soh_sys_id: 0,
+          content: "customization",
+          sys_id: 0,
+        },
+        cookies: cookies,
+      });
+  
+      if (response.data.complete) {
+        toast.success("Item quantity updated successfully!", {
+          position: "top-right",
+          style: { background: 'linear-gradient(45deg, #16a085, #1abc9c)', color: 'white' },
+        });
+  
+        dispatch(setOrderList(response.data));
+      }
+    };
+
+  
 
   return (
     <Drawer
-      onClick={()=>{dispatch(setStepIndex(11))}}
+      onClick={() => { dispatch(setStepIndex(11)) }}
       sx={{
         width: { md: drawerWidth, sm: "100%", xs: "100%" },
         flexShrink: 0,
@@ -99,30 +120,34 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
           width: { md: drawerWidth, sm: "100%", xs: "100%" },
           boxSizing: "border-box",
           padding: theme.spacing(2),
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         },
       }}
       variant="persistent"
       anchor="left"
       open={open}
     >
-      <DrawerHeader>
-        <Typography
-          sx={{
-            color: "#f39c12",
-            fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-            fontWeight: "700",
-            fontSize: "1.2rem",
-          }}
-          variant="h6"
-        >
-          Added to Your Cart!
-        </Typography>
-        <IconButton onClick={handleDrawerClose}>
-          <CloseIcon />
-        </IconButton>
-      </DrawerHeader>
-      <Divider sx={{ marginBottom: theme.spacing(2) }} />
-      <List>
+      <Box>
+        <DrawerHeader>
+          <Typography
+            sx={{
+              color: "#f39c12",
+              fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+              fontWeight: "700",
+              fontSize: "1.2rem",
+            }}
+            variant="h6"
+          >
+            Added to Your Cart!
+          </Typography>
+          <IconButton onClick={handleDrawerClose}>
+            <CloseIcon />
+          </IconButton>
+        </DrawerHeader>
+        <Divider sx={{ marginBottom: theme.spacing(2) }} />
+        <List>
         {cartData !== null &&
           cartData.complete.map((item, index) => (
             <React.Fragment key={item.SOL_SYS_ID || index}>
@@ -235,6 +260,35 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
             </React.Fragment>
           ))}
       </List>
+      </Box>
+
+      {/* Language Selector at the bottom */}
+      <Box sx={{ padding: theme.spacing(2), borderTop: `1px solid ${theme.palette.divider}` }}>
+        <FormControl fullWidth>
+          <Select
+            value={selectedLanguage}
+            onChange={handleLanguageChange}
+            displayEmpty
+            inputProps={{ 'aria-label': 'Select language' }}
+            sx={{
+              fontFamily: fonts.Helvetica_Neue.style.fontFamily,
+              '& .MuiSelect-select': {
+                padding: theme.spacing(1),
+              },
+            }}
+          >
+            {languages.map((language) => (
+              <MenuItem 
+                key={language.code} 
+                value={language.code}
+                sx={{ fontFamily: fonts.Helvetica_Neue.style.fontFamily }}
+              >
+                {language.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
     </Drawer>
   );
 };

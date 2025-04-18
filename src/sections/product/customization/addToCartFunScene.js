@@ -5,7 +5,7 @@ import {
 
 export const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") => {
 
-  console.log("check cart data",state, dispatch, cart_status = "INCOMPLETE");
+  console.log("check cart data",state, dispatch, cart_status);
 
 
   const { stepsArray, editStepData, productInfo } = state;
@@ -59,7 +59,9 @@ export const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") =
     "&userId=" +
     userId + '&site=' + state.site + '&country=' + state.countryName  + '&currency=' + state.CCYCODE + '&ccy_decimal=' + state.CCYDECIMALS + '&cn_iso=' + state.cniso + '&detect_country=' + state.detect_country + '&lang='+"en";
 
-  if (
+    console.log("check cart data",stepsArray);
+  if(stepsArray && Object.keys(stepsArray).length > 9){  
+    if (
     productInfo &&
     productInfo.count > 0 &&
     stepsArray &&
@@ -71,7 +73,7 @@ export const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") =
     axiosInstance.post(path_url, post_data)
       .then((response) => {
         let res_data = response.data;
-        console.log(res_data, 'res_data');
+        console.log(res_data, 'res_data74');
         if (res_data.return_status == 0) {
           dispatch(setCustomizationPriceFun(res_data.result));
         } else {
@@ -93,5 +95,8 @@ export const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") =
   } else {
     console.log(post_data, "post_data", url);
   }
+} else {
+  console.log(post_data, "post_data else", url);
+}
 };
 

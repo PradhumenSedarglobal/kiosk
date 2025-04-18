@@ -165,19 +165,13 @@ export async function middleware(request) {
 
     // Handling redirection logic
     const URLS = `${countryName}-${languageName}`;
-    if (
-      pathname != "/" &&
-      URLS.indexOf(url.href) == -1 &&
-      locale == "default"
-    ) {
-      let ValidURL = URLS.indexOf(url.href) == -1 ? true : false;
-      if (ValidURL) {
-        return NextResponse.redirect(
-          new URL(`/${URLS}${nextUrl.pathname}${nextUrl.search}`, url),
-          301
-        );
-      }
+    if (pathname === "/" && locale === "default") {
+      // Fallback to English if no language detected
+      const redirectLang = languageName || "en";
+      const redirectPath = `uae-${redirectLang}`;
+      return NextResponse.redirect(new URL(`/${redirectPath}${nextUrl.search}`, url), 301);
     }
+    
 
     return response;
   } catch (error) {

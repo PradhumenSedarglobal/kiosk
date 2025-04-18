@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
-import { useDispatch } from "react-redux";
-import { loadingfalse } from "@/redux/slices/customization";
+import { useDispatch, useSelector } from "react-redux";
+import { loadingfalse,customization, setStepChildCount } from "@/redux/slices/customization";
 import MainHeading from "@/app/components/MainHeading";
+import { useAuthContext } from "@/auth/useAuthContext";
+import { useRouter } from "next/router";
+import { addToCartFunScene } from "../sceneCanvas3D";
 
 const importView = (subreddit) =>
   dynamic(
     () => import(`./${subreddit}`)
   );
+
+
 
 const DisplayComponent = ({ data, formik, tabChange, setTabChange }) => {
   const [views, setViews] = useState([]);
@@ -44,9 +49,28 @@ const DisplayComponent = ({ data, formik, tabChange, setTabChange }) => {
 
   return <>{views}</>;
 };
-const StepImport = ({ formik, data, tabChange, setTabChange }) => {
-  console.log("dataaaaaaaaaaa",data);
-  // return false;
+let count = 0;
+const StepImport = ({ formik, data, tabChange, setTabChange,key }) => {
+  count += data?.CHILD_STEP.length;
+  const { state } = useAuthContext();
+  const { locale, query } = useRouter();
+  const { cookies } = state;
+  const customization_info = useSelector((state) => state.customization);
+  const dispatch = useDispatch();
+
+  // const [firstLoad,setFirstLoad] = useState(false);
+
+  // useEffect(() => {
+  //   if(!firstLoad){
+  //       addToCartFunScene(
+  //         { ...cookies, ...customization_info, locale: locale },
+  //         dispatch
+  //       );
+
+  //       setFirstLoad(true);
+  //   }
+    
+  // }, []); 
 
   return (
     <Box>
