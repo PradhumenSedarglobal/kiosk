@@ -58,19 +58,6 @@ const StepImport = ({ formik, data, tabChange, setTabChange,key }) => {
   const customization_info = useSelector((state) => state.customization);
   const dispatch = useDispatch();
 
-  // const [firstLoad,setFirstLoad] = useState(false);
-
-  // useEffect(() => {
-  //   if(!firstLoad){
-  //       addToCartFunScene(
-  //         { ...cookies, ...customization_info, locale: locale },
-  //         dispatch
-  //       );
-
-  //       setFirstLoad(true);
-  //   }
-    
-  // }, []); 
 
   return (
     <Box>

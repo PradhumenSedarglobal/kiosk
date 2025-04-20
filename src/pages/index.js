@@ -3,6 +3,8 @@ import PdpShema from "@/modules/PdpSchema";
 import PlpSchema from "@/modules/PlpSchema";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
+import TourIcon from "@mui/icons-material/Tour";
+import Tooltip from '@mui/material/Tooltip';
 
 import {
   removecart,
@@ -68,6 +70,7 @@ import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import ModalGallary from "@/app/components/ModalGallary";
 import InstructionTooltip from "@/app/components/InstructionTooltip";
 import { setStepIndex, startTour } from "@/redux/slices/tourSlice";
+import TourGuideButton from "@/app/components/TourGuideButton";
 
 // Dynamically import Joyride to prevent SSR issues
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
@@ -162,6 +165,7 @@ export default function ProductPage(props) {
   const [modalSliderImageLoading, setModalSliderImageLoading] = useState(false);
   const { query, locale } = useRouter();
   const [activeStep, setActiveStep] = useState(0);
+  const [showButton, setShowButton] = useState(true);
 
   const steps = [
     {
@@ -564,7 +568,9 @@ export default function ProductPage(props) {
 
   return (
     <>
-      <Joyride
+      {stepCount == 0 && <TourGuideButton steps={tourState.steps} />}
+      
+      {/* <Joyride
         steps={tourState.steps}
         stepIndex={tourState.stepIndex}
         run={tourState.run}
@@ -581,7 +587,7 @@ export default function ProductPage(props) {
             primaryColor: "#ff6600",
           },
         }}
-      />
+      /> */}
 
       <Head>
         <title>Customization List Page</title>
@@ -616,7 +622,7 @@ export default function ProductPage(props) {
               ? "calc(100vh - 340px)"
               : "calc(100vh - 5px)",
             position: "relative",
-            overflow: "hidden"
+            overflow: "hidden",
           }}
         >
           {/* Burger Menu Icon Start */}
@@ -678,6 +684,13 @@ export default function ProductPage(props) {
             </Fab>
           )}
 
+
+        {/* <Tooltip title="Start tour" arrow>
+          <Fab >
+            <TourIcon />
+          </Fab>
+        </Tooltip> */}
+
           {/* Reset 3dModal Icon End  */}
 
           {/* Swiper Slider with 3d Rendor Section Start */}
@@ -705,31 +718,31 @@ export default function ProductPage(props) {
                         materialList !== null && (
                           <>
                             {modalSliderImageLoading ? (
-                               <Box
-                               sx={{
-                                 display: "flex",
-                                 justifyContent: "center",
-                                 alignItems: "center",
-                                 height: isTablet
-                                   ? "calc(100vh - 510px)"
-                                   : isMobile
-                                   ? "calc(100vh - 340px)"
-                                   : "calc(100vh - 5px)",
-                                 backgroundColor: "#f5f5f5",
-                               }}
-                             >
-                               <div className="loader2">
-                                 <ul className="hexagon-container">
-                                   <li className="hexagon hex_1"></li>
-                                   <li className="hexagon hex_2"></li>
-                                   <li className="hexagon hex_3"></li>
-                                   <li className="hexagon hex_4"></li>
-                                   <li className="hexagon hex_5"></li>
-                                   <li className="hexagon hex_6"></li>
-                                   <li className="hexagon hex_7"></li>
-                                 </ul>
-                               </div>
-                             </Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  height: isTablet
+                                    ? "calc(100vh - 510px)"
+                                    : isMobile
+                                    ? "calc(100vh - 340px)"
+                                    : "calc(100vh - 5px)",
+                                  backgroundColor: "#f5f5f5",
+                                }}
+                              >
+                                <div className="loader2">
+                                  <ul className="hexagon-container">
+                                    <li className="hexagon hex_1"></li>
+                                    <li className="hexagon hex_2"></li>
+                                    <li className="hexagon hex_3"></li>
+                                    <li className="hexagon hex_4"></li>
+                                    <li className="hexagon hex_5"></li>
+                                    <li className="hexagon hex_6"></li>
+                                    <li className="hexagon hex_7"></li>
+                                  </ul>
+                                </div>
+                              </Box>
                             ) : modalSliderImage?.length > 0 ? (
                               <ModalGallary
                                 modalSliderImage={modalSliderImage}
@@ -1048,7 +1061,7 @@ export default function ProductPage(props) {
                       dispatch(setStepIndex(tourState.stepIndex - 1));
                       previousStep();
                       dispatch(removecart());
-                      if(stepCount === 2){
+                      if (stepCount === 2) {
                         dispatch(resetState());
                       }
                     }}

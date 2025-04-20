@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
 import {
@@ -34,8 +34,6 @@ const Modal = () => {
   );
   const modalData = useSelector((state) => state.customization.ModalData);
 
-  console.log("modalDataaaaa", modalData);
-
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -45,6 +43,8 @@ const Modal = () => {
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
+  const hasFetchedSteps = useRef(false);
+  const isInitialMount = useRef(true);
 
   // ✅ Clear cart and start loading on category change
   const debouncedRemoveCart = useCallback(
@@ -57,77 +57,68 @@ const Modal = () => {
   // ✅ Reset state when category changes
   useEffect(() => {
     dispatch(removecart());
-  }, [selectedCategory && selectedModalData !== null, dispatch]);
+  }, [selectedCategory, dispatch]);
 
-  // ✅ Fetch modal data when category changes
-  useEffect(() => {
+  // ✅ Memoized fetch function
+  const fetchModalData = useCallback(async () => {
+    if (!selectedCategory) return;
+
     const source = axios.CancelToken.source();
+    setLoading(true);
 
-    const fetchData = async () => {
-      try {
-        // setLoading(true);
-        debouncedRemoveCart();
+    try {
+      const response = await apiSSRV2DataService.getAll({
+        path: `kiosk/categories`,
+        param: {
+          category: selectedCategory,
+        },
+        locale: locale,
+      });
 
-        // const response = await axios.get(
-        //   `https://migapi.sedarglobal.com/kiosk/categories?category=${selectedCategory}`,
-        //   { cancelToken: source.token }
-        // );
+      if (response?.result?.model?.length > 0) {
+        dispatch(updateModalData(response.result));
 
-        const response = await apiSSRV2DataService.getAll({
-          path: `kiosk/categories`,
-          param: {
-            category: selectedCategory,
-          },
-          locale: locale,
-        });
-        console.log("response", response);
+        const firstModal =
+          selectedModalData || response.result.model[0]?.SPI_LINK_URL;
 
-        if (response?.result?.model?.length > 0) {
-          dispatch(updateModalData(response.result));
+        dispatch(
+          setModalDefaultItem({
+            itemId: selectedItemCode
+              ? selectedItemCode
+              : response?.result.model[0]?.SPI_PR_ITEM_CODE,
+            productId: productCode,
+          })
+        );
 
-          const firstModal =
-            selectedModalData || response.result.model[0]?.SPI_LINK_URL;
-
-          console.log("sssssssssss", selectedItemCode);
-          console.log("sssssssssss2", productCode);
-
-          dispatch(
-            setModalDefaultItem({
-              itemId: selectedItemCode
-                ? selectedItemCode
-                : response?.result.model[0]?.SPI_PR_ITEM_CODE,
-              productId: productCode,
-            })
-          );
-
-          setSelectedModal(firstModal);
-          dispatch(updateSelectedModal(firstModal));
-
-          await getStep(firstModal);
-        } else {
-          dispatch(updateModalData([]));
-        }
-      } catch (error) {
-        if (!axios.isCancel(error)) {
-          setError(error);
-          console.error("Failed to fetch categories:", error);
-        }
-      } finally {
-        // setLoading(false);
+        setSelectedModal(firstModal);
+        dispatch(updateSelectedModal(firstModal));
+      } else {
+        dispatch(updateModalData([]));
       }
-    };
-
-    if (selectedCategory) {
-      fetchData();
+    } catch (error) {
+      if (!axios.isCancel(error)) {
+        setError(error);
+        console.error("Failed to fetch categories:", error);
+      }
+    } finally {
+      setLoading(false);
     }
 
     return () => {
       source.cancel("Component unmounted, request canceled");
     };
-  }, [selectedCategory, dispatch, debouncedRemoveCart, selectedModalData]);
+  }, [selectedCategory, locale, dispatch, selectedModalData, selectedItemCode, productCode]);
 
-  // ✅ Fetch steps data for selected modal
-  const getStep = async (modalData) => {
+  // ✅ Fetch modal data when category changes (only once)
+  useEffect(() => {
+    if (isInitialMount.current && selectedCategory) {
+      isInitialMount.current = false;
+      fetchModalData();
+    }
+  }, [selectedCategory, fetchModalData]);
+
+  // ✅ Fetch steps data for selected modal (Only once when data is available)
+  const getStep = useCallback(async (modalData) => {
     if (!modalData) return;
 
     try {
@@ -159,30 +150,30 @@ const Modal = () => {
     } catch (error) {
       console.error("Failed to fetch steps:", error);
     }
-  };
+  }, [selectedCategory, dispatch]);
+
+  useEffect(() => {
+    if (!modalData?.model || hasFetchedSteps.current) return;
+
+    const firstModal = selectedModalData || modalData.model[0]?.SPI_LINK_URL;
+    if (firstModal) {
+      hasFetchedSteps.current = true;
+      getStep(firstModal);
+    }
+  }, [modalData, selectedModalData, getStep]);
 
   // ✅ Handle modal change and state reset
-  const handleChange = async (link, selectedItemCode, productCode) => {
-    console.log("bothid", selectedItemCode, productCode);
-
+  const handleChange = useCallback(async (link, selectedItemCode, productCode) => {
     setProductCode(productCode);
     setSelectedItemCode(selectedItemCode);
-    console.log("modalData", modalData);
+    
     if (selectedModalData !== link) {
       dispatch(updateSelectedModal(link));
-      // await getStep(link);
     }
-  };
+  }, [dispatch, selectedModalData]);
 
   return (
     <>
-      {/* {isTooltipOpen && !loading && (
-        <InstructionTooltip
-          onClose={() => setIsTooltipOpen(false)}
-          message={ModalSelection}
-        />
-      )} */}
-
       {loading ? (
         <Box
           sx={{
@@ -223,7 +214,6 @@ const Modal = () => {
                   pb: { sm: 20, xs: 20, md: 5, lg: 5 },
                 }}
               >
-                {/* ✅ Show message if no data */}
                 {!modalData?.model || modalData.model.length === 0 ? (
                   <Box
                     sx={{

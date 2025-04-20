@@ -25,6 +25,7 @@ import "@/styles/loader.css"
 // import dynamic from "next/dynamic";
 import CartProvider from "@/provider/cart/cartProvider";
 import ToastProvider from "@/app/components/ToastProvider";
+import NetworkStatus from "@/app/components/NetworkStatus";
 // import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 // import { GTM_ID } from "./_document";
 
@@ -44,6 +45,7 @@ function App(data) {
       : false;
   return (
     <>
+       <NetworkStatus>
       <AppCacheProvider emotionCache={emotionCache} {...data}>
         <CacheProvider value={emotionCache}>
           <Head>
@@ -54,6 +56,7 @@ function App(data) {
             <link rel="icon" href="/favicon.ico" />
           </Head>
           <Provider store={store}>
+       
             <ThemeProvider>
               <AlertProvider>
                 <AuthProvider>
@@ -74,9 +77,11 @@ function App(data) {
                 </AuthProvider>
               </AlertProvider>
             </ThemeProvider>
+           
           </Provider>
         </CacheProvider>
       </AppCacheProvider>
+      </NetworkStatus>
       {/* <GoogleTagManager gtmId={GTM_ID} />
       <GoogleAnalytics gaId="G-20ZHK7ZNYB" /> */}
     </>

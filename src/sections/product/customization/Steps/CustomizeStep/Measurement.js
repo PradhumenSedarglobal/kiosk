@@ -178,7 +178,9 @@ const Measurement = ({ data }) => {
   };
 
   const toggleValidation = (name, value) => {
-    console.log(name, value,'toggleValidation')
+
+    console.log(name, value,'toggleValidation',value,MIN_WIDTH,name);
+    console.log("isvalid",isvalid);
     if ((value < MIN_WIDTH || value > MAX_WIDTH) && name == "product_width") {
       setIivalid({ ...isvalid, [name]: true });
     } else if (
@@ -233,8 +235,6 @@ const Measurement = ({ data }) => {
             stepsArray["MEASUREMENT"]["m_height"]
           );
 
-         
-
         }.bind(this),
         600
       );
@@ -242,18 +242,15 @@ const Measurement = ({ data }) => {
   }, [MIN_WIDTH, MAX_HEIGHT]);
 
   useEffect(() => {
+    console.log("when width change");
+    if (isvalid.product_width == false && isvalid.product_height == false && me_width > 0 && me_height > 0) {
+      console.log("when width change in this");
     
-    if (isvalid.product_width == false && isvalid.product_height == false && me_width > 0 && me_height >0) {
-    
-      setTimeout(
-        function () {
           addToCartFunScene(
             { ...cookies, ...customization_info, locale: locale },
             dispatch
           );
-        }.bind(this),
-        500
-      );
+       
     }
   }, [isvalid.product_width, isvalid.product_height, me_width, me_height]);
 

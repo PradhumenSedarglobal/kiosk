@@ -1,50 +1,37 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Box, Modal, Typography, Grid, useMediaQuery } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+
 import {
   removecart,
-  setIp,
-  updateSelectedCategory,
   resetState,
   loadingfalse,
+  updateSelectedCategory,
   setCategoryGallary,
   setCategoryDefaultImg,
 } from "@/redux/slices/customization";
 
-// Custom Components
 import MainHeading from "./MainHeading";
 import ImageCard from "./ImageCard";
 import { useAuthContext } from "@/auth/useAuthContext";
-import { setStepIndex } from "@/redux/slices/tourSlice";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { useRouter } from "next/router";
 
-export async function getServerSideProps({ req }) {
-  // Get the IP address
-  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-
-  // For better accuracy, you can check and return the actual IP from the x-forwarded-for header.
-  const userIp = ip; // In case of multiple IPs, take the first one.
-
-  return {
-    props: {
-      userIp,
-    },
-  };
-}
-
-const Step1 = ({ successValue, stepcount, userIp }) => {
+const Step1 = ({ successValue, stepcount }) => {
   const { state } = useAuthContext();
   const { cookies } = state;
+
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const hasFetched = useRef(false);
+
+  const dispatch = useDispatch();
+  const { locale } = useRouter();
+
   const globalSelectedCategory = useSelector(
     (state) => state.customization.SelectedCategory
   );
@@ -52,12 +39,6 @@ const Step1 = ({ successValue, stepcount, userIp }) => {
     (state) => state.customization.categoryGallary
   );
   const stepCount = useSelector((state) => state.step.value);
-  const [error, setError] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const hasFetched = useRef(false);
-  const dispatch = useDispatch();
-  const { locale, query } = useRouter();
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
@@ -66,42 +47,38 @@ const Step1 = ({ successValue, stepcount, userIp }) => {
     try {
       const response = await apiSSRV2DataService.getAll({
         path: `kiosk/categories`,
-        locale: locale,
+        locale,
       });
-
-      return response; // Ensure response.data exists
+      return response;
     } catch (error) {
       console.error("Error fetching category:", error);
-      return null; // Return null to avoid undefined issues
+      return null;
     }
   };
 
   useEffect(() => {
     if (hasFetched.current) return;
+    hasFetched.current = true;
 
     const cancelToken = axios.CancelToken.source();
     setLoading(true);
 
     fetchCategory()
       .then((data) => {
-        console.log("Fetched Data:", data); // Check if data is received
-        if (!data || !data.result) {
+        if (!data?.result) {
           console.error("No valid data received:", data);
           return;
         }
 
-        hasFetched.current = true;
         setCategory(data.result);
-        console.log("setCategoryGallary", data.result);
 
-        if (data.result.length > 0) {
-          const initialCategory =
-            globalSelectedCategory || data.result[0].link_url;
-          setSelectedCategory(initialCategory);
-          dispatch(removecart());
-          dispatch(updateSelectedCategory(initialCategory));
-          dispatch(setCategoryGallary(data.result));
-        }
+        const initialCategory =
+          globalSelectedCategory || data.result[0].link_url;
+
+        setSelectedCategory(initialCategory);
+        dispatch(removecart());
+        dispatch(updateSelectedCategory(initialCategory));
+        dispatch(setCategoryGallary(data.result));
       })
       .catch((error) => {
         console.error("Fetch error:", error);
@@ -109,42 +86,23 @@ const Step1 = ({ successValue, stepcount, userIp }) => {
       })
       .finally(() => setLoading(false));
 
-    // getIpAddress();
-
     return () => cancelToken.cancel();
-  }, [dispatch, globalSelectedCategory]);
+  }, []);
 
-  const handleChange = useCallback(
-    (link) => {
-      // Dispatch actions
-      dispatch(resetState());
-      dispatch(loadingfalse(true));
-      setSelectedCategory(link); // Update the selected category state
-      dispatch(updateSelectedCategory(link)); // Update the Redux store with the selected category
+  const handleChange = (link) => {
+    dispatch(resetState());
+    dispatch(loadingfalse(true));
+    setSelectedCategory(link);
+    dispatch(updateSelectedCategory(link));
 
-      // First, filter the categoryGallary for the selected category
-      const filteredGallery = categoryGallary?.filter(
-        (item) => item.link_url === link
-      );
+    const filteredGallery = categoryGallary?.filter(
+      (item) => item.link_url === link
+    );
 
-      if (filteredGallery && filteredGallery.length > 0) {
-        const firstImagePath = filteredGallery[0].image_path;
-        dispatch(setCategoryDefaultImg(firstImagePath));
-        console.log("filteredGallery", firstImagePath); // Log the first image path for debugging
-      } else {
-        console.log("No categories found matching the selected category");
-      }
-    },
-    [categoryGallary, dispatch]
-  );
-
-  useEffect(() => {
-    if (successValue) {
-      setOpen(true);
-      const timer = setTimeout(() => setOpen(false), 3000);
-      return () => clearTimeout(timer);
+    if (filteredGallery?.length > 0) {
+      dispatch(setCategoryDefaultImg(filteredGallery[0].image_path));
     }
-  }, [successValue]);
+  };
 
   const categoryList = useMemo(
     () =>
@@ -182,7 +140,7 @@ const Step1 = ({ successValue, stepcount, userIp }) => {
           />
         </Grid>
       )),
-    [category, selectedCategory, handleChange]
+    [category, selectedCategory]
   );
 
   return (

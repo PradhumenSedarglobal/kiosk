@@ -7,6 +7,8 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.NEXT_PUBLIC_ANALYZE === "true",
 });
 
+
+
 const nextConfig = {
   reactStrictMode: true,
   i18n,
