@@ -87,33 +87,29 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
   console.log("SPI_PR_ITEM_CODE", SPI_PR_ITEM_CODE);
   console.log("SPI_PR_ITEM_CODE111111", materialList);
 
+
+
   const updateTextureFun = async (val) => {
-    console.log("callingsssssssssss");
+    console.log("callingsssssssssss","val.SII_WIDTH",val.SII_WIDTH,"stepsArray.MEASUREMENT?.m_width",stepsArray.MEASUREMENT?.m_width);
+    console.log("condition Width",val.SII_WIDTH < stepsArray.MEASUREMENT?.m_width);
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
-      if (val.SII_WIDTH <= stepsArray.MEASUREMENT?.m_width) {
+      if (Number(val.SII_WIDTH) <= Number(stepsArray.MEASUREMENT?.m_width)) {
         setAlertMessage(
           "The entered width should not be greater than the selected material's maximum width."
         );
-
-        // ✅ Automatically remove the alert after 5 seconds
-        setTimeout(() => {
-          setAlertMessage(null);
-          setTabChange(1); // Moves to the first page
-        }, 4000);
+      }else{
+        setAlertMessage(null);
       }
     }
 
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_HEIGHT_YN === "Y") {
-      if (val.SII_HEIGHT <= stepsArray.MEASUREMENT?.m_height) {
+      if (Number(val.SII_HEIGHT) < Number(stepsArray.MEASUREMENT?.m_height)) {
         setAlertMessage(
           "The entered height should not be greater than the selected material's maximum height."
         );
 
-        // ✅ Automatically remove the alert after 5 seconds
-        setTimeout(() => {
-          setAlertMessage(null);
-          setTabChange(1); // Moves to the first page
-        }, 4000);
+      }else{
+        setAlertMessage(null);
       }
     }
 

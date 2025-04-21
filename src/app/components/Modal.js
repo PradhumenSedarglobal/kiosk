@@ -34,6 +34,11 @@ const Modal = () => {
   );
   const modalData = useSelector((state) => state.customization.ModalData);
 
+  const [modal,setModal]  = useState();
+
+
+
+
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -164,6 +169,8 @@ const Modal = () => {
 
   // ✅ Handle modal change and state reset
   const handleChange = useCallback(async (link, selectedItemCode, productCode) => {
+    setModal(link);
+    
     setProductCode(productCode);
     setSelectedItemCode(selectedItemCode);
     
@@ -171,6 +178,12 @@ const Modal = () => {
       dispatch(updateSelectedModal(link));
     }
   }, [dispatch, selectedModalData]);
+
+  useEffect(() => {
+    if (modal) {
+        console.log("modalllll",modal);
+    }
+  }, [modal]);
 
   return (
     <>

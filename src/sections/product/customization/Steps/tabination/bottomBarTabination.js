@@ -363,9 +363,13 @@ const BottomBarTabination = ({
                 onClick={() => {
                   if (tabChange === "1") {
                     console.log("tabChangetabChange", tabChange);
-                    dispatch(removecart());
+                    dispatch(resetState());
                     // dispatch(loadingfalse(true));
                   }
+
+                  // if(tabChange === "2"){
+                  //   dispatch(resetState());
+                  // }
 
                   onPreviousHandle("PREV");
                 }}

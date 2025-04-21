@@ -1032,9 +1032,9 @@ export default function ProductPage(props) {
                       variant="p"
                       component="div"
                     >
-                      {SelectedCategory
+                      {stepCount == 0 ? (SelectedCategory
                         ? formatCategory(SelectedCategory)
-                        : null}
+                        : null) : SelectedModal ? formatCategory(SelectedModal) : null }
                     </Typography>
                   </Grid>
                   <Grid item xs={5} pt={"0 !important"}>
