@@ -173,6 +173,7 @@ const Modal = () => {
     
     setProductCode(productCode);
     setSelectedItemCode(selectedItemCode);
+    dispatch(removecart());
     
     if (selectedModalData !== link) {
       dispatch(updateSelectedModal(link));

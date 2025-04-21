@@ -106,6 +106,7 @@ const slice = createSlice({
         customerSysId: state.customerSysId,
         categoryGallary: state.categoryGallary,
         categoryDefaultImg: state.categoryDefaultImg,
+        ModalData: state.ModalData,
         // modalDefaultItem:state.modalDefaultItem
       }
     },
