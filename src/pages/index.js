@@ -72,6 +72,8 @@ import InstructionTooltip from "@/app/components/InstructionTooltip";
 import { setStepIndex, skipTour, startTour, tourNextStep } from "@/redux/slices/tourSlice";
 import TourGuideButton from "@/app/components/TourGuideButton";
 import InfoButton from "@/app/components/InfoButton";
+import ResetHoverButton from "@/app/components/ResetHoverButton";
+
 
 // Dynamically import Joyride to prevent SSR issues
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
@@ -582,6 +584,8 @@ export default function ProductPage(props) {
       <TourGuideButton  />
 
       <InfoButton  howToUse={howToUse}/>
+
+      <ResetHoverButton/>
       
       {/* <Joyride
         steps={tourState.steps}

@@ -1,42 +1,49 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import RestartAltIcon from "@mui/icons-material/RestartAlt"; // Reset icon
 import { useSelector } from "react-redux";
 
-const InfoHoverButton = ({ text = "HOW TO USE", howToUse }) => {
-     const fonts = useSelector((state) => state.font);
+const ResetHoverButton = ({ text = "RESET", onReset }) => {
+  const fonts = useSelector((state) => state.font);
+
   return (
     <Box
-      onClick={howToUse}
+      onClick={onReset}
       sx={{
         position: "absolute",
-        top: "10px",
+        top: "60px", // You can change this if needed
         left: "55vw",
         zIndex: 9999,
         backgroundColor: "black",
         borderRadius: "8px",
         height: "40px",
-        width: "40px", // Icon-only width by default
-        overflow: "hidden", // hide the text initially
+        width: "40px",
+        overflow: "hidden",
         display: "flex",
         alignItems: "center",
         padding: "0 8px",
         cursor: "pointer",
         transition: "width 0.5s ease, background-color 0.3s ease",
         "&:hover": {
-          width: "140px", // expands on hover
+          width: "140px",
           backgroundColor: "orange",
         },
         "&:hover .hover-text": {
           opacity: 1,
           marginLeft: "8px",
-          color:"white"
+          color: "white",
         },
       }}
     >
-      <InfoOutlinedIcon sx={{ color: "white", opacity: 1, "&:hover":{
-        color:"white"
-      } }} />
+      <RestartAltIcon
+        sx={{
+          color: "white",
+          opacity: 1,
+          "&:hover": {
+            color: "white",
+          },
+        }}
+      />
       <Typography
         className="hover-text"
         variant="body2"
@@ -56,4 +63,4 @@ const InfoHoverButton = ({ text = "HOW TO USE", howToUse }) => {
   );
 };
 
-export default InfoHoverButton;
+export default ResetHoverButton;
