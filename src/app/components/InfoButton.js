@@ -1,0 +1,59 @@
+import React from "react";
+import { Typography, Box } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useSelector } from "react-redux";
+
+const InfoHoverButton = ({ text = "HOW TO USE", howToUse }) => {
+     const fonts = useSelector((state) => state.font);
+  return (
+    <Box
+      onClick={howToUse}
+      sx={{
+        position: "absolute",
+        top: "10px",
+        left: "45vw",
+        zIndex: 9999,
+        backgroundColor: "black",
+        borderRadius: "8px",
+        height: "40px",
+        width: "40px", // Icon-only width by default
+        overflow: "hidden", // hide the text initially
+        display: "flex",
+        alignItems: "center",
+        padding: "0 8px",
+        cursor: "pointer",
+        transition: "width 0.5s ease, background-color 0.3s ease",
+        "&:hover": {
+          width: "140px", // expands on hover
+          backgroundColor: "orange",
+        },
+        "&:hover .hover-text": {
+          opacity: 1,
+          marginLeft: "8px",
+          color:"white"
+        },
+      }}
+    >
+      <InfoOutlinedIcon sx={{ color: "white", opacity: 1, "&:hover":{
+        color:"white"
+      } }} />
+      <Typography
+        className="hover-text"
+        variant="body2"
+        sx={{
+          color: "white",
+          fontSize: "small",
+          opacity: 0,
+          marginLeft: "0px",
+          whiteSpace: "nowrap",
+          fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+          transition: "opacity 0.3s ease, margin-left 0.3s ease",
+        }}
+      >
+        {text}
+      </Typography>
+    </Box>
+  );
+};
+
+export default InfoHoverButton;

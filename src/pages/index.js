@@ -69,8 +69,9 @@ import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import ModalGallary from "@/app/components/ModalGallary";
 import InstructionTooltip from "@/app/components/InstructionTooltip";
-import { setStepIndex, skipTour, startTour } from "@/redux/slices/tourSlice";
+import { setStepIndex, skipTour, startTour, tourNextStep } from "@/redux/slices/tourSlice";
 import TourGuideButton from "@/app/components/TourGuideButton";
+import InfoButton from "@/app/components/InfoButton";
 
 // Dynamically import Joyride to prevent SSR issues
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
@@ -566,12 +567,21 @@ export default function ProductPage(props) {
   //   }
   // };
   
+
+  const howToUse = () =>{
+    dispatch(tourNextStep());
+    console.log("calliii");
+  }
   
   
 
   return (
     <>
-      {stepCount == 0 && <TourGuideButton  />}
+    
+      {/* {stepCount == 0 && <TourGuideButton  />} */}
+      <TourGuideButton  />
+
+      <InfoButton  howToUse={howToUse}/>
       
       {/* <Joyride
         steps={tourState.steps}
