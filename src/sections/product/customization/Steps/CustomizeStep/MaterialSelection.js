@@ -278,7 +278,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
               return (
                 <Grid item lg={4} md={4} sm={4} xs={6} xxs={6} key={index}>
                   <Box
-                    
+                    className={`matrial_class ${index === 0 ? "selectMaterial" : ""}`}
                     sx={(theme) => ({
                       // p: 0.5,
                       borderRadius: '10px',

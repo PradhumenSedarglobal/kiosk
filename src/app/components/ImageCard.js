@@ -28,7 +28,8 @@ const ImageCard = ({
     <Card
       ref={refName}
       onClick={() => {
-        functionname(link,selectedItemCode,productCode);
+        functionname(link);
+        // functionname(link,selectedItemCode,productCode);
         dispatch(setStepIndex(tourState.stepIndex+1));
       }}
       onMouseEnter={() => setIsHovered(true)}

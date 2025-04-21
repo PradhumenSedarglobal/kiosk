@@ -63,7 +63,7 @@ function App(data) {
                   <CartProvider>
                     <ErrorBoundary>
                       <ProgressRouterProvider>
-                        <ProgressBar />
+                        {/* <ProgressBar /> */}
                         {/* {locale != "default" && <Dial />} */}
                         {/* <CookiePolicyPopup /> */}
                         <RTL>
@@ -77,7 +77,6 @@ function App(data) {
                 </AuthProvider>
               </AlertProvider>
             </ThemeProvider>
-           
           </Provider>
         </CacheProvider>
       </AppCacheProvider>

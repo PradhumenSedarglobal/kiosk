@@ -69,7 +69,7 @@ import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import ModalGallary from "@/app/components/ModalGallary";
 import InstructionTooltip from "@/app/components/InstructionTooltip";
-import { setStepIndex, startTour } from "@/redux/slices/tourSlice";
+import { setStepIndex, skipTour, startTour } from "@/redux/slices/tourSlice";
 import TourGuideButton from "@/app/components/TourGuideButton";
 
 // Dynamically import Joyride to prevent SSR issues
@@ -494,38 +494,7 @@ export default function ProductPage(props) {
     }, 1000);
   };
 
-  // useEffect(() => {
-
-  // }, [stepCount === 1]);
-
-  // const [tourState, setTourState] = useState({
-  //   run: false,
-  //   stepIndex: 0,
-  //   steps: [
-  //     {
-  //       target: ".step-select",
-  //       content: "Select your prefrence how you move forword with that!",
-  //       placement: "top",
-  //       spotlightPadding: 10,
-  //     },
-  //     {
-  //       target: ".category-container",
-  //       content: "As of now, select a category and move forward.",
-  //       placement: "top",
-  //       spotlightPadding: 10,
-  //     },
-  //     {
-  //       target: ".continue",
-  //       content: "Now click on continue button",
-  //       placement: "top",
-  //       spotlightPadding: 10,
-  //     },
-  //   ],
-  // });
-
-  // useEffect(() => {
-  //   setTourState((prev) => ({ ...prev, run: true, stepIndex: 0 }));
-  // }, []);
+  
 
   useEffect(() => {
     dispatch(startTour());
@@ -566,28 +535,66 @@ export default function ProductPage(props) {
       .trim(); // Remove leading/trailing spaces
   };
 
+  const handleJoyrideCallback = (data) => {
+    const { action, index, status, type, lifecycle } = data;
+  
+    // Handle step changes
+    if (type === "step:after") {
+      if (action === "next") {
+        const isLastStep = index === tourState.steps.length - 1;
+        if (isLastStep) {
+          dispatch(skipTour());
+        } else {
+          dispatch(setStepIndex(index + 1));
+        }
+      } else if (action === "prev") {
+        dispatch(setStepIndex(index - 1));
+      }
+    }
+  
+    // Handle all cases where the tour should end
+    if (
+      // When user clicks "Skip"
+      (action === "skip") ||
+      // When user clicks "Last" button on final step
+      (action === "next" && index === tourState.steps.length - 1) ||
+      // When user clicks the close button
+      (action === "close") ||
+      // When tour completes naturally
+      status === "finished" ||
+      // When tour is skipped
+      status === "skipped"
+    ) {
+      dispatch(skipTour());
+    }
+  };
+  
+  
+
   return (
     <>
-      {stepCount == 0 && <TourGuideButton steps={tourState.steps} />}
+      {/* {stepCount == 0 && <TourGuideButton  />} */}
       
-      {/* <Joyride
-        steps={tourState.steps}
-        stepIndex={tourState.stepIndex}
-        run={tourState.run}
-        continuous
-        showProgress
-        showSkipButton
-        spotlightClicks
-        disableScrolling
-        placement="auto"
-        styles={{
-          options: {
-            zIndex: 99999,
-            overlayColor: "rgba(0, 0, 0, 0.5)",
-            primaryColor: "#ff6600",
-          },
-        }}
-      /> */}
+      <Joyride
+  steps={tourState.steps}
+  stepIndex={tourState.stepIndex}
+  run={tourState.run}
+  continuous
+  showProgress
+  showSkipButton
+  spotlightClicks
+  disableScrolling
+  placement="auto"
+  styles={{
+    options: {
+      zIndex: 99999,
+      overlayColor: "rgba(0, 0, 0, 0.5)",
+      primaryColor: "#ff6600",
+    },
+  }}
+  callback={handleJoyrideCallback}
+  hideCloseButton={false} // Ensure this is not set to true
+/>
 
       <Head>
         <title>Customization List Page</title>
@@ -1083,14 +1090,20 @@ export default function ProductPage(props) {
                 {/* Continue/Add to Cart Button */}
                 {stepCount < 5 ? (
                   <Button
-                    className={stepCount === 1 ? "continue2" : "continue"}
+                    className={stepCount >= 1 ? 'continue2' : 'continue1'}
                     size="large"
                     variant="outlined"
-                    onClick={() => {
+                    onClick={(e) => {
+                      // Disable the button immediately after click
+                      e.target.disabled = true;
+                  
                       dispatch(incrementStep(stepCount + 1));
+                  
                       setTimeout(() => {
                         dispatch(setStepIndex(tourState.stepIndex + 1));
-                      }, 2000);
+                        // Re-enable the button after 3 seconds
+                        e.target.disabled = false;
+                      }, 3000); // 3000 milliseconds = 3 seconds
                     }}
                     endIcon={<ArrowCircleRightIcon />}
                   >

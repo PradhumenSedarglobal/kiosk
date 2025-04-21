@@ -71,3 +71,22 @@ body {
   font-size: 0.8rem !important;
 }
 
+/* 👇 Allow pointer events inside the spotlight area */
+/* div[data-react-joyride] .react-joyride__spotlight {
+  pointer-events: none !important;
+}
+
+.category-container {
+  pointer-events: auto !important;
+} */
+
+
+html,
+body {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0); /* Forces GPU layer */
+}
+
+
+

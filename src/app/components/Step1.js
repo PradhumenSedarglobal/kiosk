@@ -17,6 +17,7 @@ import ImageCard from "./ImageCard";
 import { useAuthContext } from "@/auth/useAuthContext";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { useRouter } from "next/router";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
 const Step1 = ({ successValue, stepcount }) => {
   const { state } = useAuthContext();
@@ -42,6 +43,8 @@ const Step1 = ({ successValue, stepcount }) => {
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
+
+  const tourState = useSelector((state) => state.tour);
 
   const fetchCategory = async () => {
     try {
@@ -89,20 +92,26 @@ const Step1 = ({ successValue, stepcount }) => {
     return () => cancelToken.cancel();
   }, []);
 
+  
+
   const handleChange = (link) => {
-    dispatch(resetState());
-    dispatch(loadingfalse(true));
-    setSelectedCategory(link);
-    dispatch(updateSelectedCategory(link));
-
-    const filteredGallery = categoryGallary?.filter(
-      (item) => item.link_url === link
-    );
-
-    if (filteredGallery?.length > 0) {
-      dispatch(setCategoryDefaultImg(filteredGallery[0].image_path));
-    }
+    // Add a short delay to let Joyride finish spotlight transition
+    setTimeout(() => {
+      dispatch(resetState());
+      dispatch(loadingfalse(true));
+      setSelectedCategory(link);
+      dispatch(updateSelectedCategory(link));
+  
+      const filteredGallery = categoryGallary?.filter(
+        (item) => item.link_url === link
+      );
+  
+      if (filteredGallery?.length > 0) {
+        dispatch(setCategoryDefaultImg(filteredGallery[0].image_path));
+      }
+    }, 100); // 100ms delay helps Joyride and Redux sync up
   };
+  
 
   const categoryList = useMemo(
     () =>

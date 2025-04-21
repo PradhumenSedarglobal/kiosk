@@ -96,8 +96,12 @@ const tourSlice = createSlice({
         state.stepIndex = newIndex;
       }
     },
+    skipTour: (state) => {
+      state.run = false;
+      state.stepIndex = 0; // Reset to the initial step
+    },
   },
 });
 
-export const { startTour, stopTour, tourNextStep, setStepIndex } = tourSlice.actions;
+export const { startTour, stopTour, tourNextStep, setStepIndex,skipTour } = tourSlice.actions;
 export default tourSlice.reducer;
