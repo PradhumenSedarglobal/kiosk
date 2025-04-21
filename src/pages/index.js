@@ -585,7 +585,7 @@ export default function ProductPage(props) {
 
       <InfoButton  howToUse={howToUse}/>
 
-      <ResetHoverButton/>
+     
       
       {/* <Joyride
         steps={tourState.steps}
@@ -666,40 +666,7 @@ export default function ProductPage(props) {
 
           {/* Reset 3dModal Icon Start */}
           {stepCount !== 0 && stepCount !== 1 && (
-            <Fab
-              onClick={() => {
-                resetCanvasScene();
-              }}
-              className="resetbutton"
-              sx={{
-                backgroundColor: "#ef9c00",
-                color: "#f5ece0",
-                fontFamily: fonts.Helvetica_Neue_Regular.style.fontFamily,
-                fontWeight: "700",
-                padding: "8px 16px",
-                position: "fixed",
-                zIndex: 999,
-                marginLeft: "5px",
-                top: "10px",
-
-                // Use MUI breakpoints for responsiveness
-                right: {
-                  // xs: "calc(100vw - 200px)",  // Mobile (375px+)
-                  // sm: "calc(100vw - 300px)",  // Tablet (600px+)
-                  // md: "calc(100vw - 500px)",  // Small laptops (900px+)
-                  lg: "calc(100vw - 55%)", // Large screens (1200px+)
-                },
-
-                // Media Query (Only if necessary)
-                "@media (min-width: 375px) and (max-width: 959px)": {
-                  right: "calc(100vw - 95%)",
-                },
-              }}
-              color="warning"
-              aria-label="edit"
-            >
-              <SettingsBackupRestoreIcon />
-            </Fab>
+             <ResetHoverButton resetCanvasScene={resetCanvasScene}/>
           )}
 
 

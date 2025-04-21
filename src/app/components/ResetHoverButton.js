@@ -3,12 +3,12 @@ import { Typography, Box } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt"; // Reset icon
 import { useSelector } from "react-redux";
 
-const ResetHoverButton = ({ text = "RESET", onReset }) => {
+const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
   const fonts = useSelector((state) => state.font);
 
   return (
     <Box
-      onClick={onReset}
+      onClick={resetCanvasScene}
       sx={{
         position: "absolute",
         top: "60px", // You can change this if needed
