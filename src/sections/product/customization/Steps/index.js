@@ -15,7 +15,7 @@ import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { addToCartFunScene } from "../sceneCanvas3D";
+import { addToCartFunScene, addToCartFunScene2 } from "../sceneCanvas3D";
 import SuccessModal from "./Modal/SuccessModal";
 import ValidationPopup from "./Modal/ValidationPopup";
 import StepImport from "./StepImport";
@@ -306,14 +306,14 @@ const TabinationStepsSection = ({
         console.log('✅ Steps available! Calling addToCartFunScene');
   
         stepValidation();
-        addToCartFunScene(
+        addToCartFunScene2(
           { ...cookies, ...customization_info, locale: locale },
           dispatch
         );
   
         hasCartBeenCalled.current = true;
       }
-    }, 6000); 
+    }, 5000); 
     return () => clearTimeout(timer); 
   }, [stepsArray]); 
   

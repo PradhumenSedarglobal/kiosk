@@ -411,6 +411,7 @@ const BottomBarTabination = ({
                 size="large"
                 variant="outlined"
                 onClick={() => {
+                  
                   onNextHandle("NEXT");
                 }}
                 endIcon={<ArrowCircleRightIcon color="black" />}

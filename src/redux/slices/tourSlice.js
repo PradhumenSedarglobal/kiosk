@@ -8,7 +8,7 @@ const initialState = {
       target: ".starterPoint",
       content: "Select your preference on how you move forward!",
       placement: "top",
-      spotlightPadding: 10,
+      
     },
     {
       target: ".category-container",

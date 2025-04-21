@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { NextFillImage } from "@/components/image";
 import useResponsive from "@/hooks/useResponsive";
-import {addToCartFunScene} from "@/sections/product/customization/addToCartFunScene";
+import {addToCartFunScene, addToCartFunScene2} from "@/sections/product/customization/addToCartFunScene";
 import {
   loadingfalse,
   setcanvasImg,
@@ -122,6 +122,8 @@ const SceneCanvas3D = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
   const isDownxs = useResponsive("down", "xs");
+
+ 
 
   const scene_path = props.SSC_IMAGE_PATH ? props.SSC_IMAGE_PATH : "";
   //const scene_occ_path = props.SSC_OCC_IMAGE_PATH ? props.SSC_OCC_IMAGE_PATH : '';
@@ -2054,4 +2056,5 @@ export {
   borderCheck,
   getPrice,
   addToCartFunScene,
+  addToCartFunScene2
 };

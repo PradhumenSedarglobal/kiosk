@@ -576,25 +576,24 @@ export default function ProductPage(props) {
       {/* {stepCount == 0 && <TourGuideButton  />} */}
       
       <Joyride
-  steps={tourState.steps}
-  stepIndex={tourState.stepIndex}
-  run={tourState.run}
-  continuous
-  showProgress
-  showSkipButton
-  spotlightClicks
-  disableScrolling
-  placement="auto"
-  styles={{
-    options: {
-      zIndex: 99999,
-      overlayColor: "rgba(0, 0, 0, 0.5)",
-      primaryColor: "#ff6600",
-    },
-  }}
-  callback={handleJoyrideCallback}
-  hideCloseButton={false} // Ensure this is not set to true
-/>
+        steps={tourState.steps}
+        stepIndex={tourState.stepIndex}
+        run={tourState.run}
+        continuous
+        showProgress
+        showSkipButton
+        spotlightClicks
+        disableScrolling
+        styles={{
+          options: {
+            zIndex: 99999,
+            overlayColor: "rgba(0, 0, 0, 0.5)",
+            primaryColor: "#ff6600",
+          },
+        }}
+        callback={handleJoyrideCallback}
+        hideCloseButton={false} // Ensure this is not set to true
+      />
 
       <Head>
         <title>Customization List Page</title>

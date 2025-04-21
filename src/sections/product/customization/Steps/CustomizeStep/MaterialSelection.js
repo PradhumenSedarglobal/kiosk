@@ -10,9 +10,9 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import SubStepImport from "../SubStepImport";
 import { Swiper, SwiperSlide } from "swiper/react";
-import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
-import ErrorIcon from '@mui/icons-material/Error';
+import Alert from "@mui/material/Alert";
+import CheckIcon from "@mui/icons-material/Check";
+import ErrorIcon from "@mui/icons-material/Error";
 
 import {
   getMaterialCustomization,
@@ -36,8 +36,8 @@ let img_path = "/assets/images/";
 const item_img_path = process.env.NEXT_PUBLIC_ITEM_IMG_WEBP_PATH + "laptop/";
 const perPage = 15;
 
-const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
-  const locale = 'uae-en';
+const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
+  const locale = "uae-en";
   const { query } = useRouter();
   const { slug } = query;
   const { t: translate } = useTranslation();
@@ -49,18 +49,20 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   const [alertMessage, setAlertMessage] = useState(null);
   //  const [materialList, setMaterialList] = useState([]);
 
-  const selectedCategory = useSelector((state) => state.customization.SelectedCategory);
-  const selectedModalData = useSelector((state) => state.customization.SelectedModal);
-
+  const selectedCategory = useSelector(
+    (state) => state.customization.SelectedCategory
+  );
+  const selectedModalData = useSelector(
+    (state) => state.customization.SelectedModal
+  );
 
   const customization_info = useSelector((state) => state.customization);
 
-  console.log("customization1111",customization_info);
+  console.log("customization1111", customization_info);
 
   const { state } = useAuthContext();
   const { cookies } = state;
 
- 
   const {
     productInfo,
     stepsArray,
@@ -69,10 +71,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     filterOption,
     materialList,
   } = customization_info;
-  
-
-  
-  
 
   let m_width = productInfo.m_width ? productInfo.m_width : 0;
   let m_height = productInfo.m_height ? productInfo.m_height : 0;
@@ -86,21 +84,17 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     ? productInfo.SPI_PR_ITEM_CODE
     : 0;
 
-   
-    console.log("SPI_PR_ITEM_CODE",SPI_PR_ITEM_CODE);
-    console.log("SPI_PR_ITEM_CODE111111",materialList);
-
-
+  console.log("SPI_PR_ITEM_CODE", SPI_PR_ITEM_CODE);
+  console.log("SPI_PR_ITEM_CODE111111", materialList);
 
   const updateTextureFun = async (val) => {
-
-  
+    console.log("callingsssssssssss");
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
       if (val.SII_WIDTH <= stepsArray.MEASUREMENT?.m_width) {
         setAlertMessage(
           "The entered width should not be greater than the selected material's maximum width."
         );
-    
+
         // ✅ Automatically remove the alert after 5 seconds
         setTimeout(() => {
           setAlertMessage(null);
@@ -114,7 +108,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
         setAlertMessage(
           "The entered height should not be greater than the selected material's maximum height."
         );
-    
+
         // ✅ Automatically remove the alert after 5 seconds
         setTimeout(() => {
           setAlertMessage(null);
@@ -122,7 +116,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
         }, 4000);
       }
     }
-    
+
     let material_data = {
       ...data,
       ITEM_CODE: val.SII_CODE,
@@ -139,6 +133,11 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     dispatch(loadingfalse(false));
 
     dispatch(setCustomizationFun(material_data));
+
+    addToCartFunScene(
+      { ...cookies, ...customization_info, locale: locale },
+      dispatch
+    );
   };
 
   const getMaterialListFun = () => {
@@ -149,7 +148,9 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
       param: filterOption,
       limit: perPage,
       page: page,
-      material_item_id: stepsArray.MATERIAL_SELECTION ? stepsArray.MATERIAL_SELECTION.ITEM_CODE:material_item_id,
+      material_item_id: stepsArray.MATERIAL_SELECTION
+        ? stepsArray.MATERIAL_SELECTION.ITEM_CODE
+        : material_item_id,
       m_width: m_width,
       m_height: m_height,
       content: "customization",
@@ -166,7 +167,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
       const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
       let winHeight = Math.round(scrollTop + clientHeight);
 
-
       if (winHeight === scrollHeight) {
         if (page <= totalPages) {
           setPage(page + 1);
@@ -175,24 +175,25 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
       }
     }
   };
- 
-  useEffect(()=>{
-     console.log("this called you can check");
-     if(materialList.length > 0){
-      let elem =
-      materialList[0]["items"] &&
-        materialList[0]["items"][0] &&
-        materialList[0]["items"][0]["texture_info"]
-        ? materialList[0]["items"][0]["texture_info"]
-        : {};
-
-      updateTextureFun(elem);
-     }
-  
-  },[productInfo?.code === "0" || productInfo?.code === 0])
 
   useEffect(() => {
-    console.log('called');
+    console.log("this called you can check");
+    if (materialList.length > 0) {
+      let elem =
+        materialList[0]["items"] &&
+        materialList[0]["items"][0] &&
+        materialList[0]["items"][0]["texture_info"]
+          ? materialList[0]["items"][0]["texture_info"]
+          : {};
+
+      setTimeout(() => {
+        updateTextureFun(elem);
+      }, 1000);
+    }
+  }, [productInfo?.code === "0" || productInfo?.code === 0]);
+
+  useEffect(() => {
+    console.log("called");
     getMaterialListFun();
   }, [selectedModalData]);
 
@@ -219,9 +220,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
     }
   }, [materialCustomization]);
 
-  
-
-
   const sliderSetting = {
     initialSlide: 0,
     observer: true,
@@ -230,8 +228,7 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
   };
   return (
     <>
-    
-       <SubHeading  title={data?.SPS_DESC} />
+      <SubHeading title={data?.SPS_DESC} />
       {/* <Box>
         <Typography
           sx={(theme) => ({
@@ -250,7 +247,6 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
         </Alert>
       )}
 
-
       <Box px={3} py={2}>
         <Grid
           container
@@ -258,30 +254,29 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
           onScroll={() => handleScroll()}
           ref={listInnerRef}
           className="scroller_fun"
-          style={{ 'overflow-y': 'scroll', 'height': '400px' }}
+          style={{ "overflow-y": "scroll", height: "400px" }}
         >
           {materialList &&
             materialList.map((item_info, index) => {
-              console.log("materialListdata",item_info);
-              console.log("productInfo?.code",productInfo?.code);
+              console.log("materialListdata", item_info);
+              console.log("productInfo?.code", productInfo?.code);
               let elem =
                 item_info["items"] &&
-                  item_info["items"][0] &&
-                  item_info["items"][0]["texture_info"]
+                item_info["items"][0] &&
+                item_info["items"][0]["texture_info"]
                   ? item_info["items"][0]["texture_info"]
                   : {};
               let checked = item_info?.items
                 ? find(item_info?.items, {
-                  SII_CODE: productInfo?.code,
-                })
+                    SII_CODE: productInfo?.code,
+                  })
                 : false;
               return (
                 <Grid item lg={4} md={4} sm={4} xs={6} xxs={6} key={index}>
                   <Box
-                    className={`matrial_class ${index === 0 ? "selectMaterial" : ""}`}
                     sx={(theme) => ({
                       // p: 0.5,
-                      borderRadius: '10px',
+                      borderRadius: "10px",
                       border:
                         checked && `2px solid ${theme.palette.primary.main}`,
                     })}
@@ -341,7 +336,13 @@ const MaterialSelection = ({ data, formik, elem,setTabChange }) => {
                         },
                       }}
                     >
-                      <MaterialSwiper item_info={item_info} updateTextureFun={updateTextureFun} productInfo={productInfo} item_img_path={item_img_path} elem={elem} />
+                      <MaterialSwiper
+                        item_info={item_info}
+                        updateTextureFun={updateTextureFun}
+                        productInfo={productInfo}
+                        item_img_path={item_img_path}
+                        elem={elem}
+                      />
                     </Box>
                   </Box>
                 </Grid>
