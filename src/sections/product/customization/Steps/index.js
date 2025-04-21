@@ -313,7 +313,7 @@ const TabinationStepsSection = ({
   
         hasCartBeenCalled.current = true;
       }
-    }, 5000); 
+    }, 6000); 
     return () => clearTimeout(timer); 
   }, [stepsArray]); 
   
