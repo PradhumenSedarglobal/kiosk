@@ -14,7 +14,7 @@ import { QrReader } from "react-qr-reader";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
 import { showScanner } from "@/redux/slices/scannerSlice";
-import { setStepIndex } from "@/redux/slices/tourSlice";
+import { setStepIndex, skipTour, startTour } from "@/redux/slices/tourSlice";
 
 export default function ScanModal() {
   const [scaner, setScaner] = useState(false);
@@ -50,6 +50,7 @@ export default function ScanModal() {
         onClose={(_event, reason) => {
           if (reason && reason === "backdropClick") return;
           setOpen(false);
+         
         }}
         sx={{
           display: "flex",
@@ -72,7 +73,10 @@ export default function ScanModal() {
         >
           <IconButton
             ref={modalRef}
-            onClick={() => dispatch(showScanner(false))}
+            onClick={() => {
+              console.log("scan close is calling")
+              dispatch(skipTour());
+              dispatch(showScanner(false))}}
             sx={{
               position: "absolute",
               top: 10,

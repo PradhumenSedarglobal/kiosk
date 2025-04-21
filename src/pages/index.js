@@ -535,47 +535,45 @@ export default function ProductPage(props) {
       .trim(); // Remove leading/trailing spaces
   };
 
-  const handleJoyrideCallback = (data) => {
-    const { action, index, status, type, lifecycle } = data;
+  // const handleJoyrideCallback = (data) => {
+  //   const { action, index, status, type, lifecycle } = data;
   
-    // Handle step changes
-    if (type === "step:after") {
-      if (action === "next") {
-        const isLastStep = index === tourState.steps.length - 1;
-        if (isLastStep) {
-          dispatch(skipTour());
-        } else {
-          dispatch(setStepIndex(index + 1));
-        }
-      } else if (action === "prev") {
-        dispatch(setStepIndex(index - 1));
-      }
-    }
+  //   console.log("Joyride callback:", data); // optional: for debugging
   
-    // Handle all cases where the tour should end
-    if (
-      // When user clicks "Skip"
-      (action === "skip") ||
-      // When user clicks "Last" button on final step
-      (action === "next" && index === tourState.steps.length - 1) ||
-      // When user clicks the close button
-      (action === "close") ||
-      // When tour completes naturally
-      status === "finished" ||
-      // When tour is skipped
-      status === "skipped"
-    ) {
-      dispatch(skipTour());
-    }
-  };
+  //   // Handle step navigation
+  //   if (type === "step:after") {
+  //     if (action === "next") {
+  //       const isLastStep = index === tourState.steps.length - 1;
+  //       if (isLastStep) {
+  //         dispatch(skipTour()); // End the tour
+  //       } else {
+  //         dispatch(setStepIndex(index + 1)); // Go to next step
+  //       }
+  //     } else if (action === "prev") {
+  //       dispatch(setStepIndex(index - 1));
+  //     }
+  //   }
+  
+  //   // End the tour on any of these actions or statuses
+  //   if (
+  //     action === "skip" ||       // Skip button
+  //     action === "close" ||      // Close (X) icon
+  //     (action === "next" && index === tourState.steps.length - 1) || // Final step next
+  //     status === "skipped" ||    // Joyride status
+  //     status === "finished"      // Joyride status
+  //   ) {
+  //     dispatch(skipTour()); // Ensure the tour state is reset
+  //   }
+  // };
+  
   
   
 
   return (
     <>
-      {/* {stepCount == 0 && <TourGuideButton  />} */}
+      {stepCount == 0 && <TourGuideButton  />}
       
-      <Joyride
+      {/* <Joyride
         steps={tourState.steps}
         stepIndex={tourState.stepIndex}
         run={tourState.run}
@@ -593,7 +591,7 @@ export default function ProductPage(props) {
         }}
         callback={handleJoyrideCallback}
         hideCloseButton={false} // Ensure this is not set to true
-      />
+      /> */}
 
       <Head>
         <title>Customization List Page</title>

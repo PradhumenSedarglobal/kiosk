@@ -81,10 +81,7 @@ const tourSlice = createSlice({
       state.run = true;
       state.stepIndex = 0; // Restart tour when starting
     },
-    stopTour: (state) => {
-      state.run = false;
-      state.stepIndex = 0; // Reset step index on stop
-    },
+   
     tourNextStep: (state) => {
       if (state.stepIndex < state.steps.length - 1) {
         state.stepIndex += 1;

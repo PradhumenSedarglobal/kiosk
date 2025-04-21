@@ -1,97 +1,61 @@
-'use client';
+import React from "react";
+import Joyride from "react-joyride";
+import { useDispatch, useSelector } from "react-redux";
+import { skipTour, setStepIndex } from "../../redux/slices/tourSlice"; // Adjust path as needed
 
-import { useState, useEffect } from 'react';
-import Joyride from 'react-joyride';
-import { Button } from '@mui/material';
-import TourIcon from '@mui/icons-material/Tour';
+const TourGuideButton = () => {
+  const dispatch = useDispatch();
+  const tourState = useSelector((state) => state.tour); // adjust according to your reducer name
 
-const TourGuideButton = ({ steps }) => {
-  const [runTour, setRunTour] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
-  const [buttonVisible, setButtonVisible] = useState(true);
+  const handleJoyrideCallback = (data) => {
+    const { action, index, status, type } = data;
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+    console.log("Joyride callback:", data); // optional: for debugging
 
-  const handleStartTour = () => {
-    setRunTour(true);
-    setButtonVisible(false); // Hide after starting the tour
-  };
-
-  const handleTourCallback = (data) => {
-    const { action, status } = data;
-
-    // Immediately stop the tour if close button is clicked
-    if (action === 'close') {
-      setRunTour(false);
-      setButtonVisible(false);
-      return;
+    if (type === "step:after") {
+      if (action === "next") {
+        const isLastStep = index === tourState.steps.length - 1;
+        if (isLastStep) {
+          dispatch(skipTour());
+        } else {
+          dispatch(setStepIndex(index + 1));
+        }
+      } else if (action === "prev") {
+        dispatch(setStepIndex(index - 1));
+      }
     }
 
-    if (['finished', 'skipped'].includes(status)) {
-      setRunTour(false);
-      setButtonVisible(false); // Hide button permanently on skip/close
+    if (
+      action === "skip" ||
+      action === "close" ||
+      (action === "next" && index === tourState.steps.length - 1) ||
+      status === "skipped" ||
+      status === "finished"
+    ) {
+      dispatch(skipTour());
     }
   };
-
-  if (!hasMounted) {
-    // Avoid hydration mismatch
-    return <div style={{ width: 0, height: 0 }} />;
-  }
 
   return (
-    <>
-      {buttonVisible && (
-        <Button
-          onClick={handleStartTour}
-          variant="contained"
-          sx={{
-            background: 'linear-gradient(135deg, #ff9800, #ffb74d)',
-            color: '#ffffff',
-            position: "fixed",
-            zIndex: 999,
-            top: "10px",
-            right: {
-              lg: "calc(100vw - 58%)",
-            },
-            "@media (min-width: 375px) and (max-width: 959px)": {
-              right: "calc(100vw - 98%)",
-            },
-            width: '40px',
-            height: '40px',
-            minWidth: '40px',
-            borderRadius: '8px',
-            padding: 0,
-            boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #fb8c00, #ffa726)',
-            }
-          }}
-          aria-label="start-tour"
-        >
-          <TourIcon sx={{ fontSize: '1.25rem', color: '#fff' }} />
-        </Button>
-      )}
-
-      <Joyride
-        steps={steps}
-        run={runTour}
-        callback={handleTourCallback}
-        continuous
-        scrollToFirstStep
-        showProgress
-        showSkipButton
-        hideCloseButton={false} // Ensure close button is visible
-        styles={{
-          options: {
-            zIndex: 1400,
-            primaryColor: '#ff9800',
-          },
-        }}
-      />
-    </>
+    <Joyride
+      steps={tourState.steps}
+      stepIndex={tourState.stepIndex}
+      run={tourState.run}
+      continuous
+      showProgress
+      showSkipButton
+      spotlightClicks
+      disableScrolling
+      hideCloseButton={false}
+      styles={{
+        options: {
+          zIndex: 99999,
+          overlayColor: "rgba(0, 0, 0, 0.5)",
+          primaryColor: "#ff6600",
+        },
+      }}
+      callback={handleJoyrideCallback}
+    />
   );
 };
 
