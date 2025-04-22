@@ -260,7 +260,6 @@ const Modal = () => {
                 ) : (
                   modalData.model.map((item, index) => (
                     <Grid
-                      className="selectModal"
                       item
                       xs={6}
                       sm={6}
@@ -281,6 +280,7 @@ const Modal = () => {
                       }}
                     >
                       <ImageCard
+                        TourClass={index == 0 ? 'selectModal' : ''}
                         category={selectedCategory}
                         index={index}
                         name={item.SPI_TOOLTIP}

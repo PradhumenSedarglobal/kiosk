@@ -15,7 +15,8 @@ const ImageCard = ({
   step,
   itemcode,
   selectedItemCode,
-  productCode
+  productCode,
+  TourClass=''
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const fonts = useSelector((state) => state.font);
@@ -27,9 +28,9 @@ const ImageCard = ({
 
   return (
     <Card
+      className={TourClass}
       ref={refName}
       onClick={() => {
-    
         if(stepCount == 1){
           functionname(link,selectedItemCode,productCode);
           dispatch(setStepIndex(tourState.stepIndex+1));
