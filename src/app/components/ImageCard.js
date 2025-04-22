@@ -22,15 +22,21 @@ const ImageCard = ({
   const dispatch = useDispatch();
 
   const tourState = useSelector((state) => state.tour);
+  const stepCount = useSelector((state) => state.step.value);
  
 
   return (
     <Card
       ref={refName}
       onClick={() => {
-        functionname(link);
-        // functionname(link,selectedItemCode,productCode);
-        dispatch(setStepIndex(tourState.stepIndex+1));
+    
+        if(stepCount == 1){
+          functionname(link,selectedItemCode,productCode);
+          dispatch(setStepIndex(tourState.stepIndex+1));
+        }else{
+          functionname(link);
+          dispatch(setStepIndex(tourState.stepIndex+1));
+        }
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

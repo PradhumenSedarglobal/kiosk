@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
-import RestartAltIcon from "@mui/icons-material/RestartAlt"; // Reset icon
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useSelector } from "react-redux";
 
 const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
@@ -11,54 +11,65 @@ const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
       onClick={resetCanvasScene}
       sx={{
         position: "absolute",
-        top: "60px", // You can change this if needed
+        top: "60px",
         left: "55vw",
         zIndex: 9999,
-        backgroundColor: "black",
-        borderRadius: "8px",
-        height: "40px",
-        width: "40px",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 8px",
         cursor: "pointer",
-        transition: "width 0.5s ease, background-color 0.3s ease",
-        "&:hover": {
-          width: "140px",
-          backgroundColor: "orange",
-        },
         "&:hover .hover-text": {
           opacity: 1,
-          marginLeft: "8px",
-          color: "white",
+          transform: "translateX(10px)",
         },
       }}
     >
-      <RestartAltIcon
+      <Box
         sx={{
-          color: "white",
-          opacity: 1,
-          "&:hover": {
-            color: "white",
-          },
-        }}
-      />
-      <Typography
-        className="hover-text"
-        variant="body2"
-        sx={{
-          color: "white",
-          fontSize: "small",
-          opacity: 0,
-          marginLeft: "0px",
-          whiteSpace: "nowrap",
-          fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-          transition: "opacity 0.3s ease, margin-left 0.3s ease",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        {text}
-      </Typography>
+        <Typography
+          className="hover-text"
+          variant="body2"
+          sx={{
+            position: "absolute",
+            left: "-65px", // adjust as needed
+            opacity: 0,
+            backgroundColor: "orange",
+            padding: "6px 10px",
+            borderRadius: "0px 0px 0px 8px",
+            whiteSpace: "nowrap",
+            height: "40px",
+            color: "white",
+            fontSize: "small",
+            fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
+            transition: "opacity 0.3s ease, transform 0.3s ease",
+            transform: "translateX(10px)",
+            pointerEvents: "none",
+            textAlign:"center",
+            pt:"10px"
+          }}
+        >
+          {text}
+        </Typography>
+        <Box
+          sx={{
+            backgroundColor: "black",
+            borderRadius: "0px 8px 8px 0px",
+            height: "40px",
+            width: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "background-color 0.3s ease",
+            "&:hover": {
+              backgroundColor: "orange",
+            },
+          }}
+        >
+          <RestartAltIcon sx={{ color: "white" }} />
+        </Box>
+      </Box>
     </Box>
   );
 };

@@ -1,18 +1,31 @@
 import React from "react";
 import Joyride from "react-joyride";
 import { useDispatch, useSelector } from "react-redux";
-import { skipTour, setStepIndex } from "../../redux/slices/tourSlice"; // Adjust path as needed
+import { skipTour, setStepIndex } from "../../redux/slices/tourSlice";
 
 const TourGuideButton = () => {
   const dispatch = useDispatch();
-  const tourState = useSelector((state) => state.tour); // adjust according to your reducer name
+  const tourState = useSelector((state) => state.tour);
 
   const handleJoyrideCallback = (data) => {
     const { action, index, status, type } = data;
 
-    console.log("Joyride callback:", data); // optional: for debugging
+    console.log("Joyride callback:", data);
+
+    // Handle all side effects here before step transitions
+    if (type === "step:before") {
+      // Call your additional functions here
+      if (typeof tourState.steps[index]?.beforeStep === 'function') {
+        tourState.steps[index].beforeStep();
+      }
+    }
 
     if (type === "step:after") {
+      // Call your additional functions here
+      if (typeof tourState.steps[index]?.afterStep === 'function') {
+        tourState.steps[index].afterStep();
+      }
+
       if (action === "next") {
         const isLastStep = index === tourState.steps.length - 1;
         if (isLastStep) {
@@ -47,11 +60,21 @@ const TourGuideButton = () => {
       spotlightClicks
       disableScrolling
       hideCloseButton={false}
+      disableOverlayClose={false}
+      spotlightPadding={0}
       styles={{
         options: {
           zIndex: 99999,
           overlayColor: "rgba(0, 0, 0, 0.5)",
           primaryColor: "#ff6600",
+          spotlightShadow: "none",
+        },
+        spotlight: {
+          borderRadius: 0,
+          animation: "none",
+        },
+        beacon: {
+          display: "none",
         },
       }}
       callback={handleJoyrideCallback}

@@ -1,57 +1,81 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { startTour } from "../../redux/slices/tourSlice";
 
-const InfoHoverButton = ({ text = "HOW TO USE", howToUse }) => {
-     const fonts = useSelector((state) => state.font);
+const InfoHoverButton = ({ text = "HOW TO USE" }) => {
+  const fonts = useSelector((state) => state.font);
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    dispatch(startTour());
+  };
+
   return (
     <Box
-      onClick={howToUse}
+      onClick={handleClick}
       sx={{
         position: "absolute",
         top: "10px",
         left: "55vw",
         zIndex: 9999,
-        backgroundColor: "black",
-        borderRadius: "8px",
-        height: "40px",
-        width: "40px", // Icon-only width by default
-        overflow: "hidden", // hide the text initially
-        display: "flex",
-        alignItems: "center",
-        padding: "0 8px",
         cursor: "pointer",
-        transition: "width 0.5s ease, background-color 0.3s ease",
-        "&:hover": {
-          width: "140px", // expands on hover
-          backgroundColor: "orange",
-        },
         "&:hover .hover-text": {
           opacity: 1,
-          marginLeft: "8px",
-          color:"white"
+          transform: "translateX(10)",
         },
       }}
     >
-      <InfoOutlinedIcon sx={{ color: "white", opacity: 1, "&:hover":{
-        color:"white"
-      } }} />
-      <Typography
-        className="hover-text"
-        variant="body2"
+      <Box
         sx={{
-          color: "white",
-          fontSize: "small",
-          opacity: 0,
-          marginLeft: "0px",
-          whiteSpace: "nowrap",
-          fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-          transition: "opacity 0.3s ease, margin-left 0.3s ease",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        {text}
-      </Typography>
+        <Typography
+          className="hover-text"
+          variant="body2"
+          sx={{
+            position: "absolute",
+            left: "-120px", // adjust as needed
+            opacity: 0,
+            backgroundColor: "orange",
+            padding: "6px 10px",
+            borderRadius: "0px 0px 0px 8px",
+            whiteSpace: "nowrap",
+            height: "40px",
+            color: "white",
+            fontSize: "small",
+            fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
+            transition: "opacity 0.3s ease, transform 0.3s ease",
+            transform: "translateX(10px)",
+            pointerEvents: "none",
+            textAlign:"center",
+            pt:"5px"
+          }}
+        >
+          {text}
+        </Typography>
+        <Box
+          sx={{
+            backgroundColor: "black",
+            borderRadius: "0px 8px 8px 0px",
+            height: "40px",
+            width: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "background-color 0.3s ease",
+            "&:hover": {
+              backgroundColor: "orange",
+            },
+          }}
+        >
+          <InfoOutlinedIcon sx={{ color: "white" }} />
+        </Box>
+      </Box>
     </Box>
   );
 };
