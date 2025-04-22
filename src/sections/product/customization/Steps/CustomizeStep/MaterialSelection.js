@@ -30,6 +30,7 @@ import { useAuthContext } from "@/auth/useAuthContext";
 import MaterialSwiper from "./MaterialSelectionSwiper";
 import MainHeading from "@/app/components/MainHeading";
 import SubHeading from "@/app/components/SubHeading";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 const qs = require("qs");
 
 let img_path = "/assets/images/";
@@ -57,6 +58,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
   );
 
   const customization_info = useSelector((state) => state.customization);
+  const tourState = useSelector((state) => state.tour);
 
   console.log("customization1111", customization_info);
 
@@ -87,17 +89,17 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
   console.log("SPI_PR_ITEM_CODE", SPI_PR_ITEM_CODE);
   console.log("SPI_PR_ITEM_CODE111111", materialList);
 
-
-
   const updateTextureFun = async (val) => {
-    console.log("callingsssssssssss","val.SII_WIDTH",val.SII_WIDTH,"stepsArray.MEASUREMENT?.m_width",stepsArray.MEASUREMENT?.m_width);
-    console.log("condition Width",val.SII_WIDTH < stepsArray.MEASUREMENT?.m_width);
+
+    
+    dispatch(setStepIndex(tourState.stepIndex + 1));
+   
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
       if (Number(val.SII_WIDTH) <= Number(stepsArray.MEASUREMENT?.m_width)) {
         setAlertMessage(
           "The entered width should not be greater than the selected material's maximum width."
         );
-      }else{
+      } else {
         setAlertMessage(null);
       }
     }
@@ -107,8 +109,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
         setAlertMessage(
           "The entered height should not be greater than the selected material's maximum height."
         );
-
-      }else{
+      } else {
         setAlertMessage(null);
       }
     }
@@ -268,7 +269,16 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
                   })
                 : false;
               return (
-                <Grid item lg={4} md={4} sm={4} xs={6} xxs={6} key={index}>
+                <Grid
+                  className={index == 0 ? "selectMaterial" : ""}
+                  item
+                  lg={4}
+                  md={4}
+                  sm={4}
+                  xs={6}
+                  xxs={6}
+                  key={index}
+                >
                   <Box
                     sx={(theme) => ({
                       // p: 0.5,

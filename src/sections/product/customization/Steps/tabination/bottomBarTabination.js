@@ -361,7 +361,7 @@ const BottomBarTabination = ({
                 size="large"
                 variant="outlined"
                 onClick={() => {
-                  if (tabChange == "1") {
+                  if (tabChange === "1") {
                     console.log("tabChangetabChange", tabChange);
                     // dispatch(resetState());
                      dispatch(removecart());
@@ -403,20 +403,20 @@ const BottomBarTabination = ({
             {tabChange != "5" && priceArray.SOL_VALUE > 0 && (
               <Button
                 className={
-                  tabChange === 1
+                  tabChange === "1"
                     ? "continue3"
-                    : tabChange === 2
+                    : tabChange === "2"
                     ? "continue4"
-                    : tabChange === 3
+                    : tabChange === "3"
                     ? "continue5"
-                    : tabChange === 4
+                    : tabChange === "4"
                     ? "continue6"
                     : ""
                 }
                 size="large"
                 variant="outlined"
                 onClick={() => {
-                  
+                  dispatch(setStepIndex(tourState.stepIndex + 1));
                   onNextHandle("NEXT");
                 }}
                 endIcon={<ArrowCircleRightIcon color="black" />}
