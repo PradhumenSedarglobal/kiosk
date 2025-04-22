@@ -284,7 +284,7 @@ const Measurement = ({ data }) => {
         </Typography>
       </Box> */}
 
-      <Box className="selectMeasurment"  px={3} py={2} sx={{ overflow: "hidden"}}>
+      <Box  px={3} py={2} sx={{ overflow: "hidden"}}>
         {" "}
         {/* Hide overflow here */}
 
@@ -305,6 +305,7 @@ const Measurement = ({ data }) => {
           }}
         />
         <TextBox
+          className="selectMeasurment" 
           ref={isFirstRender}
           fullWidth
           type="text"
