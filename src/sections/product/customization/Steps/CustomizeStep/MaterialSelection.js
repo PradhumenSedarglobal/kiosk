@@ -184,7 +184,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
 
       setTimeout(() => {
         updateTextureFun(elem);
-      }, 1500);
+      }, 3000);
     }
   }, [productInfo?.code === "0" || productInfo?.code === 0]);
 

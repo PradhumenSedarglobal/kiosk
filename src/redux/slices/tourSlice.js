@@ -17,7 +17,7 @@ const initialState = {
       spotlightPadding: 10,
     },
     {
-      target: ".continue",
+      target: ".continue1",
       content: "Now click on the continue button",
       placement: "top",
       spotlightPadding: 10,
