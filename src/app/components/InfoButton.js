@@ -4,12 +4,12 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector, useDispatch } from "react-redux";
 import { startTour } from "../../redux/slices/tourSlice";
 
-const InfoHoverButton = ({ text = "HOW TO USE" }) => {
+const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
   const fonts = useSelector((state) => state.font);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(startTour());
+    dispatch(startTour(step));
   };
 
   return (

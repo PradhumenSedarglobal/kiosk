@@ -77,9 +77,9 @@ const tourSlice = createSlice({
   name: "tour",
   initialState,
   reducers: {
-    startTour: (state) => {
+    startTour: (state,action) => {
       state.run = true;
-      state.stepIndex = 0; // Restart tour when starting
+      state.stepIndex = action.payload || 0; // Restart tour when starting
     },
    
     tourNextStep: (state) => {

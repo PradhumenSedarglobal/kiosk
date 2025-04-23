@@ -33,6 +33,7 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import { setStepIndex } from "@/redux/slices/tourSlice";
 import axios from "axios";
+import DotLoading from "@/app/components/DotLoading";
 
 const BottomBarTabination = ({
   setTabChange,
@@ -65,7 +66,9 @@ const BottomBarTabination = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (priceArray.SOL_VALUE) {
+    
+
+    if (priceArray.SOL_VALUE && stepsArray && Object.keys(stepsArray).length > 8) {
       setIsLoading(false); // Hide loader when price is available
     }
   }, [priceArray.SOL_VALUE]);
@@ -164,9 +167,6 @@ const BottomBarTabination = ({
     }
   };
 
-  useEffect(()=>{
-      console.log('render');
-  },[priceArray.SOL_VALUE]);
 
   const tourState = useSelector((state) => state.tour);
 
@@ -270,54 +270,8 @@ const BottomBarTabination = ({
           </Grid>
 
           <Grid item xs={5} pt={"0 !important"}>
-            {isLoading ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: "5px",
-                  alignItems: "center",
-                  paddingTop: "25px",
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 10,
-                    height: 10,
-                    bgcolor: "primary.main",
-                    borderRadius: "50%",
-                    animation: "dot-pulse 1.2s infinite",
-                  }}
-                />
-                <Box
-                  sx={{
-                    width: 10,
-                    height: 10,
-                    bgcolor: "primary.main",
-                    borderRadius: "50%",
-                    animation: "dot-pulse 1.2s infinite 0.2s",
-                  }}
-                />
-                <Box
-                  sx={{
-                    width: 10,
-                    height: 10,
-                    bgcolor: "primary.main",
-                    borderRadius: "50%",
-                    animation: "dot-pulse 1.2s infinite 0.4s",
-                  }}
-                />
-                <style>
-                  {`
-                    @keyframes dot-pulse {
-                      0% { transform: scale(1); opacity: 1; }
-                      50% { transform: scale(1.5); opacity: 0.5; }
-                      100% { transform: scale(1); opacity: 1; }
-                    }
-                  `}
-                </style>
-              </Box>
-            ) : (
+            
+
               <Typography
                 sx={{
                   fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
@@ -331,9 +285,8 @@ const BottomBarTabination = ({
                 component="div"
               >
                 {translate("Total")} {translate(cookies?.CCYCODE || "AED")}{" "}
-                {!isMaterialCustomizationLoading ? (priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0) : '...'}
+                {!isMaterialCustomizationLoading && !isLoading && priceArray.SOL_VALUE > 0 ? (priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0) : <DotLoading/>}
               </Typography>
-            )}
           </Grid>
         </Grid>
 
@@ -372,6 +325,7 @@ const BottomBarTabination = ({
                   // if(tabChange === "2"){
                   //   dispatch(resetState());
                   // }
+                  dispatch(setStepIndex(tourState.stepIndex - 1));
 
                   onPreviousHandle("PREV");
                 }}

@@ -583,7 +583,7 @@ export default function ProductPage(props) {
       {/* {stepCount == 0 && <TourGuideButton  />} */}
       <TourGuideButton  />
 
-      <InfoButton  howToUse={howToUse}/>
+      <InfoButton  howToUse={howToUse} step={stepCount == 1 ? 3 : ''}/>
 
      
       
@@ -1073,14 +1073,14 @@ export default function ProductPage(props) {
                     variant="outlined"
                     onClick={(e) => {
                       // Disable the button immediately after click
-                      e.target.disabled = true;
+                      
                   
                       dispatch(incrementStep(stepCount + 1));
                   
                       setTimeout(() => {
                         dispatch(setStepIndex(tourState.stepIndex + 1));
                         // Re-enable the button after 3 seconds
-                        e.target.disabled = false;
+                       
                       }, 3000); // 3000 milliseconds = 3 seconds
                     }}
                     endIcon={<ArrowCircleRightIcon />}

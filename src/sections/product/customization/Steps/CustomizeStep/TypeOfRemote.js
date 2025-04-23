@@ -21,6 +21,8 @@ const item_img_path = process.env.NEXT_PUBLIC_ITEM_IMG_WEBP_PATH + "laptop/";
 
 const TypeOfRemote = ({ data }) => {
 
+  console.log("data TypeOfRemote",data);
+
   const dispatch = useDispatch();
   const { locale } = useRouter();
 

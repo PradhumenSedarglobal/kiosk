@@ -51,18 +51,9 @@ const Modal = () => {
   const hasFetchedSteps = useRef(false);
   const isInitialMount = useRef(true);
 
-  // ✅ Clear cart and start loading on category change
-  const debouncedRemoveCart = useCallback(
-    debounce(() => {
-      dispatch(startCustomizationLoading());
-    }, 300),
-    [dispatch]
-  );
 
-  // ✅ Reset state when category changes
-  useEffect(() => {
-    dispatch(removecart());
-  }, [selectedCategory, dispatch]);
+
+
 
   // ✅ Memoized fetch function
   const fetchModalData = useCallback(async () => {
