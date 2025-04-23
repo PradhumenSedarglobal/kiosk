@@ -71,6 +71,7 @@ const BottomBarTabination = ({
   }, [priceArray.SOL_VALUE]);
 
   const fonts = useSelector((state) => state.font);
+  const {isMaterialCustomizationLoading} = useSelector((state) => state.customization);
 
   const dispatch = useDispatch();
 
@@ -330,7 +331,7 @@ const BottomBarTabination = ({
                 component="div"
               >
                 {translate("Total")} {translate(cookies?.CCYCODE || "AED")}{" "}
-                {priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0}
+                {!isMaterialCustomizationLoading ? (priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0) : '...'}
               </Typography>
             )}
           </Grid>

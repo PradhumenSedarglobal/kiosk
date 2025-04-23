@@ -30,7 +30,6 @@ import { useAuthContext } from "@/auth/useAuthContext";
 import MaterialSwiper from "./MaterialSelectionSwiper";
 import MainHeading from "@/app/components/MainHeading";
 import SubHeading from "@/app/components/SubHeading";
-import { setStepIndex } from "@/redux/slices/tourSlice";
 const qs = require("qs");
 
 let img_path = "/assets/images/";
@@ -58,7 +57,6 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
   );
 
   const customization_info = useSelector((state) => state.customization);
-  const tourState = useSelector((state) => state.tour);
 
   console.log("customization1111", customization_info);
 
@@ -89,17 +87,17 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
   console.log("SPI_PR_ITEM_CODE", SPI_PR_ITEM_CODE);
   console.log("SPI_PR_ITEM_CODE111111", materialList);
 
-  const updateTextureFun = async (val) => {
 
-    
-    dispatch(setStepIndex(tourState.stepIndex + 1));
-   
+
+  const updateTextureFun = async (val) => {
+    console.log("callingsssssssssss","val.SII_WIDTH",val.SII_WIDTH,"stepsArray.MEASUREMENT?.m_width",stepsArray.MEASUREMENT?.m_width);
+    console.log("condition Width",val.SII_WIDTH < stepsArray.MEASUREMENT?.m_width);
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
       if (Number(val.SII_WIDTH) <= Number(stepsArray.MEASUREMENT?.m_width)) {
         setAlertMessage(
           "The entered width should not be greater than the selected material's maximum width."
         );
-      } else {
+      }else{
         setAlertMessage(null);
       }
     }
@@ -109,7 +107,8 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
         setAlertMessage(
           "The entered height should not be greater than the selected material's maximum height."
         );
-      } else {
+
+      }else{
         setAlertMessage(null);
       }
     }
@@ -131,47 +130,10 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
 
     dispatch(setCustomizationFun(material_data));
 
-    addToCartFunScene(
-      { ...cookies, ...customization_info, locale: locale },
-      dispatch
-    );
+    
   };
 
-  const getMaterialListFun = () => {
-    let post_data = {
-      locale: locale,
-      visitorId: cookies.visitorId,
-      userId: cookies.USER_ID,
-      param: filterOption,
-      limit: perPage,
-      page: page,
-      material_item_id: stepsArray.MATERIAL_SELECTION
-        ? stepsArray.MATERIAL_SELECTION.ITEM_CODE
-        : material_item_id,
-      m_width: m_width,
-      m_height: m_height,
-      content: "customization",
-    };
-    dispatch(
-      getMaterialCustomization({
-        paramsId: SPI_PR_ITEM_CODE,
-        params: post_data,
-      })
-    );
-  };
-  const handleScroll = () => {
-    if (listInnerRef && listInnerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
-      let winHeight = Math.round(scrollTop + clientHeight);
 
-      if (winHeight === scrollHeight) {
-        if (page <= totalPages) {
-          setPage(page + 1);
-          getMaterialListFun();
-        }
-      }
-    }
-  };
 
   useEffect(() => {
     console.log("this called you can check");
@@ -189,40 +151,80 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
     }
   }, [productInfo?.code === "0" || productInfo?.code === 0]);
 
-  useEffect(() => {
-    console.log("called");
-    getMaterialListFun();
-  }, [selectedModalData]);
-
-  useEffect(() => {
-    if (
-      materialCustomization &&
-      materialCustomization.result &&
-      materialCustomization.result.length > 0
-    ) {
-      if (materialCustomization.page_count != totalPages) {
-        setPage(1);
+  const getMaterialListFun = () => {
+      let post_data = {
+        locale: locale,
+        visitorId: cookies.visitorId,
+        userId: cookies.USER_ID,
+        param: filterOption,
+        limit: perPage,
+        page: page,
+        material_item_id: stepsArray.MATERIAL_SELECTION ? stepsArray.MATERIAL_SELECTION.ITEM_CODE : material_item_id,
+        m_width: m_width,
+        m_height: m_height,
+        content: "customization",
+      };
+      dispatch(
+        getMaterialCustomization({
+          paramsId: SPI_PR_ITEM_CODE,
+          params: post_data,
+        })
+      );
+    };
+    const handleScroll = () => {
+      if (listInnerRef && listInnerRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
+        let winHeight = Math.round(scrollTop + clientHeight);
+  
+  
+        if (winHeight === scrollHeight) {
+          if (page <= totalPages) {
+            setPage(page + 1);
+            getMaterialListFun();
+          }
+        }
       }
-      setTotalPages(materialCustomization.page_count);
-    }
-    if (materialCustomization && materialCustomization.selected_item) {
+    };
+    useEffect(() => {
+      getMaterialListFun();
+    }, []);
+  
+    useEffect(() => {
+      if (
+        materialCustomization &&
+        materialCustomization.result &&
+        materialCustomization.result.length > 0
+      ) {
+        if (materialCustomization.page_count != totalPages) {
+          setPage(1);
+        }
+        setTotalPages(materialCustomization.page_count);
+      }
+      if (materialCustomization && materialCustomization.selected_item) {
+        setTimeout(
+          function () {
+            updateTextureImg(materialCustomization.selected_item);
+            updateTextureFun(materialCustomization.selected_item);
+          }.bind(this),
+          500
+        );
+      } else if (page == 0) {
+      }
+    }, [materialCustomization]);
+  
+    useEffect(() => {
       setTimeout(
         function () {
-          updateTextureImg(materialCustomization.selected_item);
-          updateTextureFun(materialCustomization.selected_item);
+          addToCartFunScene(
+            { ...cookies, ...customization_info, locale: locale },
+            dispatch
+          );
         }.bind(this),
-        500
+        1000
       );
-    } else if (page == 0) {
-    }
-  }, [materialCustomization]);
+    }, [stepsArray["MATERIAL_SELECTION"]]);
 
-  const sliderSetting = {
-    initialSlide: 0,
-    observer: true,
-    observeParents: true,
-    loopAdditionalSlides: 1,
-  };
+  
   return (
     <>
       <SubHeading title={data?.SPS_DESC} />
@@ -269,16 +271,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
                   })
                 : false;
               return (
-                <Grid
-                  className={index == 0 ? "selectMaterial" : ""}
-                  item
-                  lg={4}
-                  md={4}
-                  sm={4}
-                  xs={6}
-                  xxs={6}
-                  key={index}
-                >
+                <Grid item lg={4} md={4} sm={4} xs={6} xxs={6} key={index}>
                   <Box
                     sx={(theme) => ({
                       // p: 0.5,

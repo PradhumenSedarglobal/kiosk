@@ -146,8 +146,8 @@ const slice = createSlice({
     startCustomizationLoading(state) {
       state.isCustomizationLoading = true;
     },
-    startMaterialCustomizationLoading(state) {
-      state.isMaterialCustomizationLoading = true;
+    startMaterialCustomizationLoading(state,action) {
+      state.isMaterialCustomizationLoading = action.payload;
     },
 
     // HAS Faqs
@@ -335,14 +335,15 @@ export const {
   setModalDefaultItem,
   setCategoryGallary,
   setCategoryDefaultImg,
-  setStepChildCount
+  setStepChildCount,
+  startMaterialCustomizationLoading
 } = slice.actions;
 
 
 
 export function getMaterialCustomization({ params = {}, paramsId = {} }) {
   return async (dispatch) => {
-    dispatch(slice.actions.startMaterialCustomizationLoading());
+    // dispatch(slice.actions.startMaterialCustomizationLoading(true));
     try {
       console.log("this function is called");
       const response = await dispatch(
@@ -353,6 +354,7 @@ export function getMaterialCustomization({ params = {}, paramsId = {} }) {
         dispatch(slice.actions.setMaterialSearchFun(response?.data));
       } else {
         dispatch(slice.actions.setMaterialCustomization(response?.data));
+        
       }
     } catch (error) {
       console.error(error);
