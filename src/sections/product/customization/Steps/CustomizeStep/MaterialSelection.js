@@ -18,6 +18,7 @@ import {
   getMaterialCustomization,
   loadingfalse,
   setCustomizationFun,
+  startMaterialCustomizationLoading,
 } from "@/redux/slices/customization";
 import { find } from "lodash";
 import {
@@ -90,6 +91,9 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
 
 
   const updateTextureFun = async (val) => {
+
+    dispatch(startMaterialCustomizationLoading(true));
+
     console.log("callingsssssssssss","val.SII_WIDTH",val.SII_WIDTH,"stepsArray.MEASUREMENT?.m_width",stepsArray.MEASUREMENT?.m_width);
     console.log("condition Width",val.SII_WIDTH < stepsArray.MEASUREMENT?.m_width);
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
@@ -130,7 +134,9 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
 
     dispatch(setCustomizationFun(material_data));
 
-    
+    setTimeout(()=>{
+      dispatch(startMaterialCustomizationLoading(false));
+    },3000);
   };
 
 
