@@ -191,6 +191,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
         }
       }
     };
+
     useEffect(() => {
       getMaterialListFun();
     }, []);
@@ -217,18 +218,20 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
       } else if (page == 0) {
       }
     }, [materialCustomization]);
+
+    // useEffect(() => {
+    //   setTimeout(
+    //     function () {
+    //       addToCartFunScene(
+    //         { ...cookies, ...customization_info, locale: locale },
+    //         dispatch
+    //       );
+    //     }.bind(this),
+    //     1000
+    //   );
+    // }, [stepsArray["MATERIAL_SELECTION"]]);
   
-    useEffect(() => {
-      setTimeout(
-        function () {
-          addToCartFunScene(
-            { ...cookies, ...customization_info, locale: locale },
-            dispatch
-          );
-        }.bind(this),
-        1000
-      );
-    }, [stepsArray["MATERIAL_SELECTION"]]);
+   
 
   
   return (

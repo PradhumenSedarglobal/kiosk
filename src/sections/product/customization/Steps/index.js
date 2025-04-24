@@ -52,7 +52,8 @@ const TabinationStepsSection = ({
     priceArray,
     customization,
     ShowformModal,
-    customerSysId
+    customerSysId,
+    startCustomizationLoading
   } = customization_info;
   const [successPopup, setSuccessPopup] = useState(false);
   const [missingStep, setMissingStep] = useState({});
@@ -486,6 +487,7 @@ const TabinationStepsSection = ({
         setFormClose={setFormClose}
         customerSysId={customerSysId}
         customization_info={customization_info}
+    
       />
 
       <SuccessModal successPopup={successPopup} />
