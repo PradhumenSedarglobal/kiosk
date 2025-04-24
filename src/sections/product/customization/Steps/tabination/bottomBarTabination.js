@@ -66,11 +66,9 @@ const BottomBarTabination = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    
-
-    if (priceArray.SOL_VALUE && stepsArray && Object.keys(stepsArray).length > 8) {
-      setIsLoading(false); // Hide loader when price is available
-    }
+    // if (priceArray.SOL_VALUE && stepsArray && Object.keys(stepsArray).length > 8) {
+      setIsLoading(false); 
+    // }
   }, [priceArray.SOL_VALUE]);
 
   const fonts = useSelector((state) => state.font);
@@ -270,8 +268,6 @@ const BottomBarTabination = ({
           </Grid>
 
           <Grid item xs={5} pt={"0 !important"}>
-            
-
               <Typography
                 sx={{
                   fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,

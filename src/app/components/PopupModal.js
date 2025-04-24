@@ -5,7 +5,6 @@ import shortid from "shortid";
 import * as THREE from "three";
 import { getCookie, setCookie } from "cookies-next";
 
-
 import {
   Modal,
   IconButton,
@@ -41,7 +40,7 @@ import { toast } from "react-toastify";
 import { setStepIndex } from "@/redux/slices/tourSlice";
 import { useRouter } from "next/router";
 
-export default function PopupModal({ setAddToCartShow,setTabChange }) {
+export default function PopupModal({ setAddToCartShow, setTabChange }) {
   const { state } = useAuthContext();
   const { cookies } = state;
   const { locale, query } = useRouter();
@@ -51,6 +50,7 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
   const [errorMessage, setErrorMessage] = useState("");
   const fonts = useSelector((state) => state.font);
   const [phone, setPhone] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
   const customization_info = useSelector((state) => state.customization);
   const customerSystemId = useSelector(
@@ -90,13 +90,12 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
         "NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES",
         JSON.stringify(getAllCookies),
         {
-          path: "/", 
-          maxAge: 60 * 60 * 24 * 7, 
+          path: "/",
+          maxAge: 60 * 60 * 24 * 7,
           secure: process.env.NODE_ENV === "production",
-          sameSite: "strict", 
+          sameSite: "strict",
         }
       );
-
 
       dispatch(setGeoLocationDetails(response.data));
 
@@ -108,8 +107,6 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
       console.log("order head done");
     }
   };
-
-
 
   const {
     register,
@@ -144,7 +141,6 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
       );
 
       if (response) {
-     
         dispatch(
           setOrderList({
             complete: response.data.complete,
@@ -153,16 +149,12 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
           })
         );
 
-        if(paramKeys.length < 0){
+        if (paramKeys.length < 0) {
           dispatch(resetState());
-        }else{
+        } else {
           setTabChange(1);
         }
-
-        
       }
-
-
     } catch {}
   };
 
@@ -172,13 +164,14 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
   };
 
   const onSubmit = async (data) => {
-      
+    if (isSubmitting) return;
+
     if (!data.customerName || !data.styleConsultantId || !phone) {
       toast.error("Please fill all required fields before submitting.");
       return;
     }
 
-
+    setIsSubmitting(true);
     try {
       const formData = new FormData();
       formData.append("site", "100001");
@@ -219,7 +212,8 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
           toast.success("Add to cart successfully!", {
             position: "top-right",
             style: {
-              background: "linear-gradient(45deg,rgb(22, 160, 54),rgb(97, 238, 72))",
+              background:
+                "linear-gradient(45deg,rgb(22, 160, 54),rgb(97, 238, 72))",
               color: "white",
             },
           });
@@ -238,24 +232,21 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
                 },
                 dispatch
               );
-         
             } catch (error) {
               console.error("Failed to add to cart:", error);
             } finally {
-
               setTimeout(() => {
-                
-                
-                if(paramKeys.length > 0){
+                if (paramKeys.length > 0) {
                   setTabChange(1);
-                }else{
+                } else {
                   dispatch(removecart());
                   dispatch(decrementStep(0));
                 }
 
-                
                 fetchOrderList(cookies.visitorId, response.data.cust_sys_id);
               }, 2000);
+
+              setIsSubmitting(false);
             }
           };
 
@@ -311,11 +302,15 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
 
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Customer Name */}
-            <Grid container 
+            <Grid
+              container
               sx={{
-                paddingLeft: sm || xs ? "60px" : '',
-              }} 
-              spacing={2} mt={2} alignItems="center">
+                paddingLeft: sm || xs ? "60px" : "",
+              }}
+              spacing={2}
+              mt={2}
+              alignItems="center"
+            >
               <Grid item xs={12} sm={4}>
                 <Typography sx={{ fontWeight: 700, textAlign: "right" }}>
                   Customer Name:
@@ -336,9 +331,15 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
             </Grid>
 
             {/* Style Consultant Id */}
-            <Grid container  sx={{
-              paddingLeft: sm || xs ? "60px" : '',
-            }}  spacing={2} mt={2} alignItems="center">
+            <Grid
+              container
+              sx={{
+                paddingLeft: sm || xs ? "60px" : "",
+              }}
+              spacing={2}
+              mt={2}
+              alignItems="center"
+            >
               <Grid item xs={12} sm={4}>
                 <Typography sx={{ fontWeight: 700, textAlign: "right" }}>
                   Consultant Id:
@@ -359,45 +360,51 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
             </Grid>
 
             {/* Mobile No */}
-            <Grid container  sx={{
-              paddingLeft: sm || xs ? "60px" : '',
-            }}  spacing={2} mt={2} alignItems="center">
+            <Grid
+              container
+              sx={{
+                paddingLeft: sm || xs ? "60px" : "",
+              }}
+              spacing={2}
+              mt={2}
+              alignItems="center"
+            >
               <Grid item xs={12} sm={4}>
                 <Typography sx={{ fontWeight: 700, textAlign: "right" }}>
                   Mobile No:
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={8}>
-              <PhoneInput
-  country={"ae"}
-  value={phone}
-  onChange={handlePhoneChange}
-  inputStyle={{
-    width: "100%",
-    height: "40px",
-    borderRadius: "10px",
-    border: "1px solid rgba(0, 0, 0, 0.23)",
-    fontSize: "16px",
-  }}
-  containerStyle={{ width: "100%" }}
-  inputProps={{
-    name: "phone",
-    required: true,
-    autoFocus: true,
-  }}
-  buttonStyle={{
-    borderRadius: "10px 0 0 10px", // Only left corners rounded
-    border: "1px solid rgba(0, 0, 0, 0.23)",
-    borderRight: "none", // Remove right border to blend with input
-    backgroundColor: "white",
-    height: "40px", // Match input height
-    padding: "0 0 0 8px", // Adjust padding if needed
-  }}
-  buttonClass="custom-flag-button" // Add a custom class for hover/focus states
-  dropdownStyle={{
-    borderRadius: "0 10px 10px 0", // For dropdown container
-  }}
-/>
+                <PhoneInput
+                  country={"ae"}
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  inputStyle={{
+                    width: "100%",
+                    height: "40px",
+                    borderRadius: "10px",
+                    border: "1px solid rgba(0, 0, 0, 0.23)",
+                    fontSize: "16px",
+                  }}
+                  containerStyle={{ width: "100%" }}
+                  inputProps={{
+                    name: "phone",
+                    required: true,
+                    autoFocus: true,
+                  }}
+                  buttonStyle={{
+                    borderRadius: "10px 0 0 10px", // Only left corners rounded
+                    border: "1px solid rgba(0, 0, 0, 0.23)",
+                    borderRight: "none", // Remove right border to blend with input
+                    backgroundColor: "white",
+                    height: "40px", // Match input height
+                    padding: "0 0 0 8px", // Adjust padding if needed
+                  }}
+                  buttonClass="custom-flag-button" // Add a custom class for hover/focus states
+                  dropdownStyle={{
+                    borderRadius: "0 10px 10px 0", // For dropdown container
+                  }}
+                />
 
                 {errors.phone && (
                   <Typography color="error" variant="body2">
@@ -409,8 +416,13 @@ export default function PopupModal({ setAddToCartShow,setTabChange }) {
 
             {/* Submit Button */}
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-              <Button className="submit" type="submit" size="large" variant="contained">
-                Submit
+              <Button
+                className="submit"
+                type="submit"
+                size="large"
+                variant="contained"
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit'}
               </Button>
             </Box>
           </form>
