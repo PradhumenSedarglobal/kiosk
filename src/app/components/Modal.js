@@ -160,12 +160,20 @@ const Modal = () => {
 
   // ✅ Handle modal change and state reset
   const handleChange = useCallback(async (link, selectedItemCode, productCode) => {
+
+    dispatch(
+      setModalDefaultItem({
+        itemId:selectedItemCode,
+        productId: productCode,
+      })
+    );
+
     setModal(link);
     setProductCode(productCode);
     setSelectedItemCode(selectedItemCode);
   
     if (selectedModalData !== link) {
-      dispatch(removecart()); // <-- This resets customization state
+      dispatch(removecart()); 
       dispatch(updateSelectedModal(link));
       await getStep(link); // <-- Fetch updated steps for the new modal
       hasFetchedSteps.current = true; // To prevent future fetches unless required

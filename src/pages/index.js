@@ -215,6 +215,8 @@ export default function ProductPage(props) {
   } = useSelector((state) => state.customization);
 
   const getModalGallary = async () => {
+
+
     if (SelectedCategory !== null && SelectedModal !== null) {
       setModalSliderImageLoading(true);
       const response = await apiSSRV2DataService.getAll({
@@ -228,7 +230,7 @@ export default function ProductPage(props) {
         locale: locale,
       });
 
-      if (response.result.length > 0) {
+      if (response?.result.length > 0) {
         setModalSliderImage(response.result);
       }
 
