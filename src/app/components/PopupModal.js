@@ -232,6 +232,8 @@ export default function PopupModal({ setAddToCartShow, setTabChange }) {
                 },
                 dispatch
               );
+
+              dispatch(setOrderList(result));
             } catch (error) {
               console.error("Failed to add to cart:", error);
             } finally {

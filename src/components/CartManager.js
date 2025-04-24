@@ -23,6 +23,7 @@ import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { setOrderList } from "@/redux/slices/customization";
 import { toast } from "react-toastify";
 import { setStepIndex } from "@/redux/slices/tourSlice";
+import { useTranslation } from "react-i18next";
 // ... other imports remain the same ...
 
 const languages = [
@@ -46,6 +47,9 @@ const drawerWidth = 400;
 const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   // ... existing state and functions ...
 
+  console.log("cartData", cartData);
+  console.log("cartData", cartData);
+
   const [selectedLanguage, setSelectedLanguage] = React.useState("en");
 
   const handleLanguageChange = (event) => {
@@ -55,64 +59,73 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   };
 
   const theme = useTheme();
-    const fonts = useSelector((state) => state.font);
-    const { state } = useAuthContext();
-    const { cookies } = state;
-    const dispatch = useDispatch();
-  
-    const removeCart = async (cartId) => {
-  
+  const fonts = useSelector((state) => state.font);
+  const { state } = useAuthContext();
+  const { cookies } = state;
+  const dispatch = useDispatch();
+  const { t: translate } = useTranslation();
+
+  const removeCart = async (cartId) => {
     const response = await apiSSRV2DataService.Delete({
       path: `kiosk/cart/${cartId}`,
       param: { content: "customization", sys_id: 0 },
       cookies: cookies,
     });
-  
+
     if (response.data.complete) {
       toast.success("Item successfully removed from cart!", {
         position: "top-right",
-        style: { background: 'linear-gradient(45deg, #d32f2f, #f44336)', color: 'white' },
+        style: {
+          background: "linear-gradient(45deg, #d32f2f, #f44336)",
+          color: "white",
+        },
       });
-  
+
       // ✅ Update the cart list by filtering out the deleted item
-      dispatch(setOrderList({
-        ...response.data,
-        complete: cartData.complete.filter(item => item.SOL_SYS_ID !== cartId)
-      }));
+      dispatch(
+        setOrderList({
+          ...response.data,
+          complete: cartData.complete.filter(
+            (item) => item.SOL_SYS_ID !== cartId
+          ),
+        })
+      );
     }
   };
-  
-  
-    const updateQuantity = async (cartId, updatedQty) => {
-      if (updatedQty < 1) return; // Prevent negative or zero values
-  
-      const response = await apiSSRV2DataService.post({
-        path: `kiosk/order/cart/updateLineTable/${cartId}`,
-        data: {
-          line_type: "ORDER_QTY",
-          line_value: updatedQty,
-          soh_sys_id: 0,
-          content: "customization",
-          sys_id: 0,
-        },
-        cookies: cookies,
-      });
-  
-      if (response.data.complete) {
-        toast.success("Item quantity updated successfully!", {
-          position: "top-right",
-          style: { background: 'linear-gradient(45deg, #16a085, #1abc9c)', color: 'white' },
-        });
-  
-        dispatch(setOrderList(response.data));
-      }
-    };
 
-  
+  const updateQuantity = async (cartId, updatedQty) => {
+    if (updatedQty < 1) return; // Prevent negative or zero values
+
+    const response = await apiSSRV2DataService.post({
+      path: `kiosk/order/cart/updateLineTable/${cartId}`,
+      data: {
+        line_type: "ORDER_QTY",
+        line_value: updatedQty,
+        soh_sys_id: 0,
+        content: "customization",
+        sys_id: 0,
+      },
+      cookies: cookies,
+    });
+
+    if (response.data.complete) {
+      toast.success("Item quantity updated successfully!", {
+        position: "top-right",
+        style: {
+          background: "linear-gradient(45deg, #16a085, #1abc9c)",
+          color: "white",
+        },
+      });
+
+      dispatch(setOrderList(response.data));
+    }
+  };
 
   return (
     <Drawer
-      onClick={() => { dispatch(setStepIndex(11)) }}
+      onClick={() => {
+        dispatch(setStepIndex(11));
+      }}
       sx={{
         width: { md: drawerWidth, sm: "100%", xs: "100%" },
         flexShrink: 0,
@@ -123,6 +136,7 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
+          backgroundColor: "#ffffff", // Light background for better contrast
         },
       }}
       variant="persistent"
@@ -133,7 +147,7 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
         <DrawerHeader>
           <Typography
             sx={{
-              color: "#f39c12",
+              color: "#e67e22", // Lighter orange for better contrast
               fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
               fontWeight: "700",
               fontSize: "1.2rem",
@@ -143,151 +157,268 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
             Added to Your Cart!
           </Typography>
           <IconButton onClick={handleDrawerClose}>
-            <CloseIcon />
+            <CloseIcon sx={{ color: "#2c3e50" }} />{" "}
+            {/* Dark icon for better visibility */}
           </IconButton>
         </DrawerHeader>
         <Divider sx={{ marginBottom: theme.spacing(2) }} />
-        <List>
-        {cartData !== null &&
-          cartData.complete.map((item, index) => (
-            <React.Fragment key={item.SOL_SYS_ID || index}>
-              <Grid container spacing={2} sx={{ padding: "10px" }} justifyContent="space-between">
-                <Grid item xs={4} sm={3} md={3}>
-                  <img
-                    height={100}
-                    width={100}
-                    src={item.SOL_IMAGE_PATH || "https://via.placeholder.com/100"}
-                    alt="Product"
-                    style={{ objectFit: "cover", borderRadius: "8px" }}
-                  />
-                </Grid>
-                <Grid item xs={8} sm={9} md={9}>
-                  <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontFamily: fonts.Helvetica_Neue.style.fontFamily,
-                        fontWeight: 700,
-                        fontSize: "0.9rem",
-                        color: "#2c3e50",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Item Code: {item?.info_data?.MEASUREMENT?.SOI_ITEM_CODE}
-                    </Typography>
-
-                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <List
+          sx={{
+            maxHeight: "calc(100vh - 200px)",
+            overflowY: "auto",
+            padding: 0,
+          }}
+        >
+          {cartData !== null &&
+            cartData.complete.map((item, index) => (
+              <React.Fragment key={item.SOL_SYS_ID || index}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{ padding: "10px" }}
+                  justifyContent="space-between"
+                >
+                  <Grid item xs={4} sm={3} md={3}>
+                    <img
+                      height={100}
+                      width={100}
+                      src={
+                        item.SOL_IMAGE_PATH || "https://via.placeholder.com/100"
+                      }
+                      alt="Product"
+                      style={{ objectFit: "cover", borderRadius: "8px" }}
+                    />
+                  </Grid>
+                  <Grid item xs={8} sm={9} md={9}>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <Typography
-                        variant="h6"
+                        variant="body2"
                         sx={{
-                          fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily,
-                          fontWeight: 700,
-                          fontSize: "1.1rem",
-                          color: "#34495e",
+                          fontFamily: fonts.Helvetica_Neue.style.fontFamily,
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           marginBottom: "4px",
+                          color: "#333", // Darker text for better readability
                         }}
                       >
-                        {item?.info_data?.MEASUREMENT?.SFP_TITLE}
+                        Code: {item?.info_data?.MEASUREMENT?.SOI_ITEM_CODE}
                       </Typography>
-                      <Chip
-                        onClick={() => removeCart(item.SOL_SYS_ID)}
-                        icon={<DeleteIcon style={{ color: "#fff", marginRight: "-20px" }} />}
-                        sx={{
-                          backgroundColor: "#e74c3c",
-                          color: "#fff",
-                          borderRadius: "12px",
-                          fontWeight: "600",
-                          cursor: "pointer",
-                          "&:hover": { backgroundColor: "#c0392b" },
-                        }}
-                      />
-                    </Box>
 
-                    <Box sx={{ display: "flex", marginTop: "8px" }}>
-                      <Typography variant="body2" sx={{ fontWeight: 500, fontFamily: fonts.Helvetica_Neue_Medium.style.fontFamily }}>
-                        QTY:{" "}
-                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            fontFamily:
+                              fonts.Helvetica_Neue_Medium.style.fontFamily,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            fontWeight: 600,
+                            flexGrow: 1,
+                          }}
+                        >
+                          {item?.info_data?.MEASUREMENT?.SFP_TITLE}
+                        </Typography>
+                        <Chip
+                          onClick={() => removeCart(item.SOL_SYS_ID)}
+                          icon={
+                            <DeleteIcon
+                              style={{ color: "#fff", marginRight: "-20px" }}
+                            />
+                          }
+                          sx={{
+                            backgroundColor: "#c0392b", // Red for delete, with better contrast
+                            color: "#fff",
+                            borderRadius: "12px",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                            ml: 1,
+                            "&:hover": { backgroundColor: "#e74c3c" },
+                          }}
+                        />
+                      </Box>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 500,
+                            fontFamily:
+                              fonts.Helvetica_Neue_Medium.style.fontFamily,
+                            marginRight: "10px",
+                            color: "#333", // Adjusted color for better readability
+                          }}
+                        >
+                          QTY:
+                        </Typography>
+
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <Button
+                            onClick={() =>
+                              updateQuantity(
+                                item.SOL_SYS_ID,
+                                Number(item?.SOL_QTY) - 1
+                              )
+                            }
+                            variant="outlined"
+                            sx={{
+                              minWidth: "28px",
+                              height: "28px",
+                              padding: "0",
+                              fontSize: "0.9rem",
+                              fontFamily:
+                                fonts.Helvetica_Neue_Medium.style.fontFamily,
+                              borderRadius: "6px",
+                              borderColor: "#2c3e50", // Darker border for visibility
+                            }}
+                          >
+                            -
+                          </Button>
+
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                              fontSize: "0.95rem",
+                              margin: "0 10px",
+                              minWidth: "24px",
+                              textAlign: "center",
+                              fontFamily:
+                                fonts.Helvetica_Neue_Medium.style.fontFamily,
+                              color: "#333", // Dark color for readability
+                            }}
+                          >
+                            {item?.SOL_QTY}
+                          </Typography>
+
+                          <Button
+                            onClick={() =>
+                              updateQuantity(
+                                item.SOL_SYS_ID,
+                                Number(item?.SOL_QTY) + 1
+                              )
+                            }
+                            variant="outlined"
+                            sx={{
+                              minWidth: "28px",
+                              height: "28px",
+                              padding: "0",
+                              fontSize: "0.9rem",
+                              fontFamily:
+                                fonts.Helvetica_Neue_Medium.style.fontFamily,
+                              borderRadius: "6px",
+                              borderColor: "#2c3e50", // Darker border for visibility
+                            }}
+                          >
+                            +
+                          </Button>
+                        </Box>
+                      </Box>
+
                       <Typography
                         variant="body2"
                         sx={{
-                          fontWeight: 700,
-                          marginLeft: "5px",
-                          fontFamily: fonts.Helvetica_Neue.style.fontFamily,
+                          marginTop: "4px",
+                          color: "#2c3e50", // Darker text for better readability
+                          fontFamily:
+                            fonts.Helvetica_Neue_Medium.style.fontFamily,
+                          fontWeight: 500,
                         }}
                       >
-                        {item?.SOL_QTY}
+                        Value : {translate(cookies?.CCYCODE || "AED")}{" "}
+                        {Number(item.SOL_PRICE || 0).toFixed(2)}
                       </Typography>
                     </Box>
-
-                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "8px" }}>
-                      <Button
-                        onClick={() => updateQuantity(item.SOL_SYS_ID, Number(item?.SOL_QTY) - 1)}
-                        variant="outlined"
-                        sx={{ minWidth: "40px", fontSize: "1.2rem", padding: "5px 10px" }}
-                      >
-                        -
-                      </Button>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontWeight: 700,
-                          fontSize: "1.1rem",
-                          margin: "0 15px",
-                          minWidth: "30px",
-                          textAlign: "center",
-                        }}
-                      >
-                        {item?.SOL_QTY}
-                      </Typography>
-                      <Button
-                        onClick={() => updateQuantity(item.SOL_SYS_ID, Number(item?.SOL_QTY) + 1)}
-                        variant="outlined"
-                        sx={{ minWidth: "40px", fontSize: "1.2rem", padding: "5px 10px" }}
-                      >
-                        +
-                      </Button>
-                    </Box>
-                  </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
-              <Divider sx={{ marginBottom: theme.spacing(2) }} />
-            </React.Fragment>
-          ))}
-      </List>
+                <Divider sx={{ marginBottom: theme.spacing(2) }} />
+              </React.Fragment>
+            ))}
+        </List>
       </Box>
 
-      {/* Language Selector at the bottom */}
-      <Box sx={{ padding: theme.spacing(2), borderTop: `1px solid ${theme.palette.divider}` }}>
-        <FormControl fullWidth>
-          <Select
-            value={selectedLanguage}
-            onChange={handleLanguageChange}
-            displayEmpty
-            inputProps={{ 'aria-label': 'Select language' }}
-            sx={{
-              fontFamily: fonts.Helvetica_Neue.style.fontFamily,
-              '& .MuiSelect-select': {
-                padding: theme.spacing(1),
-              },
-            }}
-          >
-            {languages.map((language) => (
-              <MenuItem 
-                key={language.code} 
-                value={language.code}
-                sx={{ fontFamily: fonts.Helvetica_Neue.style.fontFamily }}
-              >
-                {language.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          padding: theme.spacing(2),
+          backgroundColor: "#000000", // More vibrant yellow
+          color: "white",
+          borderTop: "1px solid white", // Set border color to white
+          boxShadow: "0 -2px 10px hsla(37, 78.60%, 52.40%, 0.10)",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            padding: theme.spacing(1),
+
+            fontWeight: "bold",
+          }}
+        >
+          <span>Total:</span>
+          <span>{cartData?.total_price.SOL_VALUE || "AUD 0.00"}</span>
+        </Box>
+
+        <Box mt={2} sx={{ width: "100%" }}>
+          <FormControl fullWidth>
+            <Select
+              value={selectedLanguage}
+              onChange={handleLanguageChange}
+              displayEmpty
+              inputProps={{ "aria-label": "Select language" }}
+              sx={{
+                color: "white",
+                fontFamily: fonts.Helvetica_Neue.style.fontFamily,
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white", // This is key for showing white border
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white", // Optional: keeps border white on hover
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white", // Optional: keeps border white when focused
+                },
+                "& .MuiSelect-select": {
+                  padding: theme.spacing(1),
+                },
+              }}
+            >
+              {languages.map((language) => (
+                <MenuItem
+                  key={language.code}
+                  value={language.code}
+                  sx={{ fontFamily: fonts.Helvetica_Neue.style.fontFamily }}
+                >
+                  {language.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
     </Drawer>
   );

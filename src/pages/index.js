@@ -1123,6 +1123,7 @@ export default function ProductPage(props) {
         sx={{
           overflow: "hidden",
         }}
+ 
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         handleDrawerClose={handleDrawerClose}
