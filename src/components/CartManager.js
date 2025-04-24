@@ -380,7 +380,7 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
           }}
         >
           <span>Total:</span>
-          <span>{cartData?.total_price.SOL_VALUE || "AUD 0.00"}</span>
+          <span>{cartData?.total_price?.SOL_VALUE || "AUD 0.00"}</span>
         </Box>
 
         <Box mt={2} sx={{ width: "100%" }}>
