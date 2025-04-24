@@ -170,6 +170,9 @@ export default function ProductPage(props) {
   const [activeStep, setActiveStep] = useState(0);
   const [showButton, setShowButton] = useState(true);
 
+
+
+
   const steps = [
     {
       title: "Select Category",
@@ -290,6 +293,8 @@ export default function ProductPage(props) {
     try {
       if (!materialList?.length) return;
 
+      console.log("materialList",materialList);
+
       // setThumbsSwiper(null);
       const subChild = materialList.flatMap((item) => item.items);
 
@@ -307,6 +312,7 @@ export default function ProductPage(props) {
       const updatedImageUrls = [firstImage, ...newImageUrls];
 
       if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
+        console.log("materialList2",materialList);
         setImageUrls(updatedImageUrls);
       }
 
@@ -320,6 +326,8 @@ export default function ProductPage(props) {
       console.error("Error fetching gallery data:", error.message);
     }
   }, [materialList, selectedItemCode, imageUrls]);
+
+  
 
   // useEffect(() => {
   //   console.log("stepCount", stepCount);
@@ -575,6 +583,16 @@ export default function ProductPage(props) {
     console.log("calliii");
   }
   
+  
+  useEffect(() => {
+    console.log("stepCount", stepCount);
+    console.log("modalSliderImage", modalSliderImage);
+  
+    if (stepCount === 0) {
+      setModalSliderImage(null);
+      setThumbsSwiper(null);
+    }
+  }, [stepCount]);
   
 
   return (
@@ -1047,7 +1065,8 @@ export default function ProductPage(props) {
                       previousStep();
                       dispatch(removecart());
                       if (stepCount === 2) {
-                        dispatch(resetState());
+                        console.log("modalSliderImage",modalSliderImage);
+                        // setModalSliderImage(null);
                       }
                     }}
                     startIcon={<ArrowCircleLeftIcon />}
