@@ -35,6 +35,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { setStepIndex } from "@/redux/slices/tourSlice";
 import axios from "axios";
 import DotLoading from "@/app/components/DotLoading";
+import { useMediaQuery } from "@mui/material";
 
 const BottomBarTabination = ({
   setTabChange,
@@ -75,6 +76,9 @@ const BottomBarTabination = ({
       setIsLoading(false); 
     // }
   }, [priceArray.SOL_VALUE]);
+
+    const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
+    const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
   const fonts = useSelector((state) => state.font);
   const {isMaterialCustomizationLoading} = useSelector((state) => state.customization);
@@ -211,7 +215,7 @@ const BottomBarTabination = ({
             sm: "fixed",
           },
           overflow: "hidden",
-          bottom: { xs: 0, md: 0, sm: 0 },
+          // bottom: { xs: 0, md: 0, sm: 0 },
           left: 0,
           zIndex: 1000,
           // boxShadow: "0 -3px 11px -3px rgba(0, 0, 0, 0.1)",

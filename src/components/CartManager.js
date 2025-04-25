@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Grid,
   Box,
@@ -24,6 +24,7 @@ import { setOrderList } from "@/redux/slices/customization";
 import { toast } from "react-toastify";
 import { setStepIndex } from "@/redux/slices/tourSlice";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 // ... other imports remain the same ...
 
 const languages = [
@@ -45,13 +46,53 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const drawerWidth = 400;
 
 const CartManager = ({ open, handleDrawerClose }) => {
+  const router = useRouter();
 
   const [selectedLanguage, setSelectedLanguage] = React.useState("en");
 
+  // Extract current language from URL when component mounts or route changes
+  useEffect(() => {
+    const path = router.asPath;
+    // Extract language code from URL like /uae-en or /uae-ar
+    const langMatch = path.match(/-([a-z]{2})($|\/)/);
+    if (langMatch && langMatch[1]) {
+      setSelectedLanguage(langMatch[1]);
+    }
+  }, [router.asPath]);
+
   const handleLanguageChange = (event) => {
-    setSelectedLanguage(event.target.value);
-    // You can add additional logic here to change the app's language
-    // For example: dispatch an action to update the language in Redux
+    const newLanguage = event.target.value;
+
+    // Get current path and query parameters
+    const currentPath = router.asPath;
+    const currentQuery = router.query;
+
+    // Extract country code (like 'uae' from '/uae-en')
+    let countryCode = "uae"; // default fallback
+    const pathMatch = currentPath.match(/^\/([a-z]+)-[a-z]{2}/);
+    if (pathMatch && pathMatch[1]) {
+      countryCode = pathMatch[1];
+    }
+
+    // Construct new URL path
+    const newPath = `/${countryCode}-${newLanguage}`;
+
+    console.log("newPath",newPath);
+
+    // Update state immediately for UI responsiveness
+    setSelectedLanguage(newLanguage);
+
+    // Change the URL with page reload to ensure all content updates
+    router
+      .push(
+        {
+          pathname: newPath,
+          query: currentQuery, // preserve any query parameters
+        },
+        undefined,
+        { shallow: false, locale: newLanguage }
+      )
+    
   };
 
   const theme = useTheme();
@@ -61,9 +102,9 @@ const CartManager = ({ open, handleDrawerClose }) => {
   const dispatch = useDispatch();
   const { t: translate } = useTranslation();
 
-
   const cartData = useSelector((state) => state.customization.orderList);
 
+  useEffect(() => {}, [cartData]);
 
   const removeCart = async (cartId) => {
     const response = await apiSSRV2DataService.Delete({
@@ -386,7 +427,7 @@ const CartManager = ({ open, handleDrawerClose }) => {
         <Box mt={2} sx={{ width: "100%" }}>
           <FormControl fullWidth>
             <Select
-              value={selectedLanguage}
+              value={selectedLanguage} // Now properly synced with URL
               onChange={handleLanguageChange}
               displayEmpty
               inputProps={{ "aria-label": "Select language" }}
@@ -394,13 +435,13 @@ const CartManager = ({ open, handleDrawerClose }) => {
                 color: "white",
                 fontFamily: fonts.Helvetica_Neue.style.fontFamily,
                 "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "white", // This is key for showing white border
+                  borderColor: "white",
                 },
                 "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "white", // Optional: keeps border white on hover
+                  borderColor: "white",
                 },
                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "white", // Optional: keeps border white when focused
+                  borderColor: "white",
                 },
                 "& .MuiSelect-select": {
                   padding: theme.spacing(1),
