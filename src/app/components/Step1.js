@@ -184,7 +184,7 @@ const Step1 = ({ successValue, stepcount }) => {
       ) : (
         <>
           <MainHeading title="Category Selection" />
-          <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
+          <Box px={3} sx={{ userSelect: "none", paddingBottom: isMobile ? "130px" : "1.5rem" }}>
             <Box
               sx={{
                 height: { lg: "calc(100vh - 180px)" },

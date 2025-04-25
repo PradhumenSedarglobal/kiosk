@@ -1,10 +1,11 @@
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, useMediaQuery } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useSelector } from "react-redux";
 
 const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
   const fonts = useSelector((state) => state.font);
+  const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
   return (
     <Box
@@ -12,7 +13,7 @@ const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
       sx={{
         position: "absolute",
         top: "60px",
-        left: "55vw",
+        left: isMobile ? "87vw" : "55vw",
         zIndex: 9999,
         cursor: "pointer",
         "&:hover .hover-text": {

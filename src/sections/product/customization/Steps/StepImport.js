@@ -7,6 +7,7 @@ import MainHeading from "@/app/components/MainHeading";
 import { useAuthContext } from "@/auth/useAuthContext";
 import { useRouter } from "next/router";
 import { addToCartFunScene } from "../sceneCanvas3D";
+import { useMediaQuery } from "@mui/material";
 
 const importView = (subreddit) =>
   dynamic(
@@ -20,6 +21,7 @@ const DisplayComponent = ({ data, formik, tabChange, setTabChange }) => {
   const [loading, setLoading] = useState(false);
   console.log(data, 'data13');
   const dispatch = useDispatch();
+
   useEffect(() => {
     function loadComponent() {
       const importChild = data?.CHILD_STEP?.map((subData, index) => {
@@ -57,10 +59,10 @@ const StepImport = ({ formik, data, tabChange, setTabChange,key }) => {
   const { cookies } = state;
   const customization_info = useSelector((state) => state.customization);
   const dispatch = useDispatch();
-
+  const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
   return (
-    <Box>
+    <Box sx={{paddingBottom: isMobile ? "130px" : "1.5rem" }} >
        <MainHeading  title={data?.SPS_DESC} />
       <DisplayComponent data={data} formik={formik} tabChange={tabChange} setTabChange={setTabChange} />
     </Box>

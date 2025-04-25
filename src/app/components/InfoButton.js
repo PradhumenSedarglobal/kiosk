@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, useMediaQuery } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector, useDispatch } from "react-redux";
 import { startTour } from "../../redux/slices/tourSlice";
@@ -12,13 +12,15 @@ const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
     dispatch(startTour(step));
   };
 
+  const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
+
   return (
     <Box
       onClick={handleClick}
       sx={{
         position: "absolute",
         top: "10px",
-        left: "55vw",
+        left: isMobile ? "87vw" : "55vw",
         zIndex: 9999,
         cursor: "pointer",
         "&:hover .hover-text": {
@@ -32,6 +34,7 @@ const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
           position: "relative",
           display: "flex",
           alignItems: "center",
+          textAlign: "center"
         }}
       >
         <Typography
@@ -39,7 +42,7 @@ const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
           variant="body2"
           sx={{
             position: "absolute",
-            left: "-120px", // adjust as needed
+            left: isMobile ? "-100px" : "-120px", // adjust as needed
             opacity: 0,
             backgroundColor: "orange",
             padding: "6px 10px",
@@ -53,7 +56,7 @@ const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
             transform: "translateX(10px)",
             pointerEvents: "none",
             textAlign:"center",
-            pt:"5px"
+            pt:"10px"
           }}
         >
           {text}

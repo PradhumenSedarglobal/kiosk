@@ -213,10 +213,11 @@ const Modal = () => {
       ) : (
         <>
           <MainHeading sx={{ mb: 2 }} title="Modal Selection" />
-          <Box px={3} sx={{ userSelect: "none", paddingBottom: "1.5rem" }}>
+          <Box px={3} sx={{ userSelect: "none", paddingBottom: isMobile ? "130px" : "1.5rem"  }}>
             <Box
+              
               className="bigipads"
-              sx={{ height: { lg: "calc(100vh - 180px)" }, overflow: "auto" }}
+              sx={{  height: { lg: "calc(100vh - 180px)" }, overflow: "auto" }}
             >
               <Grid
                 container

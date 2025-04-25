@@ -647,7 +647,7 @@ export default function ProductPage(props) {
             height: isTablet
               ? "calc(100vh - 510px)"
               : isMobile
-              ? "calc(100vh - 340px)"
+              ? "calc(100vh - 230px)"
               : "calc(100vh - 5px)",
             position: "relative",
             overflow: "hidden",
@@ -721,7 +721,7 @@ export default function ProductPage(props) {
                                   height: isTablet
                                     ? "calc(100vh - 510px)"
                                     : isMobile
-                                    ? "calc(100vh - 340px)"
+                                    ? "calc(100vh - 230px)"
                                     : "calc(100vh - 5px)",
                                   backgroundColor: "#f5f5f5",
                                 }}
@@ -767,7 +767,7 @@ export default function ProductPage(props) {
                                   height: isTablet
                                     ? "calc(100vh - 510px)"
                                     : isMobile
-                                    ? "calc(100vh - 340px)"
+                                    ? "calc(100vh - 230px)"
                                     : "calc(100vh - 5px)",
                                   position: "relative",
                                 }}
