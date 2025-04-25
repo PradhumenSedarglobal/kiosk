@@ -28,6 +28,7 @@ import {
   setGeoLocationDetails,
   setOrderList,
   loadingfalse,
+  orderList
 } from "@/redux/slices/customization";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -64,6 +65,10 @@ const BottomBarTabination = ({
   console.log("tabChangeeeeeeeeee", tabChange);
 
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(()=>{
+    console.log("orderlist update",orderList);
+  },[orderList]);
 
   useEffect(() => {
     // if (priceArray.SOL_VALUE && stepsArray && Object.keys(stepsArray).length > 8) {
@@ -372,7 +377,7 @@ const BottomBarTabination = ({
                 }}
                 endIcon={<ArrowCircleRightIcon color="black" />}
               >
-                Continue
+                Next
               </Button>
             )}
 

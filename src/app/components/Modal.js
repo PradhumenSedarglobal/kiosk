@@ -189,7 +189,7 @@ const Modal = () => {
 
   return (
     <>
-      {loading ? (
+      {loading && !isMobile ? (
         <Box
           sx={{
             position: "relative",

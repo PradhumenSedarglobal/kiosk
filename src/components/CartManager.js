@@ -44,11 +44,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const drawerWidth = 400;
 
-const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
-  // ... existing state and functions ...
-
-  console.log("cartData", cartData);
-  console.log("cartData", cartData);
+const CartManager = ({ open, handleDrawerClose }) => {
 
   const [selectedLanguage, setSelectedLanguage] = React.useState("en");
 
@@ -64,6 +60,10 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
   const { cookies } = state;
   const dispatch = useDispatch();
   const { t: translate } = useTranslation();
+
+
+  const cartData = useSelector((state) => state.customization.orderList);
+
 
   const removeCart = async (cartId) => {
     const response = await apiSSRV2DataService.Delete({
@@ -170,7 +170,7 @@ const CartManager = ({ open, handleDrawerClose, cartData = null }) => {
           }}
         >
           {cartData !== null &&
-            cartData.complete.map((item, index) => (
+            cartData?.complete.map((item, index) => (
               <React.Fragment key={item.SOL_SYS_ID || index}>
                 <Grid
                   container

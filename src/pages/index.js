@@ -4,7 +4,7 @@ import PlpSchema from "@/modules/PlpSchema";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
 import TourIcon from "@mui/icons-material/Tour";
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from "@mui/material/Tooltip";
 
 import {
   removecart,
@@ -69,11 +69,15 @@ import { showScanner } from "@/redux/slices/scannerSlice";
 import { decrementStep, incrementStep } from "@/redux/slices/stepSlice";
 import ModalGallary from "@/app/components/ModalGallary";
 import InstructionTooltip from "@/app/components/InstructionTooltip";
-import { setStepIndex, skipTour, startTour, tourNextStep } from "@/redux/slices/tourSlice";
+import {
+  setStepIndex,
+  skipTour,
+  startTour,
+  tourNextStep,
+} from "@/redux/slices/tourSlice";
 import TourGuideButton from "@/app/components/TourGuideButton";
 import InfoButton from "@/app/components/InfoButton";
 import ResetHoverButton from "@/app/components/ResetHoverButton";
-
 
 // Dynamically import Joyride to prevent SSR issues
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
@@ -170,8 +174,6 @@ export default function ProductPage(props) {
   const [activeStep, setActiveStep] = useState(0);
   const [showButton, setShowButton] = useState(true);
 
-
-
   const steps = [
     {
       title: "Select Category",
@@ -195,6 +197,7 @@ export default function ProductPage(props) {
 
   // store thumbs swiper instance
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const buttonRef = React.useRef(null);
 
   const stepCount = useSelector((state) => state.step.value);
 
@@ -215,8 +218,6 @@ export default function ProductPage(props) {
   } = useSelector((state) => state.customization);
 
   const getModalGallary = async () => {
-
-
     if (SelectedCategory !== null && SelectedModal !== null) {
       setModalSliderImageLoading(true);
       const response = await apiSSRV2DataService.getAll({
@@ -493,15 +494,7 @@ export default function ProductPage(props) {
     dispatch(manualStep(0));
   };
 
-  const handleResetThreed = () => {
-    dispatch(reset(true));
 
-    setTimeout(() => {
-      dispatch(reset(false));
-    }, 1000);
-  };
-
-  
 
   useEffect(() => {
     dispatch(startTour());
@@ -544,9 +537,9 @@ export default function ProductPage(props) {
 
   // const handleJoyrideCallback = (data) => {
   //   const { action, index, status, type, lifecycle } = data;
-  
+
   //   console.log("Joyride callback:", data); // optional: for debugging
-  
+
   //   // Handle step navigation
   //   if (type === "step:after") {
   //     if (action === "next") {
@@ -560,7 +553,7 @@ export default function ProductPage(props) {
   //       dispatch(setStepIndex(index - 1));
   //     }
   //   }
-  
+
   //   // End the tour on any of these actions or statuses
   //   if (
   //     action === "skip" ||       // Skip button
@@ -572,31 +565,39 @@ export default function ProductPage(props) {
   //     dispatch(skipTour()); // Ensure the tour state is reset
   //   }
   // };
-  
 
-  const howToUse = () =>{
+  const howToUse = () => {
     dispatch(tourNextStep());
     console.log("calliii");
-  }
+  };
 
-  useEffect(()=>{
-    if(stepCount == 0){
-      setThumbsSwiper(null);
+  useEffect(() => {
+    if (stepCount === 0) {
+      console.log('ssssssssst',stepCount);
+      dispatch(resetState());
     }
-  },[modalSliderImage]);
+
+      // Reset main swiper
+      if (mainSwiper) {
+        mainSwiper.slideTo(0, 0);
+        mainSwiper.update();      
+      }
   
-  
+      // Reset thumbnail swiper
+      if (thumbsSwiper) {
+        thumbsSwiper.slideTo(0, 0);
+        thumbsSwiper.update();
+      }
+    
+  }, [stepCount]);
 
   return (
     <>
-    
       {/* {stepCount == 0 && <TourGuideButton  />} */}
-      <TourGuideButton  />
+      <TourGuideButton />
 
-      <InfoButton  howToUse={howToUse} step={stepCount == 1 ? 3 : ''}/>
+      <InfoButton howToUse={howToUse} step={stepCount == 1 ? 3 : ""} />
 
-     
-      
       {/* <Joyride
         steps={tourState.steps}
         stepIndex={tourState.stepIndex}
@@ -676,11 +677,10 @@ export default function ProductPage(props) {
 
           {/* Reset 3dModal Icon Start */}
           {stepCount !== 0 && stepCount !== 1 && (
-             <ResetHoverButton resetCanvasScene={resetCanvasScene}/>
+            <ResetHoverButton resetCanvasScene={resetCanvasScene} />
           )}
 
-
-        {/* <Tooltip title="Start tour" arrow>
+          {/* <Tooltip title="Start tour" arrow>
           <Fab >
             <TourIcon />
           </Fab>
@@ -1013,9 +1013,13 @@ export default function ProductPage(props) {
                       variant="p"
                       component="div"
                     >
-                      {stepCount == 0 ? (SelectedCategory
-                        ? formatCategory(SelectedCategory)
-                        : null) : SelectedModal ? formatCategory(SelectedModal) : null }
+                      {stepCount == 0
+                        ? SelectedCategory
+                          ? formatCategory(SelectedCategory)
+                          : null
+                        : SelectedModal
+                        ? formatCategory(SelectedModal)
+                        : null}
                     </Typography>
                   </Grid>
                   <Grid item xs={5} pt={"0 !important"}>
@@ -1058,7 +1062,7 @@ export default function ProductPage(props) {
                       dispatch(removecart());
                       if (stepCount === 2) {
                         dispatch(resetState());
-                      }else{
+                      } else {
                         setModalSliderImage(null);
                       }
                     }}
@@ -1080,24 +1084,28 @@ export default function ProductPage(props) {
                 {/* Continue/Add to Cart Button */}
                 {stepCount < 5 ? (
                   <Button
-                    className={stepCount >= 1 ? 'continue2' : 'continue1'}
+                    ref={buttonRef}
+                    className={stepCount >= 1 ? "continue2" : "continue1"}
                     size="large"
                     variant="outlined"
                     onClick={(e) => {
-                      // Disable the button immediately after click
-                      
-                  
+                      // Disable the button
+                      if (buttonRef.current) {
+                        buttonRef.current.disabled = true;
+                      }
+
                       dispatch(incrementStep(stepCount + 1));
-                  
+                      dispatch(setStepIndex(tourState.stepIndex + 1));
+
                       setTimeout(() => {
-                        dispatch(setStepIndex(tourState.stepIndex + 1));
-                        // Re-enable the button after 3 seconds
-                       
-                      }, 3000); // 3000 milliseconds = 3 seconds
+                        if (buttonRef.current) {
+                          buttonRef.current.disabled = false;
+                        }
+                      }, 2000);
                     }}
                     endIcon={<ArrowCircleRightIcon />}
                   >
-                    Continue
+                    Next
                   </Button>
                 ) : (
                   <Button
@@ -1123,7 +1131,6 @@ export default function ProductPage(props) {
         sx={{
           overflow: "hidden",
         }}
- 
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         handleDrawerClose={handleDrawerClose}

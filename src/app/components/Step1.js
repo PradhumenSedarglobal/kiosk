@@ -160,7 +160,7 @@ const Step1 = ({ successValue, stepcount }) => {
         </Modal>
       )}
 
-      {loading ? (
+      {loading && !isMobile ? (
         <Box
           sx={{
             position: "relative",
