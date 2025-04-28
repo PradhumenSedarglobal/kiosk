@@ -37,6 +37,10 @@ import {
   setCustomization,
   setHeaderResponse,
 } from "@/redux/slices/customization";
+import TourGuideButton from "@/app/components/TourGuideButton";
+import { tourNextStep } from "@/redux/slices/tourSlice";
+import ResetHoverButton from "@/app/components/ResetHoverButton";
+import InfoButton from "@/app/components/InfoButton";
 
 export const getServerSideProps = async (context) => {
   console.time("getServerSideProps");
@@ -547,6 +551,10 @@ export default function ProductPage(props) {
     SEO: productLayout?.result?.SEO,
   };
 
+    const howToUse = () => {
+      dispatch(tourNextStep());
+    };
+
  if (
     slug?.includes("customize") &&
     slug?.length >= 3 &&
@@ -557,6 +565,10 @@ export default function ProductPage(props) {
         <Head>
           <title>Customization List Page</title>
         </Head>
+
+        <TourGuideButton />
+        
+        <InfoButton howToUse={howToUse} step="3" />
 
         {/* Burger Menu Icon Start */}
         <Fab
@@ -579,40 +591,7 @@ export default function ProductPage(props) {
         </Fab>
         {/* Burger Menu End  */}
 
-        <Fab
-          onClick={() => {
-            resetCanvasScene();
-          }}
-          className="resetbutton"
-          sx={{
-            backgroundColor: "#ef9c00",
-            color: "#f5ece0",
-            fontFamily: fonts.Helvetica_Neue_Regular.style.fontFamily,
-            fontWeight: "700",
-            padding: "8px 16px",
-            position: "absolute",
-            zIndex: 999,
-            marginLeft: "5px",
-            top: "10px",
-
-            // Use MUI breakpoints for responsiveness
-            right: {
-              xs: "calc(100vw - 200px)", // Mobile (375px+)
-              sm: "calc(100vw - 300px)", // Tablet (600px+)
-              md: "calc(100vw - 500px)", // Small laptops (900px+)
-              lg: "calc(100vw - 57%)", // Large screens (1200px+)
-            },
-
-            // Media Query (Only if necessary)
-            "@media (min-width: 375px) and (max-width: 959px)": {
-              right: "calc(100vw - 95%)",
-            },
-          }}
-          color="warning"
-          aria-label="edit"
-        >
-          <SettingsBackupRestoreIcon />
-        </Fab>
+        <ResetHoverButton resetCanvasScene={resetCanvasScene} />
 
         <CustomizationSlug />
         <CartManager
