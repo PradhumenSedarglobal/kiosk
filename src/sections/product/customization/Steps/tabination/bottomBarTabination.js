@@ -55,6 +55,7 @@ const BottomBarTabination = ({
 }) => {
   const { t: translate } = useTranslation();
   const { locale, query } = useRouter();
+  const router = useRouter();
   const { slug } = query;
   const sys_id = slug && slug.length === 7 ? slug[6] : 0;
   const { state } = useAuthContext();
@@ -63,7 +64,16 @@ const BottomBarTabination = ({
 
   const paramKeys = Object.keys(query);
 
-  console.log("tabChangeeeeeeeeee", tabChange);
+   // Get current pathname (e.g., /uae-en/curtains-and-drapes/fabric-curtain-pinch-pleat/...)
+   const pathname = router.asPath.split('?')[0]; // Remove query params if any
+
+   // Split by '/' and filter out empty strings
+   const pathSegments = pathname.split('/').filter(segment => segment !== '');
+ 
+   // Get the number of segments
+   const segmentsCount = pathSegments.length;
+
+  console.log("queryLength", segmentsCount);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -312,7 +322,7 @@ const BottomBarTabination = ({
               alignItems: "start",
             }}
           >
-            {tabChange >= 1 && (
+            {tabChange >= 1 && segmentsCount < 5 && (
               <Button
                 size="large"
                 variant="outlined"
@@ -337,16 +347,16 @@ const BottomBarTabination = ({
               </Button>
             )}
 
-            {/* {tabChange === 1 && (
+            {segmentsCount >= 5 && (
               <Button
                 size="large"
                 variant="outlined"
-                onClick={handleHome}
+                onClick={() => router.push('/')}
                 startIcon={<HomeIcon color="black" />}
               >
                 Home
               </Button>
-            )} */}
+            )}
           </Grid>
           <Grid
             item
