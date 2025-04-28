@@ -38,7 +38,7 @@ import {
   setHeaderResponse,
 } from "@/redux/slices/customization";
 import TourGuideButton from "@/app/components/TourGuideButton";
-import { tourNextStep } from "@/redux/slices/tourSlice";
+import { setStepIndex, startTour, tourNextStep } from "@/redux/slices/tourSlice";
 import ResetHoverButton from "@/app/components/ResetHoverButton";
 import InfoButton from "@/app/components/InfoButton";
 
@@ -454,6 +454,8 @@ export default function ProductPage(props) {
     (state) => state.customization
   );
 
+  const tourState = useSelector((state) => state.tour);
+
   const { result = {} } = productFilter || {};
   const filters = result.FILTERS || [];
   const newFilterArray = [];
@@ -552,7 +554,7 @@ export default function ProductPage(props) {
   };
 
     const howToUse = () => {
-      dispatch(tourNextStep());
+      dispatch(startTour(5));
     };
 
  if (
@@ -568,7 +570,7 @@ export default function ProductPage(props) {
 
         <TourGuideButton />
         
-        <InfoButton howToUse={howToUse} step="3" />
+        <InfoButton onClick={howToUse} step="5" />
 
         {/* Burger Menu Icon Start */}
         <Fab

@@ -23,6 +23,7 @@ import { Thumbs } from "swiper/modules";
 import "swiper/css";
 import { useMediaQuery } from "@mui/material";
 import Joyride from "react-joyride";
+import TourGuideButton from "@/app/components/TourGuideButton";
 
 // @mui
 const SceneCanvas3D = dynamic(() => import("./sceneCanvas3D"), {
@@ -133,24 +134,7 @@ const CustomizationSection = () => {
 
   return (
     <>
-      <Joyride
-        steps={tourState.steps}
-        stepIndex={tourState.stepIndex} // Ensure stepIndex updates properly
-        run={tourState.run}
-        continuous
-        showProgress
-        showSkipButton
-        spotlightClicks
-        disableScrolling
-        placement="auto"
-        styles={{
-          options: {
-            zIndex: 99999,
-            overlayColor: "rgba(0, 0, 0, 0.5)",
-            primaryColor: "#ff6600",
-          },
-        }}
-      />
+     
 
       <Box
         sx={{

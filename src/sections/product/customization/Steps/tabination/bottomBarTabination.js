@@ -53,6 +53,7 @@ const BottomBarTabination = ({
   customerSysId,
   customization_info,
 }) => {
+
   const { t: translate } = useTranslation();
   const { locale, query } = useRouter();
   const router = useRouter();
@@ -92,6 +93,7 @@ const BottomBarTabination = ({
 
   const fonts = useSelector((state) => state.font);
   const {isMaterialCustomizationLoading} = useSelector((state) => state.customization);
+  const {value} = useSelector((state) => state.step);
 
   const dispatch = useDispatch();
 
@@ -183,7 +185,7 @@ const BottomBarTabination = ({
 
 
   const tourState = useSelector((state) => state.tour);
-
+  console.log('ttttttttt',tabChange);
   return (
     <Box
       sx={{
@@ -322,7 +324,7 @@ const BottomBarTabination = ({
               alignItems: "start",
             }}
           >
-            {tabChange >= 1 && segmentsCount < 5 && (
+            {(tabChange > 1 || value == "2") && (
               <Button
                 size="large"
                 variant="outlined"
@@ -347,7 +349,7 @@ const BottomBarTabination = ({
               </Button>
             )}
 
-            {segmentsCount >= 5 && (
+            {segmentsCount >= 5 && tabChange <= 1 && (
               <Button
                 size="large"
                 variant="outlined"
