@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import { setStepIndex } from "@/redux/slices/tourSlice";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
+import axios from "axios";
 // ... other imports remain the same ...
 
 const languages = [
@@ -47,6 +48,7 @@ const drawerWidth = 400;
 
 const CartManager = ({ open, handleDrawerClose }) => {
   const router = useRouter();
+  const { locale, query } = useRouter();
 
   const [selectedLanguage, setSelectedLanguage] = React.useState("en");
 
@@ -103,36 +105,67 @@ const CartManager = ({ open, handleDrawerClose }) => {
   const { t: translate } = useTranslation();
 
   const cartData = useSelector((state) => state.customization.orderList);
+  const { customerSysId} = useSelector((state) => state.customization);
 
   useEffect(() => {}, [cartData]);
 
   const removeCart = async (cartId) => {
-    const response = await apiSSRV2DataService.Delete({
-      path: `kiosk/cart/${cartId}`,
-      param: { content: "customization", sys_id: 0 },
-      cookies: cookies,
-    });
-
-    if (response.data.complete) {
-      toast.success("Item successfully removed from cart!", {
-        position: "top-right",
-        style: {
-          background: "linear-gradient(45deg, #d32f2f, #f44336)",
-          color: "white",
-        },
+    try {
+      const response = await apiSSRV2DataService.Delete({
+        path: `kiosk/cart/${cartId}`,
+        param: { content: "customization", sys_id: 0 },
+        cookies: cookies,
       });
-
-      // ✅ Update the cart list by filtering out the deleted item
-      dispatch(
-        setOrderList({
-          ...response.data,
-          complete: cartData.complete.filter(
-            (item) => item.SOL_SYS_ID !== cartId
-          ),
-        })
-      );
+  
+      if (response.data.complete) {
+        toast.success("Item successfully removed from cart!", {
+          position: "top-right",
+          style: {
+            background: "linear-gradient(45deg, #d32f2f, #f44336)",
+            color: "white",
+          },
+        });
+  
+  
+        // ✅ Wait for 800ms before fetching updated cart list
+        await new Promise(resolve => setTimeout(resolve, 800));
+  
+        await fetchOrderList(cookies, customerSysId, locale); // pass values here
+      }
+    } catch (error) {
+      console.error("Failed to remove item from cart:", error);
     }
   };
+  
+  const fetchOrderList = async (cookies, customerSysId, locale) => {
+    try {
+      const response = await axios.get(
+        `https://migapi.sedarglobal.com/kiosk/order/orderList?lang=en&site=100001&country=uae&visitorId=${cookies.visitorId}&userId=${customerSysId}&currency=AED&ccy_decimal=0&cn_iso=${cookies.primary_ref_cn_iso}&locale=${locale}&detect_country=`,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            Accept: "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          withCredentials: false,
+        }
+      );
+
+
+      console.log("getting response",response);  
+
+      dispatch(
+        setOrderList({
+          complete: response.data.complete,
+          cart_count: response.data.cart_count,
+          total_price: response.data.total_price,
+        })
+      );
+    } catch (error) {
+      console.error("Failed to fetch order list:", error);
+    }
+  };
+  
 
   const updateQuantity = async (cartId, updatedQty) => {
     if (updatedQty < 1) return; // Prevent negative or zero values

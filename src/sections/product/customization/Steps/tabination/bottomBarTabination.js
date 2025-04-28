@@ -92,10 +92,20 @@ const BottomBarTabination = ({
 
   const handleAddToCartIfVistiorId = async () => {
     try {
-      console.log(
-        "Dispatching removecart and decrementStep before fetchOrderList"
-      );
-
+      // Check first: Ensure customerId and visitorId are available
+      if (!cookies.visitorId || !customerSysId) {
+        console.error("Missing customerId or visitorId");
+        return;
+      }
+  
+      console.log("Dispatching removecart and decrementStep if needed");
+      
+      if (paramKeys.length === 0) {
+        dispatch(removecart());
+        dispatch(decrementStep(0));
+      }
+  
+      // Add to cart
       const result = await addToCartFunScene(
         {
           ...cookies,
@@ -106,73 +116,60 @@ const BottomBarTabination = ({
         },
         dispatch
       );
-
-      toast.success("Add to cart successfully!", {
+  
+      toast.success("Added to cart successfully!", {
         position: "top-right",
         style: {
           background: "linear-gradient(45deg,rgb(22, 160, 54),rgb(97, 238, 72))",
           color: "white",
         },
       });
-
+  
       dispatch(resetState());
-
-
+  
+      console.log("VisitorId and UserId:", cookies.visitorId, customerSysId);
+  
+      dispatch(setOrderList(null));
+  
+      // Fetch updated order list after 800ms
+      setTimeout(async () => {
+        try {
+          const response = await axios.get(
+            `https://migapi.sedarglobal.com/kiosk/order/orderList?lang=en&site=100001&country=uae&visitorId=${cookies.visitorId}&userId=${customerSysId}&currency=AED&ccy_decimal=0&cn_iso=${cookies.primary_ref_cn_iso}&locale=${locale}&detect_country=`,
+            {
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                Accept: "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+              withCredentials: false,
+            }
+          );
+  
+          dispatch(
+            setOrderList({
+              complete: response.data.complete,
+              cart_count: response.data.cart_count,
+              total_price: response.data.total_price,
+            })
+          );
+  
+          if (paramKeys.length > 0) {
+            setTabChange(1);
+          } else {
+            dispatch(resetState());
+          }
+  
+        } catch (error) {
+          console.error("Failed to fetch order list:", error);
+        }
+      }, 800);
+  
     } catch (error) {
       console.error("Failed to add to cart:", error);
     }
-
-    // Ensure customerId and userId are defined before use
-    if (!cookies.visitorId || !customerSysId) {
-      console.error("Missing customerId or userId");
-      return;
-    }
-
-    // Ensure dispatching occurs before the API request
-
-    if (paramKeys.length > 0) {
-      setTabChange(1);
-    } else {
-      dispatch(removecart());
-      dispatch(decrementStep(0));
-    }
-
-    console.log("VisitorIdUserId", cookies.visitorId, customerSysId);
-
-    try {
-      dispatch(setOrderList(null));
-
-      const response = await axios.get(
-        `https://migapi.sedarglobal.com/kiosk/order/orderList?lang=en&site=100001&country=uae&visitorId=${cookies.visitorId}&userId=${customerSysId}&currency=AED&ccy_decimal=0&cn_iso=AE&locale=${locale}&detect_country=`,
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            Accept: "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-          withCredentials: false,
-        }
-      );
-
-      dispatch(
-        setOrderList({
-          complete: response.data.complete,
-          cart_count: response.data.cart_count,
-          total_price: response.data.total_price,
-        })
-      );
-
-      if (paramKeys.length > 0) {
-        setTabChange(1);
-      }else{
-        dispatch(resetState());
-      }
-
-     
-    } catch (error) {
-      console.error("Failed to fetch order list:", error);
-    }
   };
+  
 
 
   const tourState = useSelector((state) => state.tour);
