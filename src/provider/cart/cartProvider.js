@@ -119,7 +119,7 @@ const CartProvider = ({ children }) => {
     dispatch({ type: "IS_CART_LOADING" });
     await apiClientV2DataService
       .getAll({
-        path: `v2/order/list`,
+        path: `kiosk/order/orderList`,
         param: {
           soh_sys_id: head_sys_id || 0,
           ...((params && params) || {}),

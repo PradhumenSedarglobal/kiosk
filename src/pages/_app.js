@@ -60,7 +60,7 @@ function App(data) {
             <ThemeProvider>
               <AlertProvider>
                 <AuthProvider>
-                  <CartProvider>
+                  {/* <CartProvider> */}
                     <ErrorBoundary>
                       <ProgressRouterProvider>
                         {/* <ProgressBar /> */}
@@ -73,7 +73,7 @@ function App(data) {
                         </RTL>
                       </ProgressRouterProvider>
                     </ErrorBoundary>
-                  </CartProvider>
+                  {/* </CartProvider> */}
                 </AuthProvider>
               </AlertProvider>
             </ThemeProvider>

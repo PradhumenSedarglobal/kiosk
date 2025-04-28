@@ -136,7 +136,7 @@ export function getCartPageData(params = {}, isGoogleAnalytics) {
     dispatch(slice.actions.startCartPageLoading());
     try {
       const response = await dispatch(
-        apiDataService.getAll(`v2/order/list`, params)
+        apiDataService.getAll(`kiosk/order/orderList`, params)
       );
 
       dispatch(slice.actions.setCartPageData(response?.data));

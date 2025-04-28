@@ -143,7 +143,7 @@ const BottomBarTabination = ({
       dispatch(setOrderList(null));
 
       const response = await axios.get(
-        `https://migapi.sedarglobal.com/kiosk/order/orderList?lang=en&site=100001&country=uae&visitorId=${cookies.visitorId}&userId=${customerSysId}&currency=AED&ccy_decimal=0&cn_iso=AE&locale=${locale}&$detect_country=`,
+        `https://migapi.sedarglobal.com/kiosk/order/orderList?lang=en&site=100001&country=uae&visitorId=${cookies.visitorId}&userId=${customerSysId}&currency=AED&ccy_decimal=0&cn_iso=AE&locale=${locale}&detect_country=`,
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
