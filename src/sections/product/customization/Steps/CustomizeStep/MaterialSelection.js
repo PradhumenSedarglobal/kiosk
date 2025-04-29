@@ -137,6 +137,8 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
 
   useEffect(() => {
     console.log("this called you can check");
+    console.log("materialList",materialList.length);
+    console.log("productInfo",productInfo?.code);
     if (materialList.length > 0) {
       let elem =
         materialList[0]["items"] &&
@@ -147,9 +149,30 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
 
       setTimeout(() => {
         updateTextureFun(elem);
-      }, 3000);
+      }, 4000);
     }
   }, [productInfo?.code === "0" || productInfo?.code === 0]);
+
+  useEffect(() => {
+    console.log("useEffect called due to materialList change");
+    console.log("materialList", materialList.length);
+    console.log("productInfo", productInfo?.code);
+  
+    if (materialList.length > 0) {
+      let elem =
+        materialList[0]["items"] &&
+        materialList[0]["items"][0] &&
+        materialList[0]["items"][0]["texture_info"]
+          ? materialList[0]["items"][0]["texture_info"]
+          : {};
+  
+    
+      setTimeout(() => {
+        updateTextureFun(elem);
+      }, 5000); 
+    }
+  }, [materialList]);
+  
 
   const getMaterialListFun = () => {
       let post_data = {
