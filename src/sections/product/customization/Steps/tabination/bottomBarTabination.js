@@ -136,8 +136,14 @@ const BottomBarTabination = ({
           color: "white",
         },
       });
+
+      if(segmentsCount >= 5){
+        setTabChange(2);
+      }else{
+        dispatch(resetState());
+      }
   
-      dispatch(resetState());
+    
   
       console.log("VisitorId and UserId:", cookies.visitorId, customerSysId);
   
@@ -176,6 +182,8 @@ const BottomBarTabination = ({
           console.error("Failed to fetch order list:", error);
         }
       }, 800);
+
+    
   
     } catch (error) {
       console.error("Failed to add to cart:", error);
