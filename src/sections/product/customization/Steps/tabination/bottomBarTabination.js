@@ -332,21 +332,13 @@ const BottomBarTabination = ({
               alignItems: "start",
             }}
           >
-            {(tabChange > 1 || value == "2") && (
+            {(tabChange > 1 || value == "2") && !isLoading && (
               <Button
+                disabled={!priceArray.SOL_VALUE}
                 size="large"
                 variant="outlined"
                 onClick={() => {
-                  if (tabChange === "1") {
-                    console.log("tabChangetabChange", tabChange);
-                    // dispatch(resetState());
-                     dispatch(removecart());
-                    // dispatch(loadingfalse(true));
-                  }
-
-                  // if(tabChange === "2"){
-                  //   dispatch(resetState());
-                  // }
+                  
                   dispatch(setStepIndex(tourState.stepIndex - 1));
 
                   onPreviousHandle("PREV");
@@ -377,8 +369,9 @@ const BottomBarTabination = ({
               alignItems: "end",
             }}
           >
-            {tabChange != "5" && priceArray.SOL_VALUE > 0 && (
+            {tabChange != "5"  && (
               <Button
+                disabled={!priceArray.SOL_VALUE}
                 className={
                   tabChange === "1"
                     ? "continue3"

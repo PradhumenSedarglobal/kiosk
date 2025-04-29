@@ -25,6 +25,8 @@ import { useAuthContext } from "@/auth/useAuthContext";
 import PopupModal from "@/app/components/PopupModal";
 import { decrementStep } from "@/redux/slices/stepSlice";
 import { setStepIndex } from "@/redux/slices/tourSlice";
+import { removecart, resetState } from "@/redux/slices/customization";
+
 
 const SceneCanvas3D = dynamic(() => import("../sceneCanvas3D"), {
   ssr: false,
@@ -134,8 +136,14 @@ const TabinationStepsSection = ({
   };
   
   const onPreviousHandle = () => {
+    console.log("atyaa",typeof tabChange);
     if(tabChange === "1"){
+
+      dispatch(removecart());
+   
+     
       dispatch(setStepIndex(5));
+    
     } else if(tabChange === 2){
       dispatch(setStepIndex(7));
     }

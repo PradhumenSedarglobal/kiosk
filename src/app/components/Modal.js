@@ -187,6 +187,11 @@ const Modal = () => {
     }
   }, [modal]);
 
+  useEffect(()=>{
+    dispatch(removecart());
+  },[]);
+
+
   return (
     <>
       {loading && !isMobile ? (

@@ -567,7 +567,7 @@ export default function ProductPage(props) {
   // };
 
   const howToUse = () => {
-    dispatch(tourNextStep());
+    dispatch(startTour(2));
     console.log("calliii");
   };
 
@@ -596,7 +596,7 @@ export default function ProductPage(props) {
       {/* {stepCount == 0 && <TourGuideButton  />} */}
       <TourGuideButton />
 
-      <InfoButton howToUse={howToUse} step={stepCount == 1 ? 3 : ""} />
+      <InfoButton howToUse={howToUse} step="2" />
 
       {/* <Joyride
         steps={tourState.steps}

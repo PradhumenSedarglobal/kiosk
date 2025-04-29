@@ -4,10 +4,9 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector, useDispatch } from "react-redux";
 import { startTour } from "../../redux/slices/tourSlice";
 
-const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
+const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
   const fonts = useSelector((state) => state.font);
   const dispatch = useDispatch();
-  
 
   const handleClick = () => {
     dispatch(startTour(step));
@@ -24,10 +23,6 @@ const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
         left: isMobile ? "87vw" : "55vw",
         zIndex: 9999,
         cursor: "pointer",
-        "&:hover .hover-text": {
-          opacity: 1,
-          transform: "translateX(10)",
-        },
       }}
     >
       <Box
@@ -35,7 +30,12 @@ const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
           position: "relative",
           display: "flex",
           alignItems: "center",
-          textAlign: "center"
+          textAlign: "center",
+          "&:hover .hover-text": {
+            opacity: 1,
+            transform: "translateX(0px)",
+            pointerEvents: "auto", // make hover work on text too
+          },
         }}
       >
         <Typography
@@ -43,7 +43,7 @@ const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
           variant="body2"
           sx={{
             position: "absolute",
-            left: isMobile ? "-100px" : "-120px", // adjust as needed
+            left: isMobile ? "-100px" : "-112px",
             opacity: 0,
             backgroundColor: "orange",
             padding: "6px 10px",
@@ -53,15 +53,17 @@ const InfoHoverButton = ({ text = "HOW TO USE",step }) => {
             color: "white",
             fontSize: "small",
             fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
-            transition: "opacity 0.3s ease, transform 0.3s ease",
+            transition: "opacity 0.2s ease, transform 0.2s ease",
             transform: "translateX(10px)",
-            pointerEvents: "none",
-            textAlign:"center",
-            pt:"10px"
+            pointerEvents: "auto", // allow interaction
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           {text}
         </Typography>
+
         <Box
           sx={{
             backgroundColor: "black",
