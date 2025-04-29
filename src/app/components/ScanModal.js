@@ -56,7 +56,6 @@ export default function ScanModal() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          zIndex:999999,
         }}
       >
         <Box

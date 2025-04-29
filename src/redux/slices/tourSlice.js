@@ -2,12 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   run: false,
-  stepIndex: 1,
+  stepIndex: 0,
   steps: [
     {
       target: ".starterPoint",
       content: "Select your preference on how you move forward!",
-      placement: "right",
+      placement: "left",
       
     },
     {

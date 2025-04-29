@@ -1060,7 +1060,7 @@ export default function ProductPage(props) {
                       dispatch(setStepIndex(tourState.stepIndex - 1));
                       previousStep();
                       dispatch(removecart());
-                      if (stepCount === 2) {
+                      if (stepCount === 1 || stepCount === 0 ) {
                         dispatch(resetState());
                       } else {
                         setModalSliderImage(null);
