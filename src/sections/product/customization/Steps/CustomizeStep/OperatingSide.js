@@ -59,7 +59,7 @@ const OperatingSide = ({ data }) => {
           {data && data?.SPS_DESC}
         </Typography>
       </Box> */}
-      <FormControl  px={3} >
+      {/* <FormControl  px={3} > */}
         <Box py={2}>
           <Grid container justifyContent="space-between" spacing={1}>
 
@@ -139,7 +139,7 @@ const OperatingSide = ({ data }) => {
           }
         </Grid>
 
-      </FormControl>
+      {/* </FormControl> */}
     </>
   );
 };
