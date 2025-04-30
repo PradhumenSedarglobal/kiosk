@@ -104,7 +104,6 @@ const slice = createSlice({
         SelectedCategory: state.SelectedCategory,
         // SelectedModal: state.SelectedModal,
         customerSysId: state.customerSysId,
-        categoryGallary: state.categoryGallary,
         categoryDefaultImg: state.categoryDefaultImg,
         ModalData: state.ModalData,
         modalDefaultItem:state.modalDefaultItem
@@ -117,9 +116,7 @@ const slice = createSlice({
         SelectedCategory: state.SelectedCategory,
         orderList: state.orderList,
         customerSysId: state.customerSysId,
-        // categoryGallary: state.categoryGallary,
-        // categoryDefaultImg: state.categoryDefaultImg,
-        // modalDefaultItem: state.modalDefaultItem
+        
       }
     },
 

@@ -10,6 +10,7 @@ import {
   removecart,
   resetState,
   setCategoryDefaultImg,
+  setCategoryGallary,
   setCustomization,
   setHeaderResponse,
 } from "@/redux/slices/customization";
@@ -230,6 +231,10 @@ export default function ProductPage(props) {
     modalData
   } = useSelector((state) => state.customization);
 
+  useEffect(()=>{
+
+  },[categoryGallary]);
+
   const getModalGallary = async () => {
     if (SelectedCategory !== null && SelectedModal !== null) {
       setModalSliderImageLoading(true);
@@ -268,53 +273,9 @@ export default function ProductPage(props) {
     } else {
       console.log("No categories found matching the selected category");
     }
-  }, [SelectedCategory]);
+  }, [categoryGallary]);
 
-  // const getStep = useCallback(async (modalData) => {
-  //   if (!modalData) return;
-
-  //   try {
-  //     const customizationRes = await apiSSRV2DataService.getAll({
-  //       path: `kiosk/get_steps`,
-  //       param: {
-  //         content: "customization",
-  //         slug_url: modalData,
-  //         category: SelectedCategory,
-  //         sys_id: 0,
-  //       },
-  //       locale: "uae-en",
-  //     });
-
-  //     const headerResponse = await apiSSRV2DataService.getAll({
-  //       path: `v2/getHeaderData`,
-  //       param: {
-  //         content: "Contact Info",
-  //         column_name: "SH_LINK_URL",
-  //         column_value: "tel:",
-  //       },
-  //       locale: "uae-en",
-  //     });
-
-  //     if (customizationRes) {
-  //       dispatch(setCustomization(customizationRes));
-  //       dispatch(setHeaderResponse(headerResponse));
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to fetch steps:", error);
-  //   }
-  // }, [SelectedCategory, dispatch]);
-
-
-  // useEffect(()=>{
-  //     console.log("ismeaya",modalData);
-  //   if(stepCount === 2){
-  //     if(!modalData){
-  //       getStep(modalData);
-  //     }
-      
-  //   }
-
-  // },[stepCount,modalData]);
+  
 
   useEffect(() => {
     console.log("orderListnew", orderList);
@@ -495,20 +456,25 @@ export default function ProductPage(props) {
     setOpen(false);
   };
 
-  const nextStep = () => {
-    // if (stepCount < 5) {
-    //   dispatch(incrementStep());
-    //   console.log("stepCount", stepCount);
-    // } else {
-    //   setFormClose(true);
-    // }
-  };
+ 
 
   const previousStep = () => {
     setLastPage(stepCount);
     if (stepCount > 0) {
       dispatch(resetState());
       dispatch(decrementStep(0));
+    }
+
+    console.log("stepCounttttt",typeof stepCount);
+
+    dispatch(setStepIndex(tourState.stepIndex - 1));
+    dispatch(removecart());
+
+    if (stepCount === 1) {
+      dispatch(resetState());
+      dispatch(setCategoryGallary(null));
+    } else {
+      setModalSliderImage(null);
     }
   };
 
@@ -581,6 +547,7 @@ export default function ProductPage(props) {
     if (stepCount === 0) {
       console.log('ssssssssst',stepCount);
       dispatch(resetState());
+      setModalSliderImage(null);
     }
 
       // Reset main swiper
@@ -644,6 +611,7 @@ export default function ProductPage(props) {
       // For all other steps, just increment
       dispatch(incrementStep(stepCount + 1));
       dispatch(setStepIndex(tourState.stepIndex + 1));
+
     }
   };
   
@@ -1117,14 +1085,9 @@ export default function ProductPage(props) {
                     size="large"
                     variant="outlined"
                     onClick={() => {
-                      dispatch(setStepIndex(tourState.stepIndex - 1));
+                      
                       previousStep();
-                      dispatch(removecart());
-                      if (stepCount === 1 || stepCount === 0 ) {
-                        dispatch(resetState());
-                      } else {
-                        setModalSliderImage(null);
-                      }
+                     
                     }}
                     startIcon={<ArrowCircleLeftIcon />}
                   >
