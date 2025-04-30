@@ -34,6 +34,7 @@ const initialState = {
   categoryGallary:null,
   categoryDefaultImg:null,
   stepChildCount:0,
+  modalSliderImage:null,
 };
 
 const slice = createSlice({
@@ -328,8 +329,8 @@ export const {
   setOrderList,
   setcanvasImg,
   setresetSceanCanvas,
-  setmodalGallary,
   setModalDefaultItem,
+  setmodalGallary,
   setCategoryGallary,
   setCategoryDefaultImg,
   setStepChildCount,

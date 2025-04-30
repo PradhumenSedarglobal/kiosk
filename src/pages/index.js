@@ -169,8 +169,13 @@ export default function ProductPage(props) {
   const handleOpen = () => setOpen(!open);
   const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
   const [formClose, setFormClose] = useState(false);
+
+
   const [modalSliderImage, setModalSliderImage] = useState(null);
   const [modalSliderImageLoading, setModalSliderImageLoading] = useState(false);
+
+
+
   const { query, locale } = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [showButton, setShowButton] = useState(true);
@@ -465,7 +470,7 @@ export default function ProductPage(props) {
       dispatch(decrementStep(0));
     }
 
-    console.log("stepCounttttt",typeof stepCount);
+    console.log("stepCounttttt",typeof stepCount,stepCount);
 
     dispatch(setStepIndex(tourState.stepIndex - 1));
     dispatch(removecart());
@@ -624,7 +629,7 @@ export default function ProductPage(props) {
       {/* {stepCount == 0 && <TourGuideButton  />} */}
       <TourGuideButton />
 
-      <InfoButton howToUse={howToUse} step="2" />
+      <InfoButton howToUse={howToUse} step="1" />
 
       {/* <Joyride
         steps={tourState.steps}

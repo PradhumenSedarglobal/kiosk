@@ -7,11 +7,12 @@ import { startTour } from "../../redux/slices/tourSlice";
 const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
   const fonts = useSelector((state) => state.font);
   const dispatch = useDispatch();
-  const [showText, setShowText] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   const handleClick = () => {
-    dispatch(startTour(step));
+    console.log("this functin called",fonts);
+    dispatch(startTour(Number(step)));
   };
 
   return (
@@ -26,38 +27,38 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
       }}
     >
       <Box
-        onMouseEnter={() => setShowText(true)}
-        onMouseLeave={() => setShowText(false)}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         sx={{
           display: "flex",
           alignItems: "center",
           position: "relative",
         }}
       >
-        {showText && (
-          <Typography
-            variant="body2"
-            sx={{
-              position: "absolute",
-              left: isMobile ? "-105px" : "-112px",
-              backgroundColor: "orange",
-              padding: "6px 10px",
-              borderRadius: "0 0 0 8px",
-              whiteSpace: "nowrap",
-              height: "40px",
-              color: "white",
-              fontSize: "small",
-              fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "opacity 0.2s ease",
-              opacity: 1,
-            }}
-          >
-            {text}
-          </Typography>
-        )}
+        {/* Expanding Text */}
+        <Box
+          sx={{
+            position: "absolute",
+            right: "100%", // grow to the left
+            backgroundColor: "orange",
+            borderRadius: "8px 0 0 8px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: hovered ? "0 12px" : "0px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            maxWidth: hovered ? "200px" : "0px",
+            transition: "all 0.3s ease",
+            color: "white",
+            fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
+          }}
+        >
+          <Typography>{text}</Typography>
+        </Box>
+
+        {/* Icon */}
         <Box
           sx={{
             backgroundColor: "black",
@@ -67,6 +68,7 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            transition: "background-color 0.3s",
             "&:hover": {
               backgroundColor: "orange",
             },
