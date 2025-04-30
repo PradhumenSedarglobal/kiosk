@@ -38,7 +38,6 @@ const Modal = () => {
 
 
 
-
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -148,15 +147,15 @@ const Modal = () => {
     }
   }, [selectedCategory, dispatch]);
 
-  useEffect(() => {
-    if (!modalData?.model || hasFetchedSteps.current) return;
+  // useEffect(() => {
+  //   if (!modalData?.model || hasFetchedSteps.current) return;
 
-    const firstModal = selectedModalData || modalData.model[0]?.SPI_LINK_URL;
-    if (firstModal) {
-      hasFetchedSteps.current = true;
-      getStep(firstModal);
-    }
-  }, [modalData, selectedModalData, getStep]);
+  //   const firstModal = selectedModalData || modalData.model[0]?.SPI_LINK_URL;
+  //   if (firstModal) {
+  //     hasFetchedSteps.current = true;
+  //     getStep(firstModal);
+  //   }
+  // }, [modalData, selectedModalData, getStep]);
 
   // ✅ Handle modal change and state reset
   const handleChange = useCallback(async (link, selectedItemCode, productCode) => {
@@ -175,8 +174,8 @@ const Modal = () => {
     if (selectedModalData !== link) {
       dispatch(removecart()); 
       dispatch(updateSelectedModal(link));
-      await getStep(link); // <-- Fetch updated steps for the new modal
-      hasFetchedSteps.current = true; // To prevent future fetches unless required
+      // await getStep(link); 
+      hasFetchedSteps.current = true;
     }
   }, [dispatch, selectedModalData, getStep]);
   
@@ -189,7 +188,10 @@ const Modal = () => {
 
   useEffect(()=>{
     dispatch(removecart());
+   
   },[]);
+
+
 
 
   return (

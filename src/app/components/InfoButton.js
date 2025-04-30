@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Typography, Box, useMediaQuery } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,12 +7,12 @@ import { startTour } from "../../redux/slices/tourSlice";
 const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
   const fonts = useSelector((state) => state.font);
   const dispatch = useDispatch();
+  const [showText, setShowText] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 767px)");
 
   const handleClick = () => {
     dispatch(startTour(step));
   };
-
-  const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
   return (
     <Box
@@ -26,54 +26,47 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
       }}
     >
       <Box
+        onMouseEnter={() => setShowText(true)}
+        onMouseLeave={() => setShowText(false)}
         sx={{
-          position: "relative",
           display: "flex",
           alignItems: "center",
-          textAlign: "center",
-          "&:hover .hover-text": {
-            opacity: 1,
-            transform: "translateX(0px)",
-            pointerEvents: "auto", // make hover work on text too
-          },
+          position: "relative",
         }}
       >
-        <Typography
-          className="hover-text"
-          variant="body2"
-          sx={{
-            position: "absolute",
-            left: isMobile ? "-100px" : "-112px",
-            opacity: 0,
-            backgroundColor: "orange",
-            padding: "6px 10px",
-            borderRadius: "0px 0px 0px 8px",
-            whiteSpace: "nowrap",
-            height: "40px",
-            color: "white",
-            fontSize: "small",
-            fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
-            transition: "opacity 0.2s ease, transform 0.2s ease",
-            transform: "translateX(10px)",
-            pointerEvents: "auto", // allow interaction
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {text}
-        </Typography>
-
+        {showText && (
+          <Typography
+            variant="body2"
+            sx={{
+              position: "absolute",
+              left: isMobile ? "-105px" : "-112px",
+              backgroundColor: "orange",
+              padding: "6px 10px",
+              borderRadius: "0 0 0 8px",
+              whiteSpace: "nowrap",
+              height: "40px",
+              color: "white",
+              fontSize: "small",
+              fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "opacity 0.2s ease",
+              opacity: 1,
+            }}
+          >
+            {text}
+          </Typography>
+        )}
         <Box
           sx={{
             backgroundColor: "black",
-            borderRadius: "0px 8px 8px 0px",
+            borderRadius: "0 8px 8px 0",
             height: "40px",
             width: "40px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            transition: "background-color 0.3s ease",
             "&:hover": {
               backgroundColor: "orange",
             },

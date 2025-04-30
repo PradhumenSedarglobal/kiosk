@@ -174,20 +174,32 @@ export default function ProductPage(props) {
   const [activeStep, setActiveStep] = useState(0);
   const [showButton, setShowButton] = useState(true);
 
-  const steps = [
-    {
-      title: "Select Category",
-      description: "Click to select an item to proceed.",
-    },
-    {
-      title: "Fill Details",
-      description: "Fill in your details in the form below.",
-    },
-    {
-      title: "Review & Submit",
-      description: "Review your submission before confirming.",
-    },
-  ];
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { t: translate } = useTranslation();
+  const { slug } = props;
+  const {
+    SC_LINK_URL,
+    getFilterKeysValuesData,
+    productFilter,
+    productLayout,
+    productType,
+    productsData,
+    firstData,
+    productsSlugPageData,
+    // customizationRes,
+    headerResponse,
+  } = props;
+
+  // React.useEffect(() => {
+  //   setClientSideReduxCookie({ dispatch: dispatch, router: router });
+  // }, [slug, router]);
+
+  const { result = {} } = productFilter || {};
+  const filters = result.FILTERS || [];
+  const newFilterArray = [];
+
+
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
@@ -215,6 +227,7 @@ export default function ProductPage(props) {
     modalDefaultItem,
     categoryGallary,
     categoryDefaultImg,
+    modalData
   } = useSelector((state) => state.customization);
 
   const getModalGallary = async () => {
@@ -256,6 +269,52 @@ export default function ProductPage(props) {
       console.log("No categories found matching the selected category");
     }
   }, [SelectedCategory]);
+
+  // const getStep = useCallback(async (modalData) => {
+  //   if (!modalData) return;
+
+  //   try {
+  //     const customizationRes = await apiSSRV2DataService.getAll({
+  //       path: `kiosk/get_steps`,
+  //       param: {
+  //         content: "customization",
+  //         slug_url: modalData,
+  //         category: SelectedCategory,
+  //         sys_id: 0,
+  //       },
+  //       locale: "uae-en",
+  //     });
+
+  //     const headerResponse = await apiSSRV2DataService.getAll({
+  //       path: `v2/getHeaderData`,
+  //       param: {
+  //         content: "Contact Info",
+  //         column_name: "SH_LINK_URL",
+  //         column_value: "tel:",
+  //       },
+  //       locale: "uae-en",
+  //     });
+
+  //     if (customizationRes) {
+  //       dispatch(setCustomization(customizationRes));
+  //       dispatch(setHeaderResponse(headerResponse));
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch steps:", error);
+  //   }
+  // }, [SelectedCategory, dispatch]);
+
+
+  // useEffect(()=>{
+  //     console.log("ismeaya",modalData);
+  //   if(stepCount === 2){
+  //     if(!modalData){
+  //       getStep(modalData);
+  //     }
+      
+  //   }
+
+  // },[stepCount,modalData]);
 
   useEffect(() => {
     console.log("orderListnew", orderList);
@@ -330,31 +389,7 @@ export default function ProductPage(props) {
   //   console.log("stepCount", stepCount);
   // }, [stepCount]);
 
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { t: translate } = useTranslation();
-  const { slug } = props;
-  const {
-    SC_LINK_URL,
-    getFilterKeysValuesData,
-    productFilter,
-    productLayout,
-    productType,
-    productsData,
-    firstData,
-    productsSlugPageData,
-    // customizationRes,
-    headerResponse,
-  } = props;
-
-  // React.useEffect(() => {
-  //   setClientSideReduxCookie({ dispatch: dispatch, router: router });
-  // }, [slug, router]);
-
-  const { result = {} } = productFilter || {};
-  const filters = result.FILTERS || [];
-  const newFilterArray = [];
-
+ 
   const addFilter = (element) => {
     newFilterArray.push({
       ...element,
@@ -535,36 +570,7 @@ export default function ProductPage(props) {
       .trim(); // Remove leading/trailing spaces
   };
 
-  // const handleJoyrideCallback = (data) => {
-  //   const { action, index, status, type, lifecycle } = data;
-
-  //   console.log("Joyride callback:", data); // optional: for debugging
-
-  //   // Handle step navigation
-  //   if (type === "step:after") {
-  //     if (action === "next") {
-  //       const isLastStep = index === tourState.steps.length - 1;
-  //       if (isLastStep) {
-  //         dispatch(skipTour()); // End the tour
-  //       } else {
-  //         dispatch(setStepIndex(index + 1)); // Go to next step
-  //       }
-  //     } else if (action === "prev") {
-  //       dispatch(setStepIndex(index - 1));
-  //     }
-  //   }
-
-  //   // End the tour on any of these actions or statuses
-  //   if (
-  //     action === "skip" ||       // Skip button
-  //     action === "close" ||      // Close (X) icon
-  //     (action === "next" && index === tourState.steps.length - 1) || // Final step next
-  //     status === "skipped" ||    // Joyride status
-  //     status === "finished"      // Joyride status
-  //   ) {
-  //     dispatch(skipTour()); // Ensure the tour state is reset
-  //   }
-  // };
+  
 
   const howToUse = () => {
     dispatch(startTour(2));
@@ -590,6 +596,60 @@ export default function ProductPage(props) {
       }
     
   }, [stepCount]);
+
+  const handleNext = async () => {
+    console.log("ayaaaa1", stepCount);
+  
+    if (stepCount === 1) {
+      const modalSlug = SelectedModal;
+      console.log("ayaaaa2", modalData);
+  
+      if (!modalSlug) {
+        console.error("Modal slug is missing");
+        return;
+      }
+  
+      try {
+        const customizationRes = await apiSSRV2DataService.getAll({
+          path: `kiosk/get_steps`,
+          param: {
+            content: "customization",
+            slug_url: modalSlug,
+            category: SelectedCategory,
+            sys_id: 0,
+          },
+          locale: "uae-en",
+        });
+  
+        const headerResponse = await apiSSRV2DataService.getAll({
+          path: `v2/getHeaderData`,
+          param: {
+            content: "Contact Info",
+            column_name: "SH_LINK_URL",
+            column_value: "tel:",
+          },
+          locale: "uae-en",
+        });
+  
+        dispatch(setCustomization(customizationRes));
+        dispatch(setHeaderResponse(headerResponse));
+  
+        // ✅ Now proceed to next step AFTER data is set
+        dispatch(incrementStep(stepCount + 1));
+        dispatch(setStepIndex(tourState.stepIndex + 1));
+      } catch (error) {
+        console.error("Failed to fetch steps:", error);
+      }
+    } else {
+      // For all other steps, just increment
+      dispatch(incrementStep(stepCount + 1));
+      dispatch(setStepIndex(tourState.stepIndex + 1));
+    }
+  };
+  
+  
+
+
 
   return (
     <>
@@ -1094,8 +1154,8 @@ export default function ProductPage(props) {
                         buttonRef.current.disabled = true;
                       }
 
-                      dispatch(incrementStep(stepCount + 1));
-                      dispatch(setStepIndex(tourState.stepIndex + 1));
+                      handleNext();
+
 
                       setTimeout(() => {
                         if (buttonRef.current) {
