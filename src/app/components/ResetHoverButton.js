@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Typography, Box, useMediaQuery } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useSelector } from "react-redux";
 
 const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
   const fonts = useSelector((state) => state.font);
-  const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const [hovered, setHovered] = useState(false);
 
   return (
     <Box
@@ -16,53 +17,51 @@ const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
         left: isMobile ? "87vw" : "55vw",
         zIndex: 9999,
         cursor: "pointer",
-        "&:hover .hover-text": {
-          opacity: 1,
-          transform: "translateX(10px)",
-        },
       }}
     >
       <Box
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         sx={{
-          position: "relative",
           display: "flex",
           alignItems: "center",
+          position: "relative",
         }}
       >
-        <Typography
-          className="hover-text"
-          variant="body2"
+        {/* Expanding Text Box */}
+        <Box
           sx={{
             position: "absolute",
-            left: "-65px", // adjust as needed
-            opacity: 0,
+            right: "100%", // grow to the left
             backgroundColor: "orange",
-            padding: "6px 10px",
-            borderRadius: "0px 0px 0px 8px",
-            whiteSpace: "nowrap",
+            borderRadius: "8px 0 0 8px",
             height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: hovered ? "0 12px" : "0px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            maxWidth: hovered ? "200px" : "0px",
+            transition: "all 0.3s ease",
             color: "white",
-            fontSize: "small",
             fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
-            transition: "opacity 0.3s ease, transform 0.3s ease",
-            transform: "translateX(10px)",
-            pointerEvents: "none",
-            textAlign:"center",
-            pt:"10px"
           }}
         >
-          {text}
-        </Typography>
+          <Typography>{text}</Typography>
+        </Box>
+
+        {/* Icon Box */}
         <Box
           sx={{
             backgroundColor: "black",
-            borderRadius: "0px 8px 8px 0px",
+            borderRadius: "0 8px 8px 0",
             height: "40px",
             width: "40px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            transition: "background-color 0.3s ease",
+            transition: "background-color 0.3s",
             "&:hover": {
               backgroundColor: "orange",
             },
