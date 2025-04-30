@@ -79,22 +79,20 @@ const CartManager = ({ open, handleDrawerClose }) => {
     // Construct new URL path
     const newPath = `/${countryCode}-${newLanguage}`;
 
-    console.log("newPath",newPath);
+    console.log("newPath", newPath);
 
     // Update state immediately for UI responsiveness
     setSelectedLanguage(newLanguage);
 
     // Change the URL with page reload to ensure all content updates
-    router
-      .push(
-        {
-          pathname: newPath,
-          query: currentQuery, // preserve any query parameters
-        },
-        undefined,
-        { shallow: false, locale: newLanguage }
-      )
-    
+    router.push(
+      {
+        pathname: newPath,
+        query: currentQuery, // preserve any query parameters
+      },
+      undefined,
+      { shallow: false, locale: newLanguage }
+    );
   };
 
   const theme = useTheme();
@@ -105,7 +103,7 @@ const CartManager = ({ open, handleDrawerClose }) => {
   const { t: translate } = useTranslation();
 
   const cartData = useSelector((state) => state.customization.orderList);
-  const { customerSysId} = useSelector((state) => state.customization);
+  const { customerSysId } = useSelector((state) => state.customization);
 
   useEffect(() => {}, [cartData]);
 
@@ -116,7 +114,7 @@ const CartManager = ({ open, handleDrawerClose }) => {
         param: { content: "customization", sys_id: 0 },
         cookies: cookies,
       });
-  
+
       if (response.data.complete) {
         toast.success("Item successfully removed from cart!", {
           position: "top-right",
@@ -125,18 +123,17 @@ const CartManager = ({ open, handleDrawerClose }) => {
             color: "white",
           },
         });
-  
-  
+
         // ✅ Wait for 800ms before fetching updated cart list
-        await new Promise(resolve => setTimeout(resolve, 800));
-  
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
         await fetchOrderList(cookies, customerSysId, locale); // pass values here
       }
     } catch (error) {
       console.error("Failed to remove item from cart:", error);
     }
   };
-  
+
   const fetchOrderList = async (cookies, customerSysId, locale) => {
     try {
       const response = await axios.get(
@@ -151,8 +148,7 @@ const CartManager = ({ open, handleDrawerClose }) => {
         }
       );
 
-
-      console.log("getting response",response);  
+      console.log("getting response", response);
 
       dispatch(
         setOrderList({
@@ -165,7 +161,6 @@ const CartManager = ({ open, handleDrawerClose }) => {
       console.error("Failed to fetch order list:", error);
     }
   };
-  
 
   const updateQuantity = async (cartId, updatedQty) => {
     if (updatedQty < 1) return; // Prevent negative or zero values
@@ -291,15 +286,26 @@ const CartManager = ({ open, handleDrawerClose }) => {
                           sx={{
                             fontFamily:
                               fonts.Helvetica_Neue_Medium.style.fontFamily,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
+                            overflowWrap: "break-word",
+                            wordBreak: "keep-all", // prevent mid-word breaking
+                            whiteSpace: "pre-line", // enables \n rendering
                             fontWeight: 600,
                             flexGrow: 1,
                           }}
                         >
-                          {item?.info_data?.MEASUREMENT?.SFP_TITLE}
+                          {(() => {
+                            const title =
+                              item?.info_data?.MEASUREMENT?.SFP_TITLE || "";
+                            if (title.length <= 25) return title;
+                            const breakIndex = title.lastIndexOf(" ", 25);
+                            return breakIndex > 0
+                              ? title.slice(0, breakIndex) +
+                                  "\n" +
+                                  title.slice(breakIndex + 1)
+                              : title; // fallback if no space
+                          })()}
                         </Typography>
+
                         <Chip
                           onClick={() => removeCart(item.SOL_SYS_ID)}
                           icon={
