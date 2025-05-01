@@ -22,7 +22,7 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
         position: "absolute",
         top: "10px",
         left: isMobile ? "87vw" : "55vw",
-        zIndex: 9999,
+        zIndex: 999,
         cursor: "pointer",
       }}
     >
@@ -53,6 +53,7 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
             transition: "all 0.3s ease",
             color: "white",
             fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
+            marginRight: hovered ? "-6px" : "0px",
           }}
         >
           <Typography>{text}</Typography>
@@ -62,7 +63,7 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
         <Box
           sx={{
             backgroundColor: "black",
-            borderRadius: "0 8px 8px 0",
+            borderRadius: "8px",
             height: "40px",
             width: "40px",
             display: "flex",

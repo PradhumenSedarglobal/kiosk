@@ -46,6 +46,7 @@ const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
             transition: "all 0.3s ease",
             color: "white",
             fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily,
+            marginRight: hovered ? "-6px" : "0px",
           }}
         >
           <Typography>{text}</Typography>
@@ -55,7 +56,7 @@ const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
         <Box
           sx={{
             backgroundColor: "black",
-            borderRadius: "0 8px 8px 0",
+            borderRadius: "8px",
             height: "40px",
             width: "40px",
             display: "flex",
