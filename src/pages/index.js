@@ -259,9 +259,12 @@ export default function ProductPage(props) {
     }
   };
 
-  // useEffect(() => {
-  //   getModalGallary(SelectedCategory,modalDefaultItem?.productId,modalDefaultItem?.itemId,);
-  // }, [SelectedModal, SelectedCategory,modalDefaultItem]);
+  useEffect(() => {
+    if(modalDefaultItem?.productId){
+      getModalGallary(SelectedCategory,modalDefaultItem?.productId,modalDefaultItem?.itemId);
+    }
+   
+  }, [SelectedModal, SelectedCategory,modalDefaultItem]);
 
   useEffect(() => {
     const filteredGallery = categoryGallary?.filter(
