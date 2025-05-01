@@ -205,7 +205,7 @@ const Modal = ({ getModalGallary }) => {
       const fic = firstItem?.SII_CODE;
 
       getModalGallary(selectedCategory, fic, fpc);
-    }, 2000);
+    }, 600);
   }, [selectedCategory, modalData]);
 
   return (
