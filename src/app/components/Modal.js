@@ -21,7 +21,7 @@ import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import InstructionTooltip from "./InstructionTooltip";
 import { useRouter } from "next/router";
 
-const Modal = () => {
+const Modal = ({ getModalGallary }) => {
   const dispatch = useDispatch();
   const [isTooltipOpen, setIsTooltipOpen] = useState(true);
   const ModalSelection = "Step 2: Now you need to select modal!";
@@ -34,9 +34,7 @@ const Modal = () => {
   );
   const modalData = useSelector((state) => state.customization.ModalData);
 
-  const [modal,setModal]  = useState();
-
-
+  const [modal, setModal] = useState();
 
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
@@ -49,10 +47,6 @@ const Modal = () => {
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
   const hasFetchedSteps = useRef(false);
   const isInitialMount = useRef(true);
-
-
-
-
 
   // ✅ Memoized fetch function
   const fetchModalData = useCallback(async () => {
@@ -102,7 +96,14 @@ const Modal = () => {
     return () => {
       source.cancel("Component unmounted, request canceled");
     };
-  }, [selectedCategory, locale, dispatch, selectedModalData, selectedItemCode, productCode]);
+  }, [
+    selectedCategory,
+    locale,
+    dispatch,
+    selectedModalData,
+    selectedItemCode,
+    productCode,
+  ]);
 
   // ✅ Fetch modal data when category changes (only once)
   useEffect(() => {
@@ -113,39 +114,42 @@ const Modal = () => {
   }, [selectedCategory, fetchModalData]);
 
   // ✅ Fetch steps data for selected modal (Only once when data is available)
-  const getStep = useCallback(async (modalData) => {
-    if (!modalData) return;
+  const getStep = useCallback(
+    async (modalData) => {
+      if (!modalData) return;
 
-    try {
-      const customizationRes = await apiSSRV2DataService.getAll({
-        path: `kiosk/get_steps`,
-        param: {
-          content: "customization",
-          slug_url: modalData,
-          category: selectedCategory,
-          sys_id: 0,
-        },
-        locale: "uae-en",
-      });
+      try {
+        const customizationRes = await apiSSRV2DataService.getAll({
+          path: `kiosk/get_steps`,
+          param: {
+            content: "customization",
+            slug_url: modalData,
+            category: selectedCategory,
+            sys_id: 0,
+          },
+          locale: "uae-en",
+        });
 
-      const headerResponse = await apiSSRV2DataService.getAll({
-        path: `v2/getHeaderData`,
-        param: {
-          content: "Contact Info",
-          column_name: "SH_LINK_URL",
-          column_value: "tel:",
-        },
-        locale: "uae-en",
-      });
+        const headerResponse = await apiSSRV2DataService.getAll({
+          path: `v2/getHeaderData`,
+          param: {
+            content: "Contact Info",
+            column_name: "SH_LINK_URL",
+            column_value: "tel:",
+          },
+          locale: "uae-en",
+        });
 
-      if (customizationRes) {
-        dispatch(setCustomization(customizationRes));
-        dispatch(setHeaderResponse(headerResponse));
+        if (customizationRes) {
+          dispatch(setCustomization(customizationRes));
+          dispatch(setHeaderResponse(headerResponse));
+        }
+      } catch (error) {
+        console.error("Failed to fetch steps:", error);
       }
-    } catch (error) {
-      console.error("Failed to fetch steps:", error);
-    }
-  }, [selectedCategory, dispatch]);
+    },
+    [selectedCategory, dispatch]
+  );
 
   // useEffect(() => {
   //   if (!modalData?.model || hasFetchedSteps.current) return;
@@ -158,41 +162,51 @@ const Modal = () => {
   // }, [modalData, selectedModalData, getStep]);
 
   // ✅ Handle modal change and state reset
-  const handleChange = useCallback(async (link, selectedItemCode, productCode) => {
+  const handleChange = useCallback(
+    async (link, selectedItemCode, productCode) => {
+      dispatch(
+        setModalDefaultItem({
+          itemId: selectedItemCode,
+          productId: productCode,
+        })
+      );
 
-    dispatch(
-      setModalDefaultItem({
-        itemId:selectedItemCode,
-        productId: productCode,
-      })
-    );
+      setModal(link);
+      setProductCode(productCode);
+      setSelectedItemCode(selectedItemCode);
 
-    setModal(link);
-    setProductCode(productCode);
-    setSelectedItemCode(selectedItemCode);
-  
-    if (selectedModalData !== link) {
-      dispatch(removecart()); 
-      dispatch(updateSelectedModal(link));
-      // await getStep(link); 
-      hasFetchedSteps.current = true;
-    }
-  }, [dispatch, selectedModalData, getStep]);
-  
+      if (selectedModalData !== link) {
+        dispatch(removecart());
+        dispatch(updateSelectedModal(link));
+        // await getStep(link);
+        hasFetchedSteps.current = true;
+      }
+    },
+    [dispatch, selectedModalData, getStep]
+  );
 
   useEffect(() => {
     if (modal) {
-        console.log("modalllll",modal);
+      console.log("modalllll", modal);
     }
   }, [modal]);
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(removecart());
-   
-  },[]);
+  }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      const firstItem = modalData?.model?.[0];
+      console.log("kyaayahai",firstItem);
+      // return false;
 
+      const fpc = firstItem?.SPI_PR_ITEM_CODE;
+      const fic = firstItem?.SII_CODE;
 
+      getModalGallary(selectedCategory, fic, fpc);
+    }, 2000);
+  }, [selectedCategory, modalData]);
 
   return (
     <>
@@ -220,11 +234,16 @@ const Modal = () => {
       ) : (
         <>
           <MainHeading sx={{ mb: 2 }} title="Modal Selection" />
-          <Box px={3} sx={{ userSelect: "none", paddingBottom: isMobile ? "130px" : "1.5rem"  }}>
+          <Box
+            px={3}
+            sx={{
+              userSelect: "none",
+              paddingBottom: isMobile ? "130px" : "1.5rem",
+            }}
+          >
             <Box
-              
               className="bigipads"
-              sx={{  height: { lg: "calc(100vh - 180px)" }, overflow: "auto" }}
+              sx={{ height: { lg: "calc(100vh - 180px)" }, overflow: "auto" }}
             >
               <Grid
                 container
@@ -287,7 +306,7 @@ const Modal = () => {
                       }}
                     >
                       <ImageCard
-                        TourClass={index == 0 ? 'selectModal' : ''}
+                        TourClass={index == 0 ? "selectModal" : ""}
                         category={selectedCategory}
                         index={index}
                         name={item.SPI_TOOLTIP}

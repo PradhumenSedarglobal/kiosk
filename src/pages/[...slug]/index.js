@@ -450,6 +450,9 @@ export default function ProductPage(props) {
     setOpen(false);
   };
 
+ 
+  
+
   const { orderList, resetCanvasScene } = useSelector(
     (state) => state.customization
   );
@@ -557,6 +560,8 @@ export default function ProductPage(props) {
       dispatch(startTour(5));
     };
 
+   
+
  if (
     slug?.includes("customize") &&
     slug?.length >= 3 &&
@@ -600,6 +605,7 @@ export default function ProductPage(props) {
           sx={{
             overflow: "hidden",
           }}
+          setOpen={setOpen}
           open={open}
           handleDrawerOpen={handleDrawerOpen}
           handleDrawerClose={handleDrawerClose}

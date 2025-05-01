@@ -42,6 +42,10 @@ const slice = createSlice({
   initialState,
   reducers: {
 
+    setModalSliderImage(state,action){
+      state.modalSliderImage = action.payload;
+    },
+
     setStepChildCount(state,action){
       state.stepChildCount = action.payload;
     },
@@ -334,7 +338,8 @@ export const {
   setCategoryGallary,
   setCategoryDefaultImg,
   setStepChildCount,
-  startMaterialCustomizationLoading
+  startMaterialCustomizationLoading,
+  setModalSliderImage
 } = slice.actions;
 
 

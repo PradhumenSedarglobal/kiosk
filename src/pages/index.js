@@ -79,6 +79,7 @@ import {
 import TourGuideButton from "@/app/components/TourGuideButton";
 import InfoButton from "@/app/components/InfoButton";
 import ResetHoverButton from "@/app/components/ResetHoverButton";
+import Loader2 from "@/app/components/Loader2";
 
 // Dynamically import Joyride to prevent SSR issues
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
@@ -169,13 +170,9 @@ export default function ProductPage(props) {
   const handleOpen = () => setOpen(!open);
   const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
   const [formClose, setFormClose] = useState(false);
-
-
+  
   const [modalSliderImage, setModalSliderImage] = useState(null);
   const [modalSliderImageLoading, setModalSliderImageLoading] = useState(false);
-
-
-
   const { query, locale } = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [showButton, setShowButton] = useState(true);
@@ -240,15 +237,15 @@ export default function ProductPage(props) {
 
   },[categoryGallary]);
 
-  const getModalGallary = async () => {
+  const getModalGallary = async (SelectedCategory=null,productId=null,itemId=null) => {
     if (SelectedCategory !== null && SelectedModal !== null) {
       setModalSliderImageLoading(true);
       const response = await apiSSRV2DataService.getAll({
         path: `kiosk/fetch_gallery`,
         param: {
           category: SelectedCategory,
-          item: modalDefaultItem?.productId,
-          product: modalDefaultItem?.itemId,
+          item: productId,
+          product: itemId,
         },
         cookies: cookies,
         locale: locale,
@@ -262,9 +259,9 @@ export default function ProductPage(props) {
     }
   };
 
-  useEffect(() => {
-    getModalGallary();
-  }, [SelectedModal, SelectedCategory]);
+  // useEffect(() => {
+  //   getModalGallary(SelectedCategory,modalDefaultItem?.productId,modalDefaultItem?.itemId,);
+  // }, [SelectedModal, SelectedCategory,modalDefaultItem]);
 
   useEffect(() => {
     const filteredGallery = categoryGallary?.filter(
@@ -626,30 +623,13 @@ export default function ProductPage(props) {
 
   return (
     <>
+
+     
+
       {/* {stepCount == 0 && <TourGuideButton  />} */}
       <TourGuideButton />
 
-      <InfoButton howToUse={howToUse} step="1" />
-
-      {/* <Joyride
-        steps={tourState.steps}
-        stepIndex={tourState.stepIndex}
-        run={tourState.run}
-        continuous
-        showProgress
-        showSkipButton
-        spotlightClicks
-        disableScrolling
-        styles={{
-          options: {
-            zIndex: 99999,
-            overlayColor: "rgba(0, 0, 0, 0.5)",
-            primaryColor: "#ff6600",
-          },
-        }}
-        callback={handleJoyrideCallback}
-        hideCloseButton={false} // Ensure this is not set to true
-      /> */}
+      <InfoButton howToUse={howToUse} step="2" />
 
       <Head>
         <title>Customization List Page</title>
@@ -1159,6 +1139,7 @@ export default function ProductPage(props) {
         sx={{
           overflow: "hidden",
         }}
+        setOpen={setOpen}
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         handleDrawerClose={handleDrawerClose}

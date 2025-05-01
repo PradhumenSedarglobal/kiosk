@@ -273,7 +273,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
         <Grid
           container
           spacing={1}
-          onScroll={() => handleScroll()}
+          // onScroll={() => handleScroll()}
           ref={listInnerRef}
           className="scroller_fun"
           style={{ "overflow-y": "scroll", height: "400px" }}

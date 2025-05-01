@@ -54,7 +54,8 @@ const TabinationStepsSection = ({
     priceArray,
     customization,
     ShowformModal,
-    customerSysId
+    customerSysId,
+    isCustomizationLoading
   } = customization_info;
   const [successPopup, setSuccessPopup] = useState(false);
   const [missingStep, setMissingStep] = useState({});
@@ -343,6 +344,7 @@ const TabinationStepsSection = ({
 
   return (
     <>
+    
       {!missingPopup && showAddToCart && (
         <PopupModal
           setTabChange={setTabChange}

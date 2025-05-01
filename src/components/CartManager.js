@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect } from "react";
 import {
   Grid,
@@ -46,7 +47,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const drawerWidth = 400;
 
-const CartManager = ({ open, handleDrawerClose }) => {
+const CartManager = ({ open, handleDrawerClose,setOpen }) => {
   const router = useRouter();
   const { locale, query } = useRouter();
 
@@ -70,7 +71,7 @@ const CartManager = ({ open, handleDrawerClose }) => {
     const currentQuery = router.query;
 
     // Extract country code (like 'uae' from '/uae-en')
-    let countryCode = "uae"; // default fallback
+    let countryCode = "uae";
     const pathMatch = currentPath.match(/^\/([a-z]+)-[a-z]{2}/);
     if (pathMatch && pathMatch[1]) {
       countryCode = pathMatch[1];
@@ -88,7 +89,7 @@ const CartManager = ({ open, handleDrawerClose }) => {
     router.push(
       {
         pathname: newPath,
-        query: currentQuery, // preserve any query parameters
+        query: currentQuery,
       },
       undefined,
       { shallow: false, locale: newLanguage }
@@ -127,7 +128,7 @@ const CartManager = ({ open, handleDrawerClose }) => {
         // ✅ Wait for 800ms before fetching updated cart list
         await new Promise((resolve) => setTimeout(resolve, 800));
 
-        await fetchOrderList(cookies, customerSysId, locale); // pass values here
+        await fetchOrderList(cookies, customerSysId, locale);
       }
     } catch (error) {
       console.error("Failed to remove item from cart:", error);
@@ -190,8 +191,24 @@ const CartManager = ({ open, handleDrawerClose }) => {
     }
   };
 
+  const toggleDrawer = (newOpen) => () => {
+    console.log("toggleee");
+    setOpen(newOpen);
+  };
+
+ 
   return (
     <Drawer
+      variant="temporary"
+      anchor="left"
+      open={open}
+      onClose={() => {
+        if (typeof toggleDrawer === "function") {
+          toggleDrawer(false)();
+        } else {
+          console.error("toggleDrawer is not a function");
+        }
+      }}
       onClick={() => {
         dispatch(setStepIndex(11));
       }}
@@ -208,9 +225,6 @@ const CartManager = ({ open, handleDrawerClose }) => {
           backgroundColor: "#ffffff", // Light background for better contrast
         },
       }}
-      variant="persistent"
-      anchor="left"
-      open={open}
     >
       <Box>
         <DrawerHeader>
