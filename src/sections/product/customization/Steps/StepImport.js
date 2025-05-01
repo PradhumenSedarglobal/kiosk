@@ -43,7 +43,7 @@ const DisplayComponent = ({ data, formik, tabChange, setTabChange }) => {
     loadComponent();
     setTimeout(()=>{
       dispatch(loadingfalse("test"));
-    },2000);
+    },6000);
    
     setLoading(false);
   }, []);
