@@ -93,7 +93,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
     console.log("callingsssssssssss","val.SII_WIDTH",val.SII_WIDTH,"stepsArray.MEASUREMENT?.m_width",stepsArray.MEASUREMENT?.m_width);
     console.log("condition Width",val.SII_WIDTH < stepsArray.MEASUREMENT?.m_width);
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
-      if (Number(val.SII_WIDTH) <= Number(stepsArray.MEASUREMENT?.m_width)) {
+      if (Number(val.SII_WIDTH) < Number(stepsArray.MEASUREMENT?.m_width)) {
         setAlertMessage(
           "The entered width should not be greater than the selected material's maximum width."
         );
