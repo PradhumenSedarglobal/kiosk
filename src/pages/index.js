@@ -13,6 +13,7 @@ import {
   setCategoryGallary,
   setCustomization,
   setHeaderResponse,
+  setModalSliderImage,
 } from "@/redux/slices/customization";
 import { useDispatch } from "@/redux/store";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
@@ -171,7 +172,7 @@ export default function ProductPage(props) {
   const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
   const [formClose, setFormClose] = useState(false);
   
-  const [modalSliderImage, setModalSliderImage] = useState(null);
+  // const [modalSliderImage, setModalSliderImage] = useState(null);
   const [modalSliderImageLoading, setModalSliderImageLoading] = useState(false);
   const { query, locale } = useRouter();
   const [activeStep, setActiveStep] = useState(0);
@@ -192,6 +193,7 @@ export default function ProductPage(props) {
     productsSlugPageData,
     // customizationRes,
     headerResponse,
+
   } = props;
 
   // React.useEffect(() => {
@@ -230,7 +232,8 @@ export default function ProductPage(props) {
     modalDefaultItem,
     categoryGallary,
     categoryDefaultImg,
-    modalData
+    modalData,
+    modalSliderImage
   } = useSelector((state) => state.customization);
 
   useEffect(()=>{
@@ -244,7 +247,7 @@ export default function ProductPage(props) {
         path: `kiosk/fetch_gallery`,
         param: {
           category: SelectedCategory,
-          item: productId,
+          // item: productId,
           product: itemId,
         },
         cookies: cookies,
@@ -252,7 +255,8 @@ export default function ProductPage(props) {
       });
 
       if (response?.result.length > 0) {
-        setModalSliderImage(response.result);
+        dispatch(setModalSliderImage(response.result));
+        // setModalSliderImage(response.result);
       }
 
       setModalSliderImageLoading(false);
@@ -479,7 +483,8 @@ export default function ProductPage(props) {
       dispatch(resetState());
       dispatch(setCategoryGallary(null));
     } else {
-      setModalSliderImage(null);
+      dispatch(setModalSliderImage(null));
+      // setModalSliderImage(null);
     }
   };
 
@@ -552,7 +557,8 @@ export default function ProductPage(props) {
     if (stepCount === 0) {
       console.log('ssssssssst',stepCount);
       dispatch(resetState());
-      setModalSliderImage(null);
+      dispatch(setModalSliderImage(null));
+      // setModalSliderImage(null);
     }
 
       // Reset main swiper

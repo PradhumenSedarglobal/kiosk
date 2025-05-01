@@ -141,8 +141,6 @@ const TabinationStepsSection = ({
     if(tabChange === "1"){
 
       dispatch(removecart());
-   
-     
       dispatch(setStepIndex(5));
     
     } else if(tabChange === 2){

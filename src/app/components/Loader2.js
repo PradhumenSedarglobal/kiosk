@@ -127,44 +127,60 @@ export default function Loader2() {
         return group;
       }
       
-      case 'blinds': {
+      case 'door': {
         const group = new THREE.Group();
-      
-        // Blinds slats
-        const slatMaterial = new THREE.MeshStandardMaterial({
-          color: 0xD3D3D3, // Light gray
-          roughness: 0.5,
-          metalness: 0.3
-        });
-      
-        const slatCount = 20;
-        const slatWidth = 2.4;
-        const slatHeight = 0.08;
-        const slatDepth = 0.05;
-        const spacing = 0.15;
-      
-        for (let i = 0; i < slatCount; i++) {
-          const slat = new THREE.Mesh(
-            new THREE.BoxGeometry(slatWidth, slatHeight, slatDepth),
-            slatMaterial
-          );
-          slat.position.y = 1.5 - i * spacing;
-          slat.rotation.z = Math.PI / 4; // slightly open
-          group.add(slat);
-        }
-      
-        // Optional: Thin top bar (rod)
-        const topBar = new THREE.Mesh(
-          new THREE.BoxGeometry(slatWidth, 0.1, 0.1),
-          new THREE.MeshStandardMaterial({ color: 0xA9A9A9 })
+        
+        // Door main panel
+        const door = new THREE.Mesh(
+          new THREE.BoxGeometry(1.2, 2.8, 0.1),
+          wood
         );
-        topBar.position.y = 1.6;
-        group.add(topBar);
-      
+        door.castShadow = true;
+        group.add(door);
+        
+        // Door frame
+        const frame = new THREE.Mesh(
+          new THREE.BoxGeometry(1.4, 3.0, 0.15),
+          new THREE.MeshStandardMaterial({ 
+            color: 0xA0522D, // Sienna
+            roughness: 0.7
+          })
+        );
+        frame.position.z = -0.03;
+        group.add(frame);
+        
+        // Door handle
+        const handle = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.03, 0.03, 0.2, 16),
+          metal
+        );
+        handle.position.set(0.5, 0, 0.06);
+        handle.rotation.z = Math.PI/2;
+        group.add(handle);
+        
+        // Decorative panels
+        const panel1 = new THREE.Mesh(
+          new THREE.BoxGeometry(0.8, 0.3, 0.11),
+          new THREE.MeshStandardMaterial({ 
+            color: 0xCD853F, // Peru
+            roughness: 0.6
+          })
+        );
+        panel1.position.set(0, 0.5, 0);
+        group.add(panel1);
+        
+        const panel2 = new THREE.Mesh(
+          new THREE.BoxGeometry(0.8, 0.6, 0.11),
+          new THREE.MeshStandardMaterial({ 
+            color: 0xCD853F,
+            roughness: 0.6
+          })
+        );
+        panel2.position.set(0, -0.4, 0);
+        group.add(panel2);
+        
         return group;
       }
-      
-      
       
       case 'wallpaper': {
         // Create wallpaper with subtle pattern
@@ -278,30 +294,21 @@ export default function Loader2() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDesignIndex((prevIndex) => {
-        const nextIndex = (prevIndex + 1) % designList.length;
-        const nextDesign = designList[nextIndex];
-  
-        // Remove old mesh
-        if (meshRef.current && sceneRef.current) {
-          sceneRef.current.remove(meshRef.current);
-        }
-  
-        // Add new mesh
-        const newMesh = createMesh(nextDesign);
-        meshRef.current = newMesh;
-        if (sceneRef.current) {
-          sceneRef.current.add(newMesh);
-        }
-  
-        setDesign(nextDesign);
-        return nextIndex;
-      });
-    }, 4500);
-  
+      const nextIndex = (designIndex + 1) % designList.length;
+      setDesignIndex(nextIndex);
+      setDesign(designList[nextIndex]);
+
+      if (meshRef.current) {
+        sceneRef.current.remove(meshRef.current);
+      }
+
+      const newMesh = createMesh(designList[nextIndex]);
+      meshRef.current = newMesh;
+      sceneRef.current.add(newMesh);
+    }, 4500); // Smooth transition timing
+
     return () => clearInterval(interval);
-  }, []);
-  
+  }, [designIndex]);
 
   return (
     <motion.div
