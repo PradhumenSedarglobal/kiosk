@@ -120,7 +120,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
         toast.success("Item successfully removed from cart!", {
           position: "top-right",
           style: {
-            background: "linear-gradient(45deg, #d32f2f, #f44336)",
+            background: "linear-gradient(45deg,rgb(44, 136, 13),rgb(24, 162, 19))",
             color: "white",
           },
         });
