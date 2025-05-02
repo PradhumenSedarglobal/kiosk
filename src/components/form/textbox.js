@@ -41,11 +41,13 @@ const TextBox = (props) => {
     bottomTextSx,
     maxLength,
     inputMode,
-    onClick
+    onClick,
+    classn,
   } = props;
 
   return (
     <FormControl
+      className={classn}
       key={`key${name}`}
       error={helperText ? true : false}
       fullWidth={fullWidth}

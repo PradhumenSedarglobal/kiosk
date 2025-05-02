@@ -665,6 +665,7 @@ export default function ProductPage(props) {
         >
           {/* Burger Menu Icon Start */}
           <Fab
+            className="drawer"
             onClick={handleDrawerOpen}
             sx={{
               backgroundColor: "#ef9c00",
@@ -680,7 +681,7 @@ export default function ProductPage(props) {
             color="warning"
             aria-label="edit"
           >
-            <MenuIcon className="drawer" />
+            <MenuIcon />
           </Fab>
           {/* Burger Menu End  */}
 

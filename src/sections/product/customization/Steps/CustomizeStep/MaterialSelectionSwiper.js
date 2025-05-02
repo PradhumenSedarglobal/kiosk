@@ -17,8 +17,7 @@ const sliderSetting = {
 
 const MaterialSwiper = ({ item_info, updateTextureFun, item_img_path, elem, productInfo }) => {
     const sliderRef = useRef(null);
-    const tourState = useSelector((state) => state.tour);
-    const dispatch = useDispatch();
+
     return (
         <Swiper
             // slidesPerView={4}
@@ -51,7 +50,6 @@ const MaterialSwiper = ({ item_info, updateTextureFun, item_img_path, elem, prod
                 return (
                     <SwiperSlide key={`COLOR-MATERIAL-${index}`}>
                         <Card
-                            className={index == 0 ? 'selectMaterial' : ''}
                             sx={() => ({
                                 "&.MuiCard-root": {
                                     width: "32px",
@@ -69,7 +67,7 @@ const MaterialSwiper = ({ item_info, updateTextureFun, item_img_path, elem, prod
                             })}
                             variant="outlined"
                             onClick={(e) => {
-                                dispatch(setStepIndex(tourState.stepIndex + 1));
+                               
                                 sliderRef.current.swiper.slideTo(index - 1);
                                 updateTextureFun(subColor.texture_info);
                             }}

@@ -30,6 +30,7 @@ import { useAuthContext } from "@/auth/useAuthContext";
 import MaterialSwiper from "./MaterialSelectionSwiper";
 import MainHeading from "@/app/components/MainHeading";
 import SubHeading from "@/app/components/SubHeading";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 const qs = require("qs");
 
 let img_path = "/assets/images/";
@@ -48,6 +49,8 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
   const sliderRef = useRef(null);
   const [alertMessage, setAlertMessage] = useState(null);
   //  const [materialList, setMaterialList] = useState([]);
+
+  const tourState = useSelector((state) => state.tour);
 
   const selectedCategory = useSelector(
     (state) => state.customization.SelectedCategory
@@ -236,6 +239,8 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
       );
     }, [stepsArray["MATERIAL_SELECTION"]]);
 
+    
+
   
   return (
     <>
@@ -295,11 +300,13 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
                     <a
                       className="matrial_class"
                       onClick={(e) => {
+                        dispatch(setStepIndex(tourState.stepIndex + 1));
                         updateTextureFun(elem);
                       }}
                       style={{ cursor: "pointer" }}
                     >
                       <NextFillImage
+                        className={index == 0 ? 'selectMaterial' : ''} 
                         src={
                           elem.SII_THUMBNAIL_IMAGES
                             ? item_img_path + elem.SII_THUMBNAIL_IMAGES

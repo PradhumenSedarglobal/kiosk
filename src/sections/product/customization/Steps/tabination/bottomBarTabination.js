@@ -28,7 +28,7 @@ import {
   setGeoLocationDetails,
   setOrderList,
   loadingfalse,
-  orderList
+  orderList,
 } from "@/redux/slices/customization";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -53,7 +53,6 @@ const BottomBarTabination = ({
   customerSysId,
   customization_info,
 }) => {
-
   const { t: translate } = useTranslation();
   const { locale, query } = useRouter();
   const router = useRouter();
@@ -65,33 +64,35 @@ const BottomBarTabination = ({
 
   const paramKeys = Object.keys(query);
 
-   // Get current pathname (e.g., /uae-en/curtains-and-drapes/fabric-curtain-pinch-pleat/...)
-   const pathname = router.asPath.split('?')[0]; // Remove query params if any
+  // Get current pathname (e.g., /uae-en/curtains-and-drapes/fabric-curtain-pinch-pleat/...)
+  const pathname = router.asPath.split("?")[0]; // Remove query params if any
 
-   // Split by '/' and filter out empty strings
-   const pathSegments = pathname.split('/').filter(segment => segment !== '');
- 
-   // Get the number of segments
-   const segmentsCount = pathSegments.length;
+  // Split by '/' and filter out empty strings
+  const pathSegments = pathname.split("/").filter((segment) => segment !== "");
+
+  // Get the number of segments
+  const segmentsCount = pathSegments.length;
 
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(()=>{
-    console.log("orderlist update",orderList);
-  },[orderList]);
+  useEffect(() => {
+    console.log("orderlist update", orderList);
+  }, [orderList]);
 
   useEffect(() => {
     // if (priceArray.SOL_VALUE && stepsArray && Object.keys(stepsArray).length > 8) {
-      setIsLoading(false); 
+    setIsLoading(false);
     // }
   }, [priceArray.SOL_VALUE]);
 
-    const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
-    const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
+  const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
 
   const fonts = useSelector((state) => state.font);
-  const {isMaterialCustomizationLoading} = useSelector((state) => state.customization);
-  const {value} = useSelector((state) => state.step);
+  const { isMaterialCustomizationLoading } = useSelector(
+    (state) => state.customization
+  );
+  const { value } = useSelector((state) => state.step);
 
   const dispatch = useDispatch();
 
@@ -107,12 +108,12 @@ const BottomBarTabination = ({
         console.error("Missing customerId or visitorId");
         return;
       }
-      
+
       if (paramKeys.length === 0) {
         dispatch(removecart());
         dispatch(decrementStep(0));
       }
-  
+
       // Add to cart
       const result = await addToCartFunScene(
         {
@@ -124,24 +125,24 @@ const BottomBarTabination = ({
         },
         dispatch
       );
-  
+
       toast.success("Added to cart successfully!", {
         position: "top-right",
         style: {
-          background: "linear-gradient(45deg,rgb(22, 160, 54),rgb(97, 238, 72))",
+          background:
+            "linear-gradient(45deg,rgb(22, 160, 54),rgb(97, 238, 72))",
           color: "white",
         },
       });
 
-      if(segmentsCount >= 5){
+      if (segmentsCount >= 5) {
         setTabChange(2);
-      }else{
+      } else {
         dispatch(resetState());
       }
 
-  
       dispatch(setOrderList(null));
-  
+
       // Fetch updated order list after 800ms
       setTimeout(async () => {
         try {
@@ -149,14 +150,15 @@ const BottomBarTabination = ({
             `https://migapi.sedarglobal.com/kiosk/order/orderList?lang=en&site=100001&country=uae&visitorId=${cookies.visitorId}&userId=${customerSysId}&currency=AED&ccy_decimal=0&cn_iso=${cookies.primary_ref_cn_iso}&locale=${locale}&detect_country=`,
             {
               headers: {
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Content-Type":
+                  "application/x-www-form-urlencoded; charset=UTF-8",
                 Accept: "application/json",
                 "Access-Control-Allow-Origin": "*",
               },
               withCredentials: false,
             }
           );
-  
+
           dispatch(
             setOrderList({
               complete: response.data.complete,
@@ -164,29 +166,46 @@ const BottomBarTabination = ({
               total_price: response.data.total_price,
             })
           );
-  
+
           if (paramKeys.length > 0) {
             setTabChange(1);
           } else {
             dispatch(resetState());
           }
-  
         } catch (error) {
           console.error("Failed to fetch order list:", error);
         }
       }, 800);
-
-    
-  
     } catch (error) {
       console.error("Failed to add to cart:", error);
     }
   };
-  
-
 
   const tourState = useSelector((state) => state.tour);
- 
+
+  const classMap = {
+    1: "continue3",
+    2: "continue4",
+    3: "continue5",
+    4: "continue6",
+  };
+
+  let className = "";
+  switch (tabChange) {
+    case "1":
+      className = "continue3";
+      break;
+    case "2":
+      className = "continue4";
+      break;
+    case "3":
+      className = "continue5";
+      break;
+    case "4":
+      className = "continue6";
+      break;
+  }
+
   return (
     <Box
       sx={{
@@ -287,21 +306,31 @@ const BottomBarTabination = ({
           </Grid>
 
           <Grid item xs={5} pt={"0 !important"}>
-              <Typography
-                sx={{
-                  fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
-                  color: "#010101",
-                  paddingTop: "25px",
-                  textAlign: "end",
-                  fontSize: "16px !important",
-                }}
-                gutterBottom
-                variant="p"
-                component="div"
-              >
-                {translate("Total")} {translate(cookies?.CCYCODE || "AED")}{" "}
-                {!isMaterialCustomizationLoading && !isLoading && priceArray.SOL_VALUE > 0 ? (priceArray.SOL_VALUE ? priceArray.SOL_VALUE : 0) : <DotLoading/>}
-              </Typography>
+            <Typography
+              sx={{
+                fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
+                color: "#010101",
+                paddingTop: "25px",
+                textAlign: "end",
+                fontSize: "16px !important",
+              }}
+              gutterBottom
+              variant="p"
+              component="div"
+            >
+              {translate("Total")} {translate(cookies?.CCYCODE || "AED")}{" "}
+              {!isMaterialCustomizationLoading &&
+              !isLoading &&
+              priceArray.SOL_VALUE > 0 ? (
+                priceArray.SOL_VALUE ? (
+                  priceArray.SOL_VALUE
+                ) : (
+                  0
+                )
+              ) : (
+                <DotLoading />
+              )}
+            </Typography>
           </Grid>
         </Grid>
 
@@ -331,7 +360,6 @@ const BottomBarTabination = ({
                 size="large"
                 variant="outlined"
                 onClick={() => {
-                  
                   dispatch(setStepIndex(tourState.stepIndex - 1));
 
                   onPreviousHandle("PREV");
@@ -346,7 +374,7 @@ const BottomBarTabination = ({
               <Button
                 size="large"
                 variant="outlined"
-                onClick={() => router.push('/')}
+                onClick={() => router.push("/")}
                 startIcon={<HomeIcon color="black" />}
               >
                 Home
@@ -362,23 +390,15 @@ const BottomBarTabination = ({
               alignItems: "end",
             }}
           >
-            {tabChange != "5"  && (
+            {tabChange != "5" && (
               <Button
                 disabled={!priceArray.SOL_VALUE}
-                className={
-                  tabChange === "1"
-                    ? "continue3"
-                    : tabChange === "2"
-                    ? "continue4"
-                    : tabChange === "3"
-                    ? "continue5"
-                    : tabChange == "4"
-                    ? "continue4"
-                    : ""
-                }
+                className={classMap[tabChange] || ""}
                 size="large"
                 variant="outlined"
                 onClick={() => {
+                  console.log("tabbbbbbbbb", tabChange);
+                  console.log("tabbbbbbbbb2", typeof tabChange);
                   dispatch(setStepIndex(tourState.stepIndex + 1));
                   onNextHandle("NEXT");
                 }}
@@ -392,11 +412,15 @@ const BottomBarTabination = ({
               <Button
                 size="large"
                 variant="outlined"
-                onClick={() =>
-                  !customerSysId
-                    ? handleAddToCart()
-                    : handleAddToCartIfVistiorId()
-                }
+                className="addTocart"
+                onClick={() => {
+                  if (!customerSysId) {
+                    handleAddToCart();
+                  } else {
+                    handleAddToCartIfVistiorId();
+                  }
+                  dispatch(setStepIndex(tourState.stepIndex + 1));
+                }}                
                 startIcon={<LocalMallIcon color="black" />}
               >
                 Add To Cart

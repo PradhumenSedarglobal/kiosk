@@ -52,6 +52,7 @@ const initialState = {
       content: "Now please select product color!",
       placement: "top",
       spotlightPadding: 10,
+      spotlightClicks: true,
     },
     {
       target: ".continue4",
@@ -60,10 +61,23 @@ const initialState = {
       spotlightPadding: 10,
     },
     {
-      target: ".submit",
+      target: ".continue5",
+      content: "Now click on the continue button",
+      placement: "top",
+      spotlightPadding: 10,
+    },
+    {
+      target: ".continue6",
+      content: "Now click on the continue button",
+      placement: "top",
+      spotlightPadding: 10,
+    },
+    {
+      target: ".addTocart",
       content: "Now fill this form and submit details!",
       placement: "top",
       spotlightPadding: 10,
+      spotlightClicks: true,
     },
     {
       target: ".drawer",

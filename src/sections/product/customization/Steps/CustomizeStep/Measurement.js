@@ -274,7 +274,7 @@ const Measurement = ({ data }) => {
         </Typography>
       </Box> */}
 
-      <Box  className="selectMeasurment"  px={3} py={2} sx={{ overflow: "hidden"}}>
+      <Box  px={3} py={2} sx={{ overflow: "hidden"}}>
         {" "}
         {/* Hide overflow here */}
 
@@ -295,7 +295,6 @@ const Measurement = ({ data }) => {
           }}
         />
         <TextBox
-          
           ref={isFirstRender}
           fullWidth
           type="text"
@@ -339,6 +338,7 @@ const Measurement = ({ data }) => {
             fontFamily: fonts.Helvetica_Neue_Regular.style.fontFamily,
           }}
           required
+          classn="selectMeasurment" 
         />
       </Box>
 
