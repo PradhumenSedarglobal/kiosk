@@ -633,9 +633,6 @@ export default function ProductPage(props) {
   return (
     <>
 
-     
-
-      {/* {stepCount == 0 && <TourGuideButton  />} */}
       <TourGuideButton />
 
       <InfoButton howToUse={howToUse} step="2" />
@@ -698,7 +695,7 @@ export default function ProductPage(props) {
           {/* Burger Menu End  */}
 
           {/* Reset 3dModal Icon Start */}
-          {stepCount !== 0 && stepCount !== 1 && (
+          {stepCount !== 0 && stepCount !== 1 && !isCustomizationLoading && (
             <ResetHoverButton resetCanvasScene={resetCanvasScene} />
           )}
 
