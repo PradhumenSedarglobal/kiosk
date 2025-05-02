@@ -22,39 +22,11 @@ const CategoryModal = ({ data, formik, elem }) => {
   const dispatch = useDispatch();
   const source = axios.CancelToken.source();
 
-//   const fetchData = async () => {
-//     try{
-//       const response = await axios.get('https://uatapi.sedarglobal.com/v2/header?lang=en&site=100001&country=uae&visitorId=OjXE-YpIp&userId=100062342&currency=AED&ccy_decimal=0&cn_iso=AE&country_iso=AE&detect_country=AE&locale=uae-en&seo_type=PRODUCT&page_name=wallpaperen', {cancelToken: source.token});
-
-//       const selectedCategoryData = response.data.result.HEADER.SGMEGAMENU.find(
-//         (item) => item.link_url === selectedCategory
-//       );
-
-//       setModal(selectedCategoryData.CHILD);
-      
-//     } catch(error){
-//       if(axios.isCancel(error)){
-//         console.log('Request canceled:', error.message);
-//       }else{
-//         console.error('Error fetching categories:', error);
-//       }
-
-//     }
-//   }
-
-  useEffect(() => {
-    // fetchData();
-    console.log("dataaaaaaaaa", data.SUB_CHILD);
-  }, []);
-
   const handleChange = (link) => {
     dispatch(updateSelectedModal(link));
   
   };
 
-
-
-  
 
   return (
     <>

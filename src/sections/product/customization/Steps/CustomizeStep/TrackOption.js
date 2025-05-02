@@ -49,7 +49,7 @@ const TrackOption = ({ data }) => {
 
     let new_data = Object.assign({}, { ...val }, {});
     delete new_data["SUB_CHILD"];
-    //  console.log(val, 'optionFun', new_data);
+
     dispatch(setCustomizationFun(new_data));
     if (["TO01", "TO02", "TO04"].indexOf(val.SPS_CODE) >= 0) {
       valanceType("VAL02");
@@ -99,7 +99,6 @@ const TrackOption = ({ data }) => {
 
   useEffect(() => {
     if (stepsArray && step_name && stepsArray[step_name]) {
-      console.log(stepsArray, 'addToCartFunScene11', customization_info);
       setTimeout(
         function () {
           addToCartFunScene({ ...cookies, ...customization_info, locale: locale }, dispatch);

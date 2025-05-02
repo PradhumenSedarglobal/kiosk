@@ -58,7 +58,6 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
 
   const customization_info = useSelector((state) => state.customization);
 
-  console.log("customization1111", customization_info);
 
   const { state } = useAuthContext();
   const { cookies } = state;
@@ -84,14 +83,9 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
     ? productInfo.SPI_PR_ITEM_CODE
     : 0;
 
-  console.log("SPI_PR_ITEM_CODE", SPI_PR_ITEM_CODE);
-  console.log("SPI_PR_ITEM_CODE111111", materialList);
-
-
 
   const updateTextureFun = async (val) => {
-    console.log("callingsssssssssss","val.SII_WIDTH",val.SII_WIDTH,"stepsArray.MEASUREMENT?.m_width",stepsArray.MEASUREMENT?.m_width);
-    console.log("condition Width",val.SII_WIDTH < stepsArray.MEASUREMENT?.m_width);
+
     if (productInfo.SPI_RESTRICT_TO_MATERIAL_WIDTH_YN === "Y") {
       if (Number(val.SII_WIDTH) < Number(stepsArray.MEASUREMENT?.m_width)) {
         setAlertMessage(
@@ -136,9 +130,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
 
 
   useEffect(() => {
-    console.log("this called you can check");
-    console.log("materialList",materialList.length);
-    console.log("productInfo",productInfo?.code);
+
     if (materialList.length > 0) {
       let elem =
         materialList[0]["items"] &&
@@ -154,9 +146,6 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
   }, [productInfo?.code === "0" || productInfo?.code === 0]);
 
   useEffect(() => {
-    console.log("useEffect called due to materialList change");
-    console.log("materialList", materialList.length);
-    console.log("productInfo", productInfo?.code);
   
     if (materialList.length > 0) {
       let elem =
@@ -269,7 +258,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
         </Alert>
       )}
 
-      <Box px={3} py={2}>
+      <Box sx={{ overflow: "hidden",px:2 }}>
         <Grid
           container
           spacing={1}
@@ -280,8 +269,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
         >
           {materialList &&
             materialList.map((item_info, index) => {
-              console.log("materialListdata", item_info);
-              console.log("productInfo?.code", productInfo?.code);
+
               let elem =
                 item_info["items"] &&
                 item_info["items"][0] &&

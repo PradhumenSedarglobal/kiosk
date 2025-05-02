@@ -5,9 +5,6 @@ import {
 
 export const addToCartFunScene2 = (state, dispatch, cart_status = "INCOMPLETE") => {
 
-  console.log("check cart data",state, dispatch, cart_status);
-
-
   const { stepsArray, editStepData, productInfo } = state;
 
   if(state.cart_status == "COMPLETED"){
@@ -29,8 +26,6 @@ export const addToCartFunScene2 = (state, dispatch, cart_status = "INCOMPLETE") 
     SOL_CAD_SYS_ID = editStepData.line_result && editStepData.line_result.SOL_CAD_SYS_ID > 0 ? editStepData.line_result.SOL_CAD_SYS_ID : "";
   }
 
-  console.log("here i have","state.user",state);
-  console.log("here i have","state.user",userId);
 
   if (state.user && state.modificationUser && state.modificationUser.head_sys_id && state.user.cust_type == "ADMIN" && SOL_SOH_SYS_ID == '') {
     SOL_SOH_SYS_ID = state.modificationUser.head_sys_id;
@@ -62,7 +57,7 @@ export const addToCartFunScene2 = (state, dispatch, cart_status = "INCOMPLETE") 
     "&userId=" +
     userId + '&site=' + state.site + '&country=' + state.countryName  + '&currency=' + state.CCYCODE + '&ccy_decimal=' + state.CCYDECIMALS + '&cn_iso=' + state.cniso + '&detect_country=' + state.detect_country + '&lang='+"en";
 
-    console.log("check cart data",stepsArray);
+
   if(stepsArray && Object.keys(stepsArray).length > 8){  
     if (
     productInfo &&
@@ -72,11 +67,11 @@ export const addToCartFunScene2 = (state, dispatch, cart_status = "INCOMPLETE") 
     (stepsArray?.MEASUREMENT || stepsArray?.ROLL_CALCULATION)
   ) {
 
-    console.log(stepsArray, post_data, 'addToCartFunScene');
+
     axiosInstance.post(path_url, post_data)
       .then((response) => {
         let res_data = response.data;
-        console.log(res_data, 'res_data74');
+      
         if (res_data.return_status == 0) {
           dispatch(setCustomizationPriceFun(res_data.result));
         } else {
@@ -105,9 +100,6 @@ export const addToCartFunScene2 = (state, dispatch, cart_status = "INCOMPLETE") 
 
 export const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") => {
 
-  console.log("check cart data2",state, dispatch, cart_status);
-
-
   const { stepsArray, editStepData, productInfo } = state;
 
   if(state.cart_status == "COMPLETED"){
@@ -129,8 +121,6 @@ export const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") =
     SOL_CAD_SYS_ID = editStepData.line_result && editStepData.line_result.SOL_CAD_SYS_ID > 0 ? editStepData.line_result.SOL_CAD_SYS_ID : "";
   }
 
-  console.log("here i have","state.user",state);
-  console.log("here i have","state.user",userId);
 
   if (state.user && state.modificationUser && state.modificationUser.head_sys_id && state.user.cust_type == "ADMIN" && SOL_SOH_SYS_ID == '') {
     SOL_SOH_SYS_ID = state.modificationUser.head_sys_id;
@@ -162,7 +152,6 @@ export const addToCartFunScene = (state, dispatch, cart_status = "INCOMPLETE") =
     "&userId=" +
     userId + '&site=' + state.site + '&country=' + state.countryName  + '&currency=' + state.CCYCODE + '&ccy_decimal=' + state.CCYDECIMALS + '&cn_iso=' + state.cniso + '&detect_country=' + state.detect_country + '&lang='+"en";
 
-    console.log("check cart data",stepsArray);
  
     if (
     productInfo &&

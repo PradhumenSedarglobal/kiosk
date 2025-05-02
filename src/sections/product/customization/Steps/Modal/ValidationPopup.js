@@ -17,8 +17,6 @@ export default function ValidationPopup(props) {
     let validation_list = Object.keys(validation_step);
     let error_validation_list = Object.keys(error_validation || {});
 
-    console.log(props, 'ValidationPopup', validation_step, error_validation);
-
     const handleClose = () => {
         props.setMissingPopup(false);
     };

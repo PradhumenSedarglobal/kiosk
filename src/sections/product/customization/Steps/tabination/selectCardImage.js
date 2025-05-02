@@ -34,7 +34,6 @@ const SelectCardImage = ({
       setCustomizationFun(new_data)
     );
 
-    console.log("ss code name",data.SS_CODE_NAME);
     switch (data.SS_CODE_NAME) {
       case 'MOUNTING_OPTION':
         if (data.SPS_CODE == 'MO02' && stepsArray['WINDOW_DEPTH']) {

@@ -19,7 +19,6 @@ const importView = (subreddit) =>
 const DisplayComponent = ({ data, formik, tabChange, setTabChange }) => {
   const [views, setViews] = useState([]);
   const [loading, setLoading] = useState(false);
-  console.log(data, 'data13');
   const dispatch = useDispatch();
 
   useEffect(() => {

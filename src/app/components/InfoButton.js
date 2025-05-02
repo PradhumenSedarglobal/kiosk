@@ -11,7 +11,6 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   const handleClick = () => {
-    console.log("this functin called",fonts);
     dispatch(startTour(Number(step)));
   };
 
@@ -21,7 +20,7 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
       sx={{
         position: "absolute",
         top: "10px",
-        left: isMobile ? "87vw" : "55vw",
+        left: isMobile ? "87vw" : "54vw",
         zIndex: 999,
         cursor: "pointer",
       }}

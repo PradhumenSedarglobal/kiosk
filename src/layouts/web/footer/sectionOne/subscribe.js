@@ -63,7 +63,6 @@ const FooterSubscribe = () => {
           admitadInvoice(consult_type, email); // ADMITAD.Invoice
         }
       } catch (error) {
-        console.log(error, "error");
         enqueueSnackbar(translate("SomethingWentWrong"), { variant: "error" });
       }
     }

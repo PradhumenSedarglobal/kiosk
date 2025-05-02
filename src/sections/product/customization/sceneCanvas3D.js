@@ -458,7 +458,7 @@ const SceneCanvas3D = (props) => {
      }, 1800);
    };*/
 
-  console.log(customization?.CHILD, 'customization1111', customization)
+
   React.useEffect(() => {
     window.addEventListener("resize", onWindowResize);
 
@@ -806,7 +806,7 @@ const updateTextureImg = (material_info) => {
   if (!material_info || !globalObject) {
     return false;
   }
-  console.log("materialInfoImage",material_info.IMAGE_PATH);
+
   let IMAGE_PATH = material_info.IMAGE_PATH;
   all_texture_url = material_info;
   var effect_info =

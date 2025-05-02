@@ -104,7 +104,6 @@ const CustomizationSection = () => {
         setImageUrls(updatedImageUrls);
       }
 
-      console.log("setImageUrls", imageUrls);
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
@@ -237,7 +236,6 @@ const CustomizationSection = () => {
                           alt={`Image ${index + 1}`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            console.log(`Image ${index + 1} clicked`);
                             handleImageClick(src);
                           }}
                         />

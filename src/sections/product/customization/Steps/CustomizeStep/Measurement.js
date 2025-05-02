@@ -30,8 +30,6 @@ const Measurement = ({ data }) => {
   const isFirstRender = useRef(true);
   const calledOnce = useRef(false);
 
-  console.log("customization_info111",customization_info);
-
   const { stepsArray, editStepData, productInfo } = customization_info;
   const [hasUpdated, setHasUpdated] = useState(false);
   let [me_width, setMe_width] = useState(productInfo.SPI_MIN_WIDTH);
@@ -46,10 +44,6 @@ const Measurement = ({ data }) => {
   let MAX_WIDTH = parseInt(productInfo.SPI_MAX_WIDTH);
   let MIN_HEIGHT = parseInt(productInfo.SPI_MIN_HEIGHT);
   let MAX_HEIGHT = parseInt(productInfo.SPI_MAX_HEIGHT);
-
-
-  console.log("stepsArraystepsArray",stepsArray);
-  console.log("state.productInfo",productInfo);
   
   const fonts = useSelector((state) => state.font);
   const tourState = useSelector((state) => state.tour);
@@ -126,7 +120,7 @@ const Measurement = ({ data }) => {
     if (val == NaN) {
       return false;
     }
-    console.log('comming here')
+
     if (type == "product_width") {
       m_width = val;
       setMe_width(val);
@@ -159,7 +153,6 @@ const Measurement = ({ data }) => {
         ? stepsArray.MATERIAL_SELECTION.material_info.SII_CODE
         : 0;
 
-        console.log('measurmentsss',m_width,m_width,m_height,m_height,stepsArray.MEASUREMENT);
 
       if (
         m_width < MIN_WIDTH ||
@@ -167,8 +160,6 @@ const Measurement = ({ data }) => {
         m_height < MIN_HEIGHT ||
         (m_height > MAX_HEIGHT && stepsArray && stepsArray.MEASUREMENT)
       ) {
-        console.log('measurmentsss delete',m_width,m_width,m_height,m_height,stepsArray.MEASUREMENT);
-        //setIivalid({ product_width: true, product_height: true });
         dispatch(deleteCustomizationStep(["MEASUREMENT"]));
       } else {
         dispatch(setCustomizationFun(measurement_data));
@@ -179,8 +170,6 @@ const Measurement = ({ data }) => {
 
   const toggleValidation = (name, value) => {
 
-    console.log(name, value,'toggleValidation',value,MIN_WIDTH,name);
-    console.log("isvalid",isvalid);
     if ((value < MIN_WIDTH || value > MAX_WIDTH) && name == "product_width") {
       setIivalid({ ...isvalid, [name]: true });
     } else if (
@@ -242,9 +231,7 @@ const Measurement = ({ data }) => {
   }, [MIN_WIDTH, MAX_HEIGHT]);
 
   useEffect(() => {
-    console.log("when width change");
     if (isvalid.product_width == false && isvalid.product_height == false && me_width > 0 && me_height > 0) {
-      console.log("when width change in this");
     
           addToCartFunScene(
             { ...cookies, ...customization_info, locale: locale },

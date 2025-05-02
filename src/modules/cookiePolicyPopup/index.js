@@ -93,7 +93,6 @@ const CookiePolicyPopup = () => {
       }
       return true;
     } catch (err) {
-      console.log(err, "decodeURIComponent");
       deleteCookie(cname);
       return true;
     }

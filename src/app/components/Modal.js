@@ -185,11 +185,6 @@ const Modal = ({ getModalGallary }) => {
     [dispatch, selectedModalData, getStep]
   );
 
-  useEffect(() => {
-    if (modal) {
-      console.log("modalllll", modal);
-    }
-  }, [modal]);
 
   useEffect(() => {
     dispatch(removecart());
@@ -198,7 +193,7 @@ const Modal = ({ getModalGallary }) => {
   useEffect(() => {
     setTimeout(() => {
       const firstItem = modalData?.model?.[0];
-      console.log("kyaayahai",firstItem);
+     
       // return false;
 
       const fpc = firstItem?.SPI_PR_ITEM_CODE;
@@ -306,7 +301,7 @@ const Modal = ({ getModalGallary }) => {
                       }}
                     >
                       <ImageCard
-                        TourClass={index == 0 ? "selectModal" : ""}
+                        TourClass={index == 0 ? "selectModal2" : ''}
                         category={selectedCategory}
                         index={index}
                         name={item.SPI_TOOLTIP}

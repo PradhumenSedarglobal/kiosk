@@ -218,7 +218,6 @@ const ProductDetails = ({ data, handleSetItemData, defaultSelectItem }) => {
           });
         }
       } catch (error) {
-        console.log("TESTERRIR", error);
         enqueueSnackbar(`${translate("SomethingWentWrong")}`, {
           variant: "error",
         });

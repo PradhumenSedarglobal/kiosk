@@ -77,18 +77,11 @@ const TabinationStepsSection = ({
       ? productInfo.SPI_RESTRICT_TO_MATERIAL_HEIGHT_YN
       : "N";
 
-  console.log("missingSteppppp", missingStep);
-  console.log("errorValidation", errorValidation);
-  console.log("missingPopup", missingPopup);
- 
-  console.log(data, "5XXXXX");
 
   const [tabChange, setTabChange] = useState("1");
 
   const onNextHandle = (type) => {
     stepValidation();
-
-    console.log("ssssssss");
   
     let missing_step = Object.keys(missingStep);
     let error_validation = Object.keys(errorValidation);
@@ -99,7 +92,6 @@ const TabinationStepsSection = ({
       dispatch(setStepIndex(9));
     }
 
-    console.log("typeeeeeeeeeeeee", tabChange);
   
     let cart_status =
       type == "ADDTOCART" &&
@@ -137,7 +129,7 @@ const TabinationStepsSection = ({
   };
   
   const onPreviousHandle = () => {
-    console.log("atyaa",typeof tabChange);
+
     if(tabChange === "1"){
 
       dispatch(removecart());
@@ -155,29 +147,7 @@ const TabinationStepsSection = ({
     }
   };
 
-  // const onPreviousHandle = () => {
-  //   console.log("tabChange", tabChange);
 
-  //   if (tabChange === "1") {
-  //     dispatch(setStepIndex(5));
-  //   } else if (tabChange === 2) {
-  //     dispatch(setStepIndex(7));
-  //   }
-
-  //   if (tabChange != "1") {
-  //     setTabChange((tabChange) => Number(tabChange) - 1);
-  //     console.log(tabChange, "13XXXXX");
-
-  //     addToCartFunScene(
-  //       { ...cookies, ...customization_info, locale: locale },
-  //       dispatch
-  //     );
-  //   } else {
-  //     console.log("tabChange", tabChange);
-  //     setTabChange(0);
-  //     dispatch(decrementStep(1));
-  //   }
-  // };
 
   const stepValidation = () => {
     customization &&
@@ -208,7 +178,7 @@ const TabinationStepsSection = ({
   };
 
   const filteFun = (child_data, parent, parent_index) => {
-    console.log("missingSteppp", missingStep);
+  
     child_data.filter((childElem) => {
       let parent_id = stepsArray[parent.SS_CODE_NAME]
         ? stepsArray[parent.SS_CODE_NAME].SPS_SYS_ID
@@ -294,7 +264,6 @@ const TabinationStepsSection = ({
       });
       setMissingPopup(true);
     } else {
-      console.log(33333, "ValidationPopup");
       setErrorValidation({});
       //  customize_state.error_step_validation.TYPE_OF_MOTOR ? delete customize_state.error_step_validation.TYPE_OF_MOTOR : '';
     }
@@ -310,7 +279,6 @@ const TabinationStepsSection = ({
       const hasValidSteps = stepsArray && Object.keys(stepsArray).length > 0;
   
       if (hasValidSteps && !hasCartBeenCalled.current) {
-        console.log('✅ Steps available! Calling addToCartFunScene');
   
         stepValidation();
         addToCartFunScene2(
@@ -338,7 +306,6 @@ const TabinationStepsSection = ({
     }
   };
 
-  // console.log("data1",data);
 
   return (
     <>

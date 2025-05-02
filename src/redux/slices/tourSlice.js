@@ -23,10 +23,11 @@ const initialState = {
       spotlightPadding: 10,
     },
     {
-      target: ".selectModal",
+      target: ".selectModal2",
       content: "Now select Modal!",
-      placement: "top",
+      placement: "left",
       spotlightPadding: 10,
+      
     },
     {
       target: ".continue2",

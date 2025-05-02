@@ -348,7 +348,7 @@ export function getMaterialCustomization({ params = {}, paramsId = {} }) {
   return async (dispatch) => {
     // dispatch(slice.actions.startMaterialCustomizationLoading(true));
     try {
-      console.log("this function is called");
+    
       const response = await dispatch(
         apiDataService.getAll(`v2/materialFilter/${paramsId}`, params)
       );

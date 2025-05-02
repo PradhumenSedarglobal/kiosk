@@ -278,7 +278,6 @@ export default function ProductPage(props) {
     if (filteredGallery && filteredGallery.length > 0) {
       const firstImagePath = filteredGallery[0].image_path;
       dispatch(setCategoryDefaultImg(firstImagePath));
-      console.log("filteredGallery", firstImagePath);
     } else {
       console.log("No categories found matching the selected category");
     }
@@ -355,9 +354,7 @@ export default function ProductPage(props) {
     }
   }, [materialList, selectedItemCode, imageUrls]);
 
-  // useEffect(() => {
-  //   console.log("stepCount", stepCount);
-  // }, [stepCount]);
+
 
  
   const addFilter = (element) => {
@@ -437,7 +434,7 @@ export default function ProductPage(props) {
   }, [thumbsSwiper]);
 
   const handleThumbnailClick = (index) => {
-    console.log("activeIndex", activeIndex);
+  
 
     if (!thumbsSwiper || !mainSwiper) {
       console.warn("Swiper instances are not ready. Retrying...");
@@ -474,7 +471,6 @@ export default function ProductPage(props) {
       dispatch(decrementStep(0));
     }
 
-    console.log("stepCounttttt",typeof stepCount,stepCount);
 
     dispatch(setStepIndex(tourState.stepIndex - 1));
     dispatch(removecart());
@@ -513,8 +509,6 @@ export default function ProductPage(props) {
 
   const tourState = useSelector((state) => state.tour);
 
-  console.log("tourState", tourState);
-
   const renderStep = () => {
     switch (stepCount) {
       case 0:
@@ -550,12 +544,10 @@ export default function ProductPage(props) {
 
   const howToUse = () => {
     dispatch(startTour(2));
-    console.log("calliii");
   };
 
   useEffect(() => {
     if (stepCount === 0) {
-      console.log('ssssssssst',stepCount);
       dispatch(resetState());
       dispatch(setModalSliderImage(null));
       // setModalSliderImage(null);
@@ -576,11 +568,9 @@ export default function ProductPage(props) {
   }, [stepCount]);
 
   const handleNext = async () => {
-    console.log("ayaaaa1", stepCount);
   
     if (stepCount === 1) {
       const modalSlug = SelectedModal;
-      console.log("ayaaaa2", modalData);
   
       if (!modalSlug) {
         console.error("Modal slug is missing");
@@ -635,7 +625,7 @@ export default function ProductPage(props) {
 
       <TourGuideButton />
 
-      <InfoButton howToUse={howToUse} step="2" />
+      <InfoButton howToUse={howToUse} step={stepCount == 0 ? "1" : "3"} />
 
       <Head>
         <title>Customization List Page</title>
@@ -1115,7 +1105,7 @@ export default function ProductPage(props) {
                         if (buttonRef.current) {
                           buttonRef.current.disabled = false;
                         }
-                      }, 2000);
+                      }, 1000);
                     }}
                     endIcon={<ArrowCircleRightIcon />}
                   >

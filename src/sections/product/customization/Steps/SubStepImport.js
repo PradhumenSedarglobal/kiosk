@@ -10,8 +10,6 @@ const importView = (subreddit) =>
 const DisplayComponent = ({ data, formik }) => {
   const [views, setViews] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  console.log("dataaaaaaa",data);
   
   useEffect(() => {
     function loadComponent() {

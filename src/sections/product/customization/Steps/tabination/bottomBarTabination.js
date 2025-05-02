@@ -74,8 +74,6 @@ const BottomBarTabination = ({
    // Get the number of segments
    const segmentsCount = pathSegments.length;
 
-  console.log("queryLength", segmentsCount);
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(()=>{
@@ -109,8 +107,6 @@ const BottomBarTabination = ({
         console.error("Missing customerId or visitorId");
         return;
       }
-  
-      console.log("Dispatching removecart and decrementStep if needed");
       
       if (paramKeys.length === 0) {
         dispatch(removecart());
@@ -142,10 +138,7 @@ const BottomBarTabination = ({
       }else{
         dispatch(resetState());
       }
-  
-    
-  
-      console.log("VisitorId and UserId:", cookies.visitorId, customerSysId);
+
   
       dispatch(setOrderList(null));
   
@@ -193,7 +186,7 @@ const BottomBarTabination = ({
 
 
   const tourState = useSelector((state) => state.tour);
-  console.log('ttttttttt',tabChange);
+ 
   return (
     <Box
       sx={{
@@ -379,8 +372,8 @@ const BottomBarTabination = ({
                     ? "continue4"
                     : tabChange === "3"
                     ? "continue5"
-                    : tabChange === "4"
-                    ? "continue6"
+                    : tabChange == "4"
+                    ? "continue4"
                     : ""
                 }
                 size="large"

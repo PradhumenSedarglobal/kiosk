@@ -91,10 +91,8 @@ export function getDeliveryPageData(params = {}) {
       const response = await dispatch(
         apiDataService.getAll(`shipping/getZonePrice`, params)
       );
-      console.log("DELIVERY PAGE DATA REDUX REDUX", response?.data);
       dispatch(slice.actions.setDeliveryPageData(response?.data));
     } catch (error) {
-      console.log("DELIVERY PAGE DATA REDUX ERROR", error);
       console.error(error);
       dispatch(slice.actions.hasDeliveryError(error));
     }

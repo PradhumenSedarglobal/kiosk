@@ -80,7 +80,6 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
     // Construct new URL path
     const newPath = `/${countryCode}-${newLanguage}`;
 
-    console.log("newPath", newPath);
 
     // Update state immediately for UI responsiveness
     setSelectedLanguage(newLanguage);
@@ -149,7 +148,6 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
         }
       );
 
-      console.log("getting response", response);
 
       dispatch(
         setOrderList({
@@ -192,7 +190,6 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
   };
 
   const toggleDrawer = (newOpen) => () => {
-    console.log("toggleee");
     setOpen(newOpen);
   };
 

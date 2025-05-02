@@ -10,8 +10,6 @@ const TourGuideButton = () => {
   const handleJoyrideCallback = (data) => {
     const { action, index, status, type } = data;
 
-    console.log("Joyride callback:", data);
-
     // Handle all side effects here before step transitions
     if (type === "step:before") {
       // Call your additional functions here
@@ -76,6 +74,7 @@ const TourGuideButton = () => {
         beacon: {
           display: "none",
         },
+        
       }}
       callback={handleJoyrideCallback}
     />

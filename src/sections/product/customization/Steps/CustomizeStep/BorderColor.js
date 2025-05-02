@@ -23,8 +23,6 @@ const perPage = 18;
 
 const BorderColor = ({ data }) => {
 
-  console.log(data, 'BorderColor');
-
   const { query, locale } = useRouter();
   const { slug } = query;
   const { t: translate } = useTranslation();

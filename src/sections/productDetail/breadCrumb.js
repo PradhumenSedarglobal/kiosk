@@ -5,7 +5,6 @@ import Typography from "@mui/material/Typography";
 import { useTranslation } from "next-i18next";
 
 const CustomBreadCrumb = ({ data }) => {
-  console.log(data,'breadcrumb data');
   const { t: translate } = useTranslation();
   return (
     <Container maxWidth="xl">

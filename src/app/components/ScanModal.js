@@ -74,7 +74,6 @@ export default function ScanModal() {
           <IconButton
             ref={modalRef}
             onClick={() => {
-              console.log("scan close is calling")
               dispatch(skipTour());
               dispatch(showScanner(false))}}
             sx={{

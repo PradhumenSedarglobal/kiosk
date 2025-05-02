@@ -6,11 +6,9 @@ export function useOnlineStatus() {
 
   useEffect(() => {
     const handleOnline = () => {
-      console.log('🟢 Online');
       setIsOnline(true);
     };
     const handleOffline = () => {
-      console.log('🔴 Offline');
       setIsOnline(false);
     };
 

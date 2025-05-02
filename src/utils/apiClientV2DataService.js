@@ -16,7 +16,7 @@ async function getAll({ path, param = "", asPath, locale }) {
       (getCookie(NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES) &&
         JSON.parse(getCookie(NEXT_SEDAR_PUBLIC_GET_ALL_COOKIES))) ||
       {};
-    console.log("THIS IS FIRST LOCALE", locale);
+
 
     const userId = USER_ID;
     const localeParam = locale && locale == "default" ? `${global}-en` : locale;
@@ -69,7 +69,6 @@ function post({ path, data = "", locale, isCountry = true }) {
       localeParam == "default" ? global : localeParam.split("-")[0];
     const langName = localeParam == "default" ? eng : localeParam.split("-")[1];
 
-    console.log("THIS IS FIRST SECOND LOCALE", localeParam, countryName, langName);
     const config = {
       site: site,
       lang: langName,

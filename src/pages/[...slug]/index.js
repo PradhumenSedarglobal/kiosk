@@ -402,8 +402,6 @@ export const getServerSideProps = async (context) => {
 };
 
 export default function ProductPage(props) {
-  // console.log(props,'homepage prop');
-  // return false;
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -427,13 +425,12 @@ export default function ProductPage(props) {
   // store thumbs swiper instance
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
-  // console.log(customizationRes, 'customizationRes1');
   React.useEffect(() => {
     if (slug?.includes("customize") && slug?.length >= 3 && slug?.length <= 7) {
       dispatch(setCustomization(customizationRes));
       dispatch(setHeaderResponse(headerResponse));
     }
-    // console.log(customizationRes, 'customizationRes2');
+    
   }, [customizationRes, slug]);
 
   React.useEffect(() => {

@@ -50,13 +50,10 @@ const RollCalculationTool = ({ data }) => {
 
 
   const rollCalculationfun = (type, value) => {
-    console.log("this function called");
     let m_width = me_width;
     let m_height = me_height;
     //let val = parseInt(value);
     let val = value;
-
-    console.log("this function called2",val);
 
     if (val == NaN) {
       return false;
@@ -84,11 +81,8 @@ const RollCalculationTool = ({ data }) => {
     
     setTimeout(()=>{
       let measurement_data = { ...data, m_width: m_width, m_height: m_height }
-      console.log("this function called3",measurement_data);
-
 
       if (m_height > 0 && m_width > 0 && !isNaN(m_width) && !isNaN(m_height)) {
-        console.log("in this");
         measurement_data['UOM_CODE'] = stepsArray.MATERIAL_SELECTION ? stepsArray.MATERIAL_SELECTION.material_info.SII_UOM_CODE : 0;
         measurement_data['ITEM_CODE'] = stepsArray.MATERIAL_SELECTION ? stepsArray.MATERIAL_SELECTION.material_info.SII_CODE : 0;
   
@@ -116,8 +110,6 @@ const RollCalculationTool = ({ data }) => {
 
 
   useEffect(() => {
-
-    console.log("roller width",me_width);
 
     setMe_width(productInfo.SPI_MIN_WIDTH);
     setMe_height(productInfo.SPI_MIN_HEIGHT);

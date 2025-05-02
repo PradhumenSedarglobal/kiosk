@@ -28,7 +28,7 @@ export default function CanonicalTag(props) {
     } else {
         canonicalPath = asPath.split("?")[0];
     }
-    // console.log(asPath.indexOf("?"), 'asPath');
+    
     let aHref = `${url}${locale != "default" ? locale : ''}${route != '/' && asPath.indexOf("?") !== -1 ? canonicalPath : route != '/' ? asPath : ''}`;
     return (
         <Head>

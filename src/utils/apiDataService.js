@@ -55,7 +55,6 @@ function getAll(path, param = "", asPath) {
           localeParam || ""
         }&${asPath}`;
       }
-      console.log("getStatcicPath", path_url);
       return axiosInstance.get(path_url);
     } catch (error) {
       console.error("getAll Error", error);
