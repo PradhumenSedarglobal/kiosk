@@ -258,7 +258,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
         </Alert>
       )}
 
-      <Box sx={{ overflow: "hidden",px:1 }}>
+      <Box sx={{ px:1.5 }}>
         <Grid
           container
           spacing={1}
