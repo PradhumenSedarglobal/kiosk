@@ -13,7 +13,7 @@ export default function useGoogleAnalytics() {
     if (site_url == "www.sedarglobal.com" && order_list && order_list.length) {
       let gtag_items = [];
       order_list.length > 0 &&
-        order_list.forEach((item, index) => {
+        order_list?.forEach((item, index) => {
           gtag_items.push({
             item_id: item.SFI_CODE,
             item_name: item.SFI_DESC,

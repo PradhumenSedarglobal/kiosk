@@ -468,7 +468,7 @@ export default function ProductPage(props) {
     });
   };
 
-  filters.forEach((element) => {
+  filters?.forEach((element) => {
     const { SFT_CODE } = element;
     if (
       SFT_CODE === "012" ||

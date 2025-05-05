@@ -13,7 +13,7 @@ export default function PlpSchema(props) {
   let data = [];
   listings &&
     listings?.length > 0 &&
-    listings.forEach(function (item, index) {
+    listings?.forEach(function (item, index) {
       const position = parseInt(index) + 1;
       const itemUrl =
         page != "product"

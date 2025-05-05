@@ -21,7 +21,7 @@ const GoogleAnalytics = () => {
     if (site_url == "www.sedarglobal.com" && order_list && order_list.length) {
       let gtag_items = [];
       order_list.length > 0 &&
-        order_list.forEach((item, index) => {
+        order_list?.forEach((item, index) => {
           gtag_items.push({
             item_id: item.SFI_CODE,
             item_name: item.SFI_DESC,
@@ -342,7 +342,7 @@ const GoogleAnalytics = () => {
     if (site_url == "www.sedarglobal.com" && order_list.length > 0) {
       let gtag_items = [];
       order_list.length > 0 &&
-        order_list.forEach((item, index) => {
+        order_list?.forEach((item, index) => {
           gtag_items.push({
             item_id:
               item.brand_info && item.brand_info.SII_CODE
@@ -440,7 +440,7 @@ const GoogleAnalytics = () => {
       let gtag_items = [];
 
       line_result.length > 0 &&
-        line_result.forEach((item, index) => {
+        line_result?.forEach((item, index) => {
           gtag_items.push({
             item_id:
               item.brand_info && item.brand_info.SII_CODE
@@ -500,7 +500,7 @@ const GoogleAnalytics = () => {
     if (site_url == "www.sedarglobal.com" && line_result.length > 0) {
       let gtag_items = [];
       line_result.length > 0 &&
-        line_result.forEach((item, index) => {
+        line_result?.forEach((item, index) => {
           gtag_items.push({
             item_id:
               item.brand_info && item.brand_info.SII_CODE
@@ -543,7 +543,7 @@ const GoogleAnalytics = () => {
     if (site_url == "www.sedarglobal.com" && line_result.length > 0) {
       let gtag_items = [];
       line_result.length > 0 &&
-        line_result.forEach((item, index) => {
+        line_result?.forEach((item, index) => {
           gtag_items.push({
             item_id:
               item.brand_info && item.brand_info.SII_CODE
@@ -594,7 +594,7 @@ const GoogleAnalytics = () => {
     if (site_url == "www.sedarglobal.com" && line_result.length > 0) {
       let gtag_items = [];
       line_result.length > 0 &&
-        line_result.forEach((item, index) => {
+        line_result?.forEach((item, index) => {
           gtag_items.push({
             item_id:
               item.brand_info && item.brand_info.SII_CODE
@@ -649,7 +649,7 @@ const GoogleAnalytics = () => {
     ) {
       let gtag_items = [];
       line_result.length > 0 &&
-        line_result.forEach((item, index) => {
+        line_result?.forEach((item, index) => {
           gtag_items.push({
             item_id:
               item.brand_info && item.brand_info.SII_CODE

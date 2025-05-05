@@ -267,7 +267,7 @@ export default function Loader2() {
         meshRef.current.rotation.y += 0.005; // Gentle rotation
         if (design === 'blinds') {
           // Animate blinds opening/closing slightly
-          meshRef.current.children.slice(1, 13).forEach((blind, i) => {
+          meshRef.current.children.slice(1, 13)?.forEach((blind, i) => {
             blind.rotation.z = Math.PI/4 + Math.sin(Date.now() * 0.001 + i) * 0.1;
           });
         }

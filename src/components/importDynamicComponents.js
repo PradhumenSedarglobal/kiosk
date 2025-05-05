@@ -490,7 +490,7 @@ export const ImportDynamicComponent = memo(({ url, isLanding, ...rest }) => {
   // Function to detect which component is currently in view
   const handleScroll = () => {
     const components = document.querySelectorAll("[data-component]");
-    components.forEach((component, index) => {
+    components?.forEach((component, index) => {
       const rect = component.getBoundingClientRect();
       // Check if the component is mostly visible in the viewport
       if (rect.top >= 0 && rect.top < window.innerHeight / 2) {

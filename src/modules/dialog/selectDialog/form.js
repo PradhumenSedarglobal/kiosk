@@ -336,7 +336,7 @@ const SelectDialogForm = ({
 
     formik.values.STEPS &&
       Object.values(formik.values.STEPS || {})?.length > 0 &&
-      Object.values(formik.values.STEPS).forEach((element) => {
+      Object.values(formik.values.STEPS)?.forEach((element) => {
         if (element?.SS_CODE_NAME == keyName && keyName == "MEASUREMENT") {
           steps[element?.SS_CODE_NAME] = {
             ...element,
