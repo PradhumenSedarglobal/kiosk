@@ -293,7 +293,7 @@ const CustomizationSection = () => {
               </>
           
           </Grid>
-          <Grid item lg={5} md={5} sm={12} xs={12} xxs={12}>
+          <Grid sx={{paddingBottom: isMobile ? "80px" : "1.5rem" }} item lg={5} md={5} sm={12} xs={12} xxs={12}>
             <TabinationStepsSection
               handleOpen={handleOpen}
               open={open}
