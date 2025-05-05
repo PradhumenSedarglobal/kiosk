@@ -162,7 +162,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
   };
 
   const updateQuantity = async (cartId, updatedQty) => {
-    if (updatedQty < 1) return; // Prevent negative or zero values
+    if (updatedQty < 1) return; 
 
     const response = await apiSSRV2DataService.post({
       path: `kiosk/order/cart/updateLineTable/${cartId}`,
@@ -185,7 +185,10 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
         },
       });
 
-      dispatch(setOrderList(response.data));
+      // ✅ Wait for 800ms before fetching updated cart list
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      await fetchOrderList(cookies, customerSysId, locale);
     }
   };
 
