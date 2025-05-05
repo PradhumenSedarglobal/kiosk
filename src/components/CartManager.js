@@ -129,14 +129,16 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
 
   const removeCart = async (cartId) => {
     if (isUpdating) return;
-    
+
     setIsUpdating(true);
     try {
       // Optimistic UI update - remove item immediately
       const updatedCart = {
         ...localCartData,
-        complete: localCartData.complete.filter(item => item.SOL_SYS_ID !== cartId),
-        cart_count: localCartData.cart_count - 1
+        complete: localCartData.complete.filter(
+          (item) => item.SOL_SYS_ID !== cartId
+        ),
+        cart_count: localCartData.cart_count - 1,
       };
       setLocalCartData(updatedCart);
 
@@ -150,7 +152,8 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
         toast.success("Item successfully removed from cart!", {
           position: "top-right",
           style: {
-            background: "linear-gradient(45deg,rgb(44, 136, 13),rgb(24, 162, 19))",
+            background:
+              "linear-gradient(45deg,rgb(44, 136, 13),rgb(24, 162, 19))",
             color: "white",
           },
         });
@@ -170,15 +173,15 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
 
   const updateQuantity = async (cartId, updatedQty) => {
     if (updatedQty < 1 || isUpdating) return;
-    
+
     setIsUpdating(true);
     try {
       // Optimistic UI update - update quantity immediately
       const updatedCart = {
         ...localCartData,
-        complete: localCartData.complete.map(item => 
+        complete: localCartData.complete.map((item) =>
           item.SOL_SYS_ID === cartId ? { ...item, SOL_QTY: updatedQty } : item
-        )
+        ),
       };
       setLocalCartData(updatedCart);
 
@@ -343,7 +346,9 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
                         </Typography>
 
                         <Chip
-                          onClick={() => !isUpdating && removeCart(item.SOL_SYS_ID)}
+                          onClick={() =>
+                            !isUpdating && removeCart(item.SOL_SYS_ID)
+                          }
                           icon={
                             <DeleteIcon
                               style={{ color: "#fff", marginRight: "-20px" }}
@@ -356,8 +361,10 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
                             fontWeight: "600",
                             cursor: isUpdating ? "not-allowed" : "pointer",
                             ml: 1,
-                            "&:hover": { 
-                              backgroundColor: isUpdating ? "#95a5a6" : "#e74c3c" 
+                            "&:hover": {
+                              backgroundColor: isUpdating
+                                ? "#95a5a6"
+                                : "#e74c3c",
                             },
                           }}
                         />
@@ -387,7 +394,8 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                           <Button
                             onClick={() =>
-                              !isUpdating && updateQuantity(
+                              !isUpdating &&
+                              updateQuantity(
                                 item.SOL_SYS_ID,
                                 Number(item?.SOL_QTY) - 1
                               )
@@ -427,7 +435,8 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
 
                           <Button
                             onClick={() =>
-                              !isUpdating && updateQuantity(
+                              !isUpdating &&
+                              updateQuantity(
                                 item.SOL_SYS_ID,
                                 Number(item?.SOL_QTY) + 1
                               )
@@ -501,7 +510,13 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
           }}
         >
           <span>Total:</span>
-          <span>{localCartData?.total_price?.SOL_VALUE || "AUD 0.00"}</span>
+          <span>
+            {localCartData?.total_price?.SOL_VALUE
+              ? `${translate(cookies?.CCYCODE || "AED")} ${Number(
+                  localCartData.total_price.SOL_VALUE
+                ).toFixed(2)}`
+              : "AED 0.00"}
+          </span>
         </Box>
 
         <Box mt={2} sx={{ width: "100%" }}>

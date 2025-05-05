@@ -1,7 +1,13 @@
 var validation_steps_type = ["TECH", "MATL", "MEASUREMENT", "ROLL_CALCULATION"];
 import PdpShema from "@/modules/PdpSchema";
 import PlpSchema from "@/modules/PlpSchema";
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
 import TourIcon from "@mui/icons-material/Tour";
 import Tooltip from "@mui/material/Tooltip";
@@ -168,17 +174,14 @@ export default function ProductPage(props) {
   const [lastPage, setLastPage] = useState();
   const [tabChange, setTabChange] = useState("1");
   const [missingStep, setMissingStep] = useState({});
-  const handleOpen = () => setOpen(!open);
   const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
   const [formClose, setFormClose] = useState(false);
-  
-  // const [modalSliderImage, setModalSliderImage] = useState(null);
   const [modalSliderImageLoading, setModalSliderImageLoading] = useState(false);
-  const { query, locale } = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [showButton, setShowButton] = useState(true);
 
   const router = useRouter();
+  const { query, locale } = router;
   const dispatch = useDispatch();
   const { t: translate } = useTranslation();
   const { slug } = props;
@@ -191,33 +194,20 @@ export default function ProductPage(props) {
     productsData,
     firstData,
     productsSlugPageData,
-    // customizationRes,
     headerResponse,
-
   } = props;
-
-  // React.useEffect(() => {
-  //   setClientSideReduxCookie({ dispatch: dispatch, router: router });
-  // }, [slug, router]);
 
   const { result = {} } = productFilter || {};
   const filters = result.FILTERS || [];
-  const newFilterArray = [];
-
-
-
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
-
   const { state } = useAuthContext();
   const { cookies } = state;
-
-  // store thumbs swiper instance
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  const buttonRef = React.useRef(null);
+  const [mainSwiper, setMainSwiper] = useState(null);
+  const buttonRef = useRef(null);
 
   const stepCount = useSelector((state) => state.step.value);
-
   const {
     customerSystemId,
     SelectedCategory,
@@ -233,82 +223,32 @@ export default function ProductPage(props) {
     categoryGallary,
     categoryDefaultImg,
     modalData,
-    modalSliderImage
+    modalSliderImage,
   } = useSelector((state) => state.customization);
 
-  useEffect(()=>{
-
-  },[categoryGallary]);
-
-  const getModalGallary = async (SelectedCategory=null,productId=null,itemId=null) => {
-    if (SelectedCategory !== null && SelectedModal !== null) {
-      setModalSliderImageLoading(true);
-      const response = await apiSSRV2DataService.getAll({
-        path: `kiosk/fetch_gallery`,
-        param: {
-          category: SelectedCategory,
-          // item: productId,
-          product: itemId,
-        },
-        cookies: cookies,
-        locale: locale,
-      });
-
-      if (response?.result.length > 0) {
-        dispatch(setModalSliderImage(response.result));
-        // setModalSliderImage(response.result);
-      }
-
-      setModalSliderImageLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if(modalDefaultItem?.productId){
-      getModalGallary(SelectedCategory,modalDefaultItem?.productId,modalDefaultItem?.itemId);
-    }
-   
-  }, [SelectedModal, SelectedCategory,modalDefaultItem]);
-
-  useEffect(() => {
-    const filteredGallery = categoryGallary?.filter(
-      (item) => item.link_url === SelectedCategory
-    );
-
-    if (filteredGallery && filteredGallery.length > 0) {
-      const firstImagePath = filteredGallery[0].image_path;
-      dispatch(setCategoryDefaultImg(firstImagePath));
-    } else {
-      console.log("No categories found matching the selected category");
-    }
-  }, [categoryGallary]);
-
-  
-
-  useEffect(() => {
-    console.log("orderListnew", orderList);
-  }, [orderList]);
-
-  const selectedItemCode = stepsArray?.MATERIAL_SELECTION?.material_info
-    ?.SII_CODE
-    ? stepsArray.MATERIAL_SELECTION.material_info.SII_CODE
-    : null;
-
-  const selectedItemCode2 =
-    stepsArray?.MATERIAL_SELECTION?.material_info?.SII_ITEM_ID;
-
-  const data2 = customization?.CHILD;
   const scanner = useSelector((state) => state.scanner.value);
   const fonts = useSelector((state) => state.font);
+  const tourState = useSelector((state) => state.tour);
+
+  // Memoized derived values
+  const selectedItemCode = useMemo(
+    () => stepsArray?.MATERIAL_SELECTION?.material_info?.SII_CODE || null,
+    [stepsArray]
+  );
+
+  const selectedItemCode2 = useMemo(
+    () => stepsArray?.MATERIAL_SELECTION?.material_info?.SII_ITEM_ID,
+    [stepsArray]
+  );
+
+  const data2 = useMemo(() => customization?.CHILD, [customization]);
 
   const formik = useFormik({
     initialValues: {
       qtys: "1",
       product_width: "",
       product_height: "",
-      // select_room: "",
       sort_by: "",
-      //  operating_side: "",
     },
     validate: (values) => {
       const errors = {};
@@ -319,158 +259,113 @@ export default function ProductPage(props) {
     },
   });
 
-  useEffect(() => {
-    try {
-      if (!materialList?.length) return;
+  // Memoized filter processing
+  const productFilterDropdown = useMemo(
+    () =>
+      result.MAIN_CATEGORY?.map((item) => ({
+        ...item,
+        label: item.DESCRIPTION,
+        value: item.SC_LINK_URL,
+      })) || [],
+    [result.MAIN_CATEGORY]
+  );
 
-      // setThumbsSwiper(null);
-      const subChild = materialList.flatMap((item) => item.items);
+  const newFilterArray = useMemo(() => {
+    const arr = [];
+    const mainCategory = result?.MAIN_CATEGORY || [];
 
-      const selectedMaterial = subChild.find(
-        (item) => item.SII_CODE === selectedItemCode
-      );
-
-      if (!selectedMaterial?.gallery?.length) return;
-
-      const newImageUrls = selectedMaterial.gallery.map(
-        (item) => item.SLI_IMAGE_PATH
-      );
-
-      const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
-      const updatedImageUrls = [firstImage, ...newImageUrls];
-
-      if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
-        setImageUrls(updatedImageUrls);
+    filters.forEach((element) => {
+      const { SFT_CODE } = element;
+      if (
+        SFT_CODE === "012" ||
+        SFT_CODE === "014" ||
+        SFT_CODE === "009" ||
+        SFT_CODE === "006"
+      ) {
+        arr.push({
+          ...element,
+          label: element.DESCRIPTION,
+          value: element.SFT_CODE,
+        });
+      } else if (!["010", "013"].includes(SFT_CODE)) {
+        arr.push({
+          ...element,
+          label: element.DESCRIPTION,
+          value: element.SFT_CODE,
+        });
       }
-
-      // Ensure Swiper instance is set AFTER updating images
-      setTimeout(() => {
-        if (thumbsSwiper) {
-          thumbsSwiper.update(); // Ensure it's properly updated
-        }
-      }, 100);
-    } catch (error) {
-      console.error("Error fetching gallery data:", error.message);
-    }
-  }, [materialList, selectedItemCode, imageUrls]);
-
-
-
- 
-  const addFilter = (element) => {
-    newFilterArray.push({
-      ...element,
-      label: element.DESCRIPTION,
-      value: element.SFT_CODE,
     });
-  };
 
-  filters.forEach((element) => {
-    const { SFT_CODE } = element;
-    if (
-      SFT_CODE === "012" ||
-      SFT_CODE === "014" ||
-      SFT_CODE === "009" ||
-      SFT_CODE === "006"
-    ) {
-      addFilter(element);
-    } else if (!["010", "013"].includes(SFT_CODE)) {
-      addFilter(element);
-    }
-  });
-
-  if (result?.MAIN_CATEGORY?.length) {
-    newFilterArray.push(
-      {
-        TAGS: result?.MAIN_CATEGORY,
-        label: translate("Products"),
-        value: "PRODUCT-007",
-      },
-      {
-        TAGS: result?.MAIN_CATEGORY[0]?.CATEGORY,
-        label: translate("Categories"),
-        value: "CATEGORIES-008",
-      },
-      {
-        TAGS:
-          (result?.PRODUCT &&
-            result?.PRODUCT?.length > 0 &&
-            result?.PRODUCT.filter(
-              (item) => item?.SC_SHOW_IN_FILTER_YN === "Y"
-            )) ||
-          [],
-        label: translate("SubCategories"),
-        value: "SUB-CATEGORIES-011",
-      }
-    );
-  }
-
-  const data =
-    result.MAIN_CATEGORY?.map((item) => ({
-      ...item,
-      label: item.DESCRIPTION,
-      value: item.SC_LINK_URL,
-    })) || [];
-
-  const productFilterDropdown = data;
-
-  const mainCategory = result?.MAIN_CATEGORY || [];
-
-  const updatedFilters = newFilterArray.map((filter) => {
-    if (filter.value === "CATEGORIES-008") {
-      const category =
-        mainCategory.find((item) => item?.SC_LINK_URL === SC_LINK_URL)
-          ?.CATEGORY || [];
-      return { ...filter, TAGS: category };
-    }
-    return filter;
-  });
-  const [mainSwiper, setMainSwiper] = useState(null);
-
-  useEffect(() => {
-    if (thumbsSwiper) {
-      thumbsSwiper.update();
-    }
-  }, [thumbsSwiper]);
-
-  const handleThumbnailClick = (index) => {
-  
-
-    if (!thumbsSwiper || !mainSwiper) {
-      console.warn("Swiper instances are not ready. Retrying...");
-      setTimeout(() => {
-        if (thumbsSwiper && mainSwiper) {
-          thumbsSwiper.slideTo(index);
-          mainSwiper.slideTo(index);
-        } else {
-          console.error("Swiper instances are still not initialized.");
+    if (result?.MAIN_CATEGORY?.length) {
+      arr.push(
+        {
+          TAGS: result?.MAIN_CATEGORY,
+          label: translate("Products"),
+          value: "PRODUCT-007",
+        },
+        {
+          TAGS: result?.MAIN_CATEGORY[0]?.CATEGORY,
+          label: translate("Categories"),
+          value: "CATEGORIES-008",
+        },
+        {
+          TAGS:
+            (result?.PRODUCT &&
+              result?.PRODUCT?.length > 0 &&
+              result?.PRODUCT.filter(
+                (item) => item?.SC_SHOW_IN_FILTER_YN === "Y"
+              )) ||
+            [],
+          label: translate("SubCategories"),
+          value: "SUB-CATEGORIES-011",
         }
-      }, 100);
-      return;
+      );
     }
 
-    setAllowNextSlide(true);
-    thumbsSwiper.slideTo(index);
-    mainSwiper.slideTo(index);
-  };
+    return arr.map((filter) => {
+      if (filter.value === "CATEGORIES-008") {
+        const category =
+          mainCategory.find((item) => item?.SC_LINK_URL === SC_LINK_URL)
+            ?.CATEGORY || [];
+        return { ...filter, TAGS: category };
+      }
+      return filter;
+    });
+  }, [filters, result, SC_LINK_URL, translate]);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  // Handlers
+  const handleOpen = () => setOpen(!open);
+  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerClose = () => setOpen(false);
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const handleThumbnailClick = useCallback(
+    (index) => {
+      if (!thumbsSwiper || !mainSwiper) {
+        console.warn("Swiper instances are not ready. Retrying...");
+        setTimeout(() => {
+          if (thumbsSwiper && mainSwiper) {
+            thumbsSwiper.slideTo(index);
+            mainSwiper.slideTo(index);
+          } else {
+            console.error("Swiper instances are still not initialized.");
+          }
+        }, 100);
+        return;
+      }
 
- 
+      setAllowNextSlide(true);
+      thumbsSwiper.slideTo(index);
+      mainSwiper.slideTo(index);
+    },
+    [thumbsSwiper, mainSwiper]
+  );
 
-  const previousStep = () => {
+  const previousStep = useCallback(() => {
     setLastPage(stepCount);
     if (stepCount > 0) {
       dispatch(resetState());
       dispatch(decrementStep(0));
     }
-
 
     dispatch(setStepIndex(tourState.stepIndex - 1));
     dispatch(removecart());
@@ -480,36 +375,191 @@ export default function ProductPage(props) {
       dispatch(setCategoryGallary(null));
     } else {
       dispatch(setModalSliderImage(null));
-      // setModalSliderImage(null);
     }
-  };
+  }, [stepCount, dispatch, tourState.stepIndex]);
 
-  const handleHome = () => {
+  const handleHome = useCallback(() => {
     dispatch(showScanner(true));
     dispatch(decrementStep(0));
-  };
+  }, [dispatch]);
 
-  const handleSubmit = (submited) => {
-    if (submited == "close") {
-      dispatch(manualStep(5));
-      return false;
-    }
-    if (submited == true) {
-      setSuccess2(true);
-    }
+  const handleSubmit = useCallback(
+    (submited) => {
+      if (submited == "close") {
+        dispatch(manualStep(5));
+        return false;
+      }
+      if (submited == true) {
+        setSuccess2(true);
+      }
+      dispatch(manualStep(0));
+    },
+    [dispatch]
+  );
 
-    dispatch(manualStep(0));
-  };
+  const howToUse = useCallback(() => {
+    dispatch(startTour(2));
+  }, [dispatch]);
 
+  const formatCategory = useCallback((category) => {
+    return category
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+      .replace(/\s+/g, " ")
+      .trim();
+  }, []);
 
+  // API calls and effects
+  const getModalGallary = useCallback(
+    async (SelectedCategory = null, productId = null, itemId = null) => {
+      if (SelectedCategory !== null && SelectedModal !== null) {
+        setModalSliderImageLoading(true);
+        try {
+          const response = await apiSSRV2DataService.getAll({
+            path: `kiosk/fetch_gallery`,
+            param: {
+              category: SelectedCategory,
+              product: itemId,
+            },
+            cookies: cookies,
+            locale: locale,
+          });
 
+          if (response?.result.length > 0) {
+            dispatch(setModalSliderImage(response.result));
+          }
+        } catch (error) {
+          console.error("Error fetching modal gallery:", error);
+        } finally {
+          setModalSliderImageLoading(false);
+        }
+      }
+    },
+    [SelectedModal, cookies, locale, dispatch]
+  );
+
+  // Effects
   useEffect(() => {
     dispatch(startTour());
   }, [dispatch]);
 
-  const tourState = useSelector((state) => state.tour);
+  useEffect(() => {
+    if (modalDefaultItem?.productId) {
+      getModalGallary(
+        SelectedCategory,
+        modalDefaultItem?.productId,
+        modalDefaultItem?.itemId
+      );
+    }
+  }, [SelectedModal, SelectedCategory, modalDefaultItem, getModalGallary]);
 
-  const renderStep = () => {
+  useEffect(() => {
+    if (categoryGallary) {
+      const filteredGallery = categoryGallary.filter(
+        (item) => item.link_url === SelectedCategory
+      );
+
+      if (filteredGallery && filteredGallery.length > 0) {
+        const firstImagePath = filteredGallery[0].image_path;
+        dispatch(setCategoryDefaultImg(firstImagePath));
+      }
+    }
+  }, [categoryGallary, SelectedCategory, dispatch]);
+
+  useEffect(() => {
+    if (!materialList?.length) return;
+
+    const subChild = materialList.flatMap((item) => item.items);
+    const selectedMaterial = subChild.find(
+      (item) => item.SII_CODE === selectedItemCode
+    );
+
+    if (!selectedMaterial?.gallery?.length) return;
+
+    const newImageUrls = selectedMaterial.gallery.map(
+      (item) => item.SLI_IMAGE_PATH
+    );
+
+    const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
+    const updatedImageUrls = [firstImage, ...newImageUrls];
+
+    if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
+      setImageUrls(updatedImageUrls);
+    }
+
+    if (thumbsSwiper) {
+      thumbsSwiper.update();
+    }
+  }, [materialList, selectedItemCode, imageUrls, thumbsSwiper]);
+
+  useEffect(() => {
+    if (stepCount === 0) {
+      dispatch(resetState());
+      dispatch(setModalSliderImage(null));
+    }
+
+    if (mainSwiper) {
+      mainSwiper.slideTo(0, 0);
+      mainSwiper.update();
+    }
+
+    if (thumbsSwiper) {
+      thumbsSwiper.slideTo(0, 0);
+      thumbsSwiper.update();
+    }
+  }, [stepCount, dispatch, mainSwiper, thumbsSwiper]);
+
+  const handleNext = useCallback(async () => {
+    if (stepCount === 1) {
+      const modalSlug = SelectedModal;
+      if (!modalSlug) {
+        console.error("Modal slug is missing");
+        return;
+      }
+
+      try {
+        const [customizationRes, headerResponse] = await Promise.all([
+          apiSSRV2DataService.getAll({
+            path: `kiosk/get_steps`,
+            param: {
+              content: "customization",
+              slug_url: modalSlug,
+              category: SelectedCategory,
+              sys_id: 0,
+            },
+            locale: "uae-en",
+          }),
+          apiSSRV2DataService.getAll({
+            path: `v2/getHeaderData`,
+            param: {
+              content: "Contact Info",
+              column_name: "SH_LINK_URL",
+              column_value: "tel:",
+            },
+            locale: "uae-en",
+          }),
+        ]);
+
+        dispatch(setCustomization(customizationRes));
+        dispatch(setHeaderResponse(headerResponse));
+        dispatch(incrementStep(stepCount + 1));
+        dispatch(setStepIndex(tourState.stepIndex + 1));
+      } catch (error) {
+        console.error("Failed to fetch steps:", error);
+      }
+    } else {
+      dispatch(incrementStep(stepCount + 1));
+      dispatch(setStepIndex(tourState.stepIndex + 1));
+    }
+  }, [
+    stepCount,
+    SelectedModal,
+    SelectedCategory,
+    dispatch,
+    tourState.stepIndex,
+  ]);
+
+  const renderStep = useCallback(() => {
     switch (stepCount) {
       case 0:
         return <Step1 />;
@@ -521,7 +571,7 @@ export default function ProductPage(props) {
             handleOpen={handleOpen}
             open={open}
             formik={formik}
-            data={customization?.CHILD}
+            data={data2}
             handleSubmit={handleSubmit}
             formClose={formClose}
             setFormClose={setFormClose}
@@ -530,99 +580,90 @@ export default function ProductPage(props) {
       default:
         return null;
     }
-  };
+  }, [
+    stepCount,
+    getModalGallary,
+    open,
+    formik,
+    data2,
+    handleSubmit,
+    formClose,
+  ]);
 
-  const formatCategory = (category) => {
-    return category
-      .replace(/-/g, " ") // Replace hyphens with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase())
-      .replace(/\s+/g, " ") // Remove extra spaces if any
-      .trim(); // Remove leading/trailing spaces
-  };
+  // Helper components for better readability
+  const LoaderComponent = ({ isTablet, isMobile }) => (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: isTablet
+          ? "calc(100vh - 510px)"
+          : isMobile
+          ? "calc(100vh - 230px)"
+          : "calc(100vh - 5px)",
+        backgroundColor: "#f5f5f5",
+      }}
+    >
+      <div className="loader2">
+        <ul className="hexagon-container">
+          <li className="hexagon hex_1"></li>
+          <li className="hexagon hex_2"></li>
+          <li className="hexagon hex_3"></li>
+          <li className="hexagon hex_4"></li>
+          <li className="hexagon hex_5"></li>
+          <li className="hexagon hex_6"></li>
+          <li className="hexagon hex_7"></li>
+        </ul>
+      </div>
+    </Box>
+  );
 
-  
+  const CategoryDefaultImage = ({ categoryDefaultImg, isTablet, isMobile }) => (
+    <Typography
+      sx={{
+        fontFamily: "Helvetica Neue Bold",
+        fontSize: "1rem",
+        fontWeight: "bold",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "end",
+        backgroundColor: "rgba(245, 175, 12, 0.5)",
+        color: "#ef9c00",
+        textShadow: "2px 2px 5px rgba(245, 186, 24, 0.5)",
+        background: categoryDefaultImg
+          ? `url(${categoryDefaultImg})`
+          : "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        height: isTablet
+          ? "calc(100vh - 510px)"
+          : isMobile
+          ? "calc(100vh - 230px)"
+          : "calc(100vh - 5px)",
+        position: "relative",
+      }}
+    />
+  );
 
-  const howToUse = () => {
-    dispatch(startTour(2));
-  };
-
-  useEffect(() => {
-    if (stepCount === 0) {
-      dispatch(resetState());
-      dispatch(setModalSliderImage(null));
-      // setModalSliderImage(null);
-    }
-
-      // Reset main swiper
-      if (mainSwiper) {
-        mainSwiper.slideTo(0, 0);
-        mainSwiper.update();      
-      }
-  
-      // Reset thumbnail swiper
-      if (thumbsSwiper) {
-        thumbsSwiper.slideTo(0, 0);
-        thumbsSwiper.update();
-      }
-    
-  }, [stepCount]);
-
-  const handleNext = async () => {
-  
-    if (stepCount === 1) {
-      const modalSlug = SelectedModal;
-  
-      if (!modalSlug) {
-        console.error("Modal slug is missing");
-        return;
-      }
-  
-      try {
-        const customizationRes = await apiSSRV2DataService.getAll({
-          path: `kiosk/get_steps`,
-          param: {
-            content: "customization",
-            slug_url: modalSlug,
-            category: SelectedCategory,
-            sys_id: 0,
-          },
-          locale: "uae-en",
-        });
-  
-        const headerResponse = await apiSSRV2DataService.getAll({
-          path: `v2/getHeaderData`,
-          param: {
-            content: "Contact Info",
-            column_name: "SH_LINK_URL",
-            column_value: "tel:",
-          },
-          locale: "uae-en",
-        });
-  
-        dispatch(setCustomization(customizationRes));
-        dispatch(setHeaderResponse(headerResponse));
-  
-        // ✅ Now proceed to next step AFTER data is set
-        dispatch(incrementStep(stepCount + 1));
-        dispatch(setStepIndex(tourState.stepIndex + 1));
-      } catch (error) {
-        console.error("Failed to fetch steps:", error);
-      }
-    } else {
-      // For all other steps, just increment
-      dispatch(incrementStep(stepCount + 1));
-      dispatch(setStepIndex(tourState.stepIndex + 1));
-
-    }
-  };
-  
-  
-
-
+  const ThumbnailImage = ({ src, isActive, onClick }) => (
+    <img
+      src={src}
+      height={90}
+      width={100}
+      style={{
+        border: isActive ? "2px solid orange" : "2px solid transparent",
+        marginTop: "1px",
+        cursor: "pointer",
+        transition: "border 0.3s ease-in-out",
+      }}
+      onClick={onClick}
+      alt="Thumbnail"
+    />
+  );
 
   return (
     <>
-
       <TourGuideButton />
 
       <InfoButton howToUse={howToUse} step={stepCount == 0 ? "1" : "3"} />
@@ -690,17 +731,10 @@ export default function ProductPage(props) {
             <ResetHoverButton resetCanvasScene={resetCanvasScene} />
           )}
 
-          {/* <Tooltip title="Start tour" arrow>
-          <Fab >
-            <TourIcon />
-          </Fab>
-        </Tooltip> */}
 
-          {/* Reset 3dModal Icon End  */}
-
-          {/* Swiper Slider with 3d Rendor Section Start */}
+          {/* Swiper Slider with 3D Render Section Start */}
           <main>
-            {/* Main Swiper -> pass thumbs swiper instance */}
+            {/* Main Swiper */}
             <Swiper
               style={{
                 marginBottom: "5px",
@@ -712,8 +746,8 @@ export default function ProductPage(props) {
               slidesPerView={1}
               allowTouchMove={false}
               loop={false}
-              initialSlide={1}
-              allowSlideNext={allowNextSlide}
+              initialSlide={activeIndex} // Sync with activeIndex
+              onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)} // Update activeIndex on slide change
             >
               {imageUrls.map((src, index) => (
                 <SwiperSlide key={index}>
@@ -723,31 +757,10 @@ export default function ProductPage(props) {
                         materialList !== null && (
                           <>
                             {modalSliderImageLoading ? (
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  height: isTablet
-                                    ? "calc(100vh - 510px)"
-                                    : isMobile
-                                    ? "calc(100vh - 230px)"
-                                    : "calc(100vh - 5px)",
-                                  backgroundColor: "#f5f5f5",
-                                }}
-                              >
-                                <div className="loader2">
-                                  <ul className="hexagon-container">
-                                    <li className="hexagon hex_1"></li>
-                                    <li className="hexagon hex_2"></li>
-                                    <li className="hexagon hex_3"></li>
-                                    <li className="hexagon hex_4"></li>
-                                    <li className="hexagon hex_5"></li>
-                                    <li className="hexagon hex_6"></li>
-                                    <li className="hexagon hex_7"></li>
-                                  </ul>
-                                </div>
-                              </Box>
+                              <LoaderComponent
+                                isTablet={isTablet}
+                                isMobile={isMobile}
+                              />
                             ) : modalSliderImage?.length > 0 ? (
                               <ModalGallary
                                 modalSliderImage={modalSliderImage}
@@ -756,31 +769,10 @@ export default function ProductPage(props) {
                                 activeIndex={activeIndex}
                               />
                             ) : (
-                              <Typography
-                                sx={{
-                                  fontFamily:
-                                    fonts.Helvetica_Neue_Bold.fontFamily,
-                                  fontSize: "1rem",
-                                  fontWeight: "bold",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "end",
-                                  backgroundColor: "rgba(245, 175, 12, 0.5)",
-                                  color: "#ef9c00",
-                                  textShadow:
-                                    "2px 2px 5px rgba(245, 186, 24, 0.5)",
-                                  background: categoryDefaultImg
-                                    ? `url(${categoryDefaultImg})`
-                                    : "url('https://thisiscrowd.com/wp-content/uploads/2023/01/sedar_feature.jpg')",
-                                  backgroundSize: "cover",
-                                  backgroundRepeat: "no-repeat",
-                                  height: isTablet
-                                    ? "calc(100vh - 510px)"
-                                    : isMobile
-                                    ? "calc(100vh - 230px)"
-                                    : "calc(100vh - 5px)",
-                                  position: "relative",
-                                }}
+                              <CategoryDefaultImage
+                                categoryDefaultImg={categoryDefaultImg}
+                                isTablet={isTablet}
+                                isMobile={isMobile}
                               />
                             )}
                           </>
@@ -789,31 +781,10 @@ export default function ProductPage(props) {
                       {stepCount !== 0 && stepCount !== 1 && (
                         <>
                           {isCustomizationLoading ? (
-                            <Box
-                              sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: isTablet
-                                  ? "calc(100vh - 510px)"
-                                  : isMobile
-                                  ? "calc(100vh - 340px)"
-                                  : "calc(100vh - 5px)",
-                                backgroundColor: "#f5f5f5",
-                              }}
-                            >
-                              <div className="loader2">
-                                <ul className="hexagon-container">
-                                  <li className="hexagon hex_1"></li>
-                                  <li className="hexagon hex_2"></li>
-                                  <li className="hexagon hex_3"></li>
-                                  <li className="hexagon hex_4"></li>
-                                  <li className="hexagon hex_5"></li>
-                                  <li className="hexagon hex_6"></li>
-                                  <li className="hexagon hex_7"></li>
-                                </ul>
-                              </div>
-                            </Box>
+                            <LoaderComponent
+                              isTablet={isTablet}
+                              isMobile={isMobile}
+                            />
                           ) : (
                             <SceneCanvas3D
                               {...(data2 && data2.length > 0 ? data2[0] : {})}
@@ -837,26 +808,34 @@ export default function ProductPage(props) {
                         cursor: "pointer",
                       }}
                       alt={`Image ${index + 1}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log(`Image ${index + 1} clicked`);
-                        handleImageClick(src);
-                      }}
                     />
                   )}
                 </SwiperSlide>
               ))}
             </Swiper>
 
-            {/* Thumbs Swiper -> store swiper instance */}
+            {/* Thumbs Swiper */}
             <Swiper
               modules={[Thumbs]}
               watchSlidesProgress
-              onSwiper={setThumbsSwiper}
+              onSwiper={(swiper) => {
+                setThumbsSwiper(swiper);
+                // Initialize to match activeIndex
+                if (swiper && swiper.activeIndex !== activeIndex) {
+                  swiper.slideTo(activeIndex);
+                }
+              }}
+              onSlideChange={(swiper) => {
+                if (
+                  mainSwiper &&
+                  swiper.activeIndex !== mainSwiper.activeIndex
+                ) {
+                  mainSwiper.slideTo(swiper.activeIndex);
+                }
+                setActiveIndex(swiper.activeIndex);
+              }}
               slidesPerView={6}
               loop={false}
-              allowSlideNext={true}
-              slideToClickedSlide
               initialSlide={activeIndex}
               style={{
                 marginLeft: "3px",
@@ -873,69 +852,39 @@ export default function ProductPage(props) {
                 materialList !== null &&
                 modalSliderImage?.map((src, index) => (
                   <SwiperSlide key={index}>
-                    <img
+                    <ThumbnailImage
                       src={src.SLI_IMAGE_PATH}
-                      height={90}
-                      width={100}
-                      breakpoints={{
-                        320: {
-                          style: {
-                            height: 70,
-                            width: 70,
-                          },
-                        },
-                      }}
-                      style={{
-                        border:
-                          activeIndex === index
-                            ? "2px solid orange"
-                            : "2px solid transparent",
-                        marginTop: "1px",
-                        cursor: "pointer",
-                        transition: "border 0.3s ease-in-out",
-                      }}
+                      isActive={activeIndex === index}
                       onClick={() => {
                         setActiveIndex(index);
+                        if (mainSwiper) mainSwiper.slideTo(index);
+                        if (thumbsSwiper) thumbsSwiper.slideTo(index);
                       }}
-                      alt={`Thumbnail ${index + 1}`}
                     />
                   </SwiperSlide>
                 ))}
 
-              {/* 3d modal thumb images */}
+              {/* 3D modal thumb images */}
               {stepCount !== 0 &&
                 stepCount !== 1 &&
                 !isCustomizationLoading &&
                 imageUrls.map((src, index) => (
                   <SwiperSlide key={index}>
-                    <img
+                    <ThumbnailImage
                       src={src}
-                      height={90}
-                      width={100}
-                      breakpoints={{
-                        320: {
-                          style: {
-                            height: 70,
-                            width: 70,
-                          },
-                        },
-                      }}
-                      style={{
-                        border: activeIndex === index ? "2px solid orange" : "",
-                        marginTop: "1px",
-                      }}
+                      isActive={activeIndex === index}
                       onClick={() => {
                         setActiveIndex(index);
-                        handleThumbnailClick(index);
-                        index === 0 ? setShow3d(true) : setShow3d(false);
+                        setShow3d(index === 0);
+                        if (mainSwiper) mainSwiper.slideTo(index);
+                        if (thumbsSwiper) thumbsSwiper.slideTo(index);
                       }}
-                      alt={`Thumbnail ${index + 1}`}
                     />
                   </SwiperSlide>
                 ))}
             </Swiper>
           </main>
-          {/* Swiper Slider with 3d Rendor Section End */}
+          {/* Swiper Slider with 3D Render Section End */}
         </Grid>
 
         {/* Input Container */}
@@ -1067,9 +1016,7 @@ export default function ProductPage(props) {
                     size="large"
                     variant="outlined"
                     onClick={() => {
-                      
                       previousStep();
-                     
                     }}
                     startIcon={<ArrowCircleLeftIcon />}
                   >
@@ -1100,7 +1047,6 @@ export default function ProductPage(props) {
                       }
 
                       handleNext();
-
 
                       setTimeout(() => {
                         if (buttonRef.current) {
