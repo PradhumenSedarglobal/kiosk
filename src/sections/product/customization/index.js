@@ -24,6 +24,7 @@ import "swiper/css";
 import { useMediaQuery } from "@mui/material";
 import Joyride from "react-joyride";
 import TourGuideButton from "@/app/components/TourGuideButton";
+import { setThumbSliderImage } from "@/redux/slices/customization";
 
 // @mui
 const SceneCanvas3D = dynamic(() => import("./sceneCanvas3D"), {
@@ -47,6 +48,7 @@ const CustomizationSection = () => {
     materialList,
     isCustomizationLoading,
     stepsArray,
+    thumbImage,
   } = useSelector((state) => state.customization);
   const { locale, query } = useRouter();
   const { slug } = query;
@@ -57,7 +59,8 @@ const CustomizationSection = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
   const [allowNextSlide, setAllowNextSlide] = useState(false);
-  const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
+  // const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
+
   const stepCount = useSelector((state) => state.step.value);
   const fonts = useSelector((state) => state.font);
 
@@ -97,17 +100,16 @@ const CustomizationSection = () => {
       );
 
       // Avoid unnecessary state updates
-      const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
+      const firstImage = thumbImage.length > 0 ? thumbImage[0] : "/360v.jpg";
       const updatedImageUrls = [firstImage, ...newImageUrls];
 
-      if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
-        setImageUrls(updatedImageUrls);
+      if (JSON.stringify(thumbImage) !== JSON.stringify(updatedImageUrls)) {
+        dispatch(setThumbSliderImage(updatedImageUrls));
       }
-
     } catch (error) {
       console.error("Error fetching gallery data:", error.message);
     }
-  }, [materialList, selectedItemCode, imageUrls]);
+  }, [materialList, selectedItemCode, thumbImage]);
 
   // useEffect(()=>{
   //   dispatch(startCustomizationLoaded());
@@ -131,10 +133,11 @@ const CustomizationSection = () => {
     },
   });
 
+  console.log("thumbImageeeeeeee",isDownxs);
+  console.log("isCustomizationLoading",isCustomizationLoading);
+
   return (
     <>
-     
-
       <Box
         sx={{
           height: { xxs: "100dvh", xs: "100dvh", sm: "100dvh", md: "100vh" },
@@ -149,17 +152,15 @@ const CustomizationSection = () => {
       >
         <Grid container direction="row">
           <Grid item lg={7} md={7} sm={12} xs={12} xxs={12}>
-            {!isDownxs && (
+      
               <>
                 {/* Swiper Slider with 3d Rendor Section Start */}
                 <main>
-                 
-
                   {/* Thumbs Swiper -> store swiper instance */}
                   {isCustomizationLoading ? (
                     <Box
                       sx={{
-                        position:"relative",
+                        position: "relative",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
@@ -184,118 +185,113 @@ const CustomizationSection = () => {
                       </div>
                     </Box>
                   ) : (
-
                     <>
-
-                     {/* Main Swiper -> pass thumbs swiper instance */}
-                  <Swiper
-                  style={{
-                    marginBottom: "5px",
-                  }}
-                  className="previewImage"
-                  modules={[Thumbs]}
-                  thumbs={{ swiper: thumbsSwiper }}
-                  // spaceBetween={10}
-                  slidesPerView={1}
-                  allowTouchMove={false}
-                  loop={false}
-                  initialSlide={1}
-                  allowSlideNext={allowNextSlide}
-                >
-                  {imageUrls.map((src, index) => (
-                    <SwiperSlide key={index}>
-                      {index === 0 ? (
-                        <>
-                    
-                          <SceneCanvas3D
-                            langName={langName}
-                            productInfo={productInfo}
-                            {...(customization?.CHILD &&
-                            customization?.CHILD?.length > 0
-                              ? customization?.CHILD[0]
-                              : {})}
-                          />
-                         
-
+                      {/* Main Swiper -> pass thumbs swiper instance */}
+                      <Swiper
+                        style={{
+                          marginBottom: "5px",
+                        }}
+                        className="previewImage"
+                        modules={[Thumbs]}
+                        thumbs={{ swiper: thumbsSwiper }}
+                        // spaceBetween={10}
+                        slidesPerView={1}
+                        allowTouchMove={false}
+                        loop={false}
+                        initialSlide={1}
+                        allowSlideNext={allowNextSlide}
                         
-                        </>
-                      ) : (
-                        <img
-                          src={src}
-                          className="swiper-image"
-                          style={{
-                            width: "100%",
-                            objectFit: "cover",
-                            height: isTablet
-                              ? "calc(100vh - 510px)"
-                              : isMobile
-                              ? "calc(100vh - 340px)"
-                              : "calc(100vh - 130px)",
-                            cursor: "pointer",
-                          }}
-                          alt={`Image ${index + 1}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleImageClick(src);
-                          }}
-                        />
-                      )}
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                      >
+                        {thumbImage.map((src, index) => (
+                          <SwiperSlide key={index}>
+                            {index === 0 ? (
+                              <>
+                                <SceneCanvas3D
+                                  langName={langName}
+                                  productInfo={productInfo}
+                                  {...(customization?.CHILD &&
+                                  customization?.CHILD?.length > 0
+                                    ? customization?.CHILD[0]
+                                    : {})}
+                                />
+                              </>
+                            ) : (
+                              <img
+                                src={src}
+                                className="swiper-image"
+                                style={{
+                                  width: "100%",
+                                  objectFit: "cover",
+                                  height: isTablet
+                                    ? "calc(100vh - 510px)"
+                                    : isMobile
+                                    ? "calc(100vh - 340px)"
+                                    : "calc(100vh - 130px)",
+                                  cursor: "pointer",
+                                }}
+                                alt={`Image ${index + 1}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleImageClick(src);
+                                }}
+                              />
+                            )}
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
 
-                    <Swiper
-                      modules={[Thumbs]}
-                      watchSlidesProgress
-                      onSwiper={setThumbsSwiper}
-                      slidesPerView={6}
-                      loop={false}
-                      allowSlideNext={true}
-                      slideToClickedSlide
-                      style={{
-                        marginLeft: "3px",
-                      }}
-                      breakpoints={{
-                        320: { slidesPerView: 4, spaceBetween: 8 },
-                        480: { slidesPerView: 4, spaceBetween: 10 },
-                        768: { slidesPerView: 5, spaceBetween: 10 },
-                        1024: { slidesPerView: 6, spaceBetween: 15 },
-                      }}
-                    >
-                      {imageUrls.map((src, index) => (
-                        <SwiperSlide key={index}>
-                          <img
-                            src={src}
-                            height={90}
-                            width={100}
-                            style={{
-                              border:
-                                index === 0
-                                  ? "2px solid orange"
-                                  : activeIndex === index
-                                  ? "2px solid #010101"
-                                  : "",
-                              marginTop: "1px",
-                            }}
-                            onClick={() => {
-                              handleThumbnailClick(index);
-                              if (index === 0) {
-                                setShow3d(true);
-                              } else {
-                                setShow3d(false);
-                              }
-                            }}
-                            alt={`Thumbnail ${index + 1}`}
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
+                      <Swiper
+                        modules={[Thumbs]}
+                        watchSlidesProgress
+                        onSwiper={setThumbsSwiper}
+                        slidesPerView={6}
+                        loop={false}
+                        allowSlideNext={true}
+                        slideToClickedSlide
+                        style={{
+                          marginLeft: "3px",
+                        }}
+                        breakpoints={{
+                          320: { slidesPerView: 4, spaceBetween: 8 },
+                          480: { slidesPerView: 4, spaceBetween: 10 },
+                          768: { slidesPerView: 5, spaceBetween: 10 },
+                          1024: { slidesPerView: 6, spaceBetween: 15 },
+                        }}
+                      >
+                        {thumbImage?.map((src, index) => (
+                          <SwiperSlide key={index}>
+                            <img
+                              src={src}
+                              height={90}
+                              width={100}
+                              style={{
+                                border:
+                                  index === 0
+                                    ? "2px solid orange"
+                                    : activeIndex === index
+                                    ? "2px solid #010101"
+                                    : "",
+                                marginTop: "1px",
+                              }}
+                              onClick={() => {
+                                handleThumbnailClick(index);
+                                if (index === 0) {
+                                  setShow3d(true);
+                                } else {
+                                  setShow3d(false);
+                                }
+                              }}
+                              alt={`Thumbnail ${index + 1}`}
+                            />
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
                     </>
                   )}
                 </main>
                 {/* Swiper Slider with 3d Rendor Section End */}
               </>
-            )}
+          
           </Grid>
           <Grid item lg={5} md={5} sm={12} xs={12} xxs={12}>
             <TabinationStepsSection

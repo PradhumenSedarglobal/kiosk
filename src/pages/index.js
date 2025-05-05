@@ -749,8 +749,8 @@ export default function ProductPage(props) {
               slidesPerView={1}
               allowTouchMove={false}
               loop={false}
-              initialSlide={activeIndex} // Sync with activeIndex
-              onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)} // Update activeIndex on slide change
+              initialSlide={activeIndex} 
+              onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)} 
             >
               {thumbImage?.map((src, index) => (
                 <SwiperSlide key={index}>
