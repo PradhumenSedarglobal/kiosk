@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Box,
@@ -27,7 +27,6 @@ import { setStepIndex } from "@/redux/slices/tourSlice";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import axios from "axios";
-// ... other imports remain the same ...
 
 const languages = [
   { code: "en", name: "English" },
@@ -47,53 +46,12 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const drawerWidth = 400;
 
-const CartManager = ({ open, handleDrawerClose,setOpen }) => {
+const CartManager = ({ open, handleDrawerClose, setOpen }) => {
   const router = useRouter();
   const { locale, query } = useRouter();
-
-  const [selectedLanguage, setSelectedLanguage] = React.useState("en");
-
-  // Extract current language from URL when component mounts or route changes
-  useEffect(() => {
-    const path = router.asPath;
-    // Extract language code from URL like /uae-en or /uae-ar
-    const langMatch = path.match(/-([a-z]{2})($|\/)/);
-    if (langMatch && langMatch[1]) {
-      setSelectedLanguage(langMatch[1]);
-    }
-  }, [router.asPath]);
-
-  const handleLanguageChange = (event) => {
-    const newLanguage = event.target.value;
-
-    // Get current path and query parameters
-    const currentPath = router.asPath;
-    const currentQuery = router.query;
-
-    // Extract country code (like 'uae' from '/uae-en')
-    let countryCode = "uae";
-    const pathMatch = currentPath.match(/^\/([a-z]+)-[a-z]{2}/);
-    if (pathMatch && pathMatch[1]) {
-      countryCode = pathMatch[1];
-    }
-
-    // Construct new URL path
-    const newPath = `/${countryCode}-${newLanguage}`;
-
-
-    // Update state immediately for UI responsiveness
-    setSelectedLanguage(newLanguage);
-
-    // Change the URL with page reload to ensure all content updates
-    router.push(
-      {
-        pathname: newPath,
-        query: currentQuery,
-      },
-      undefined,
-      { shallow: false, locale: newLanguage }
-    );
-  };
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const [localCartData, setLocalCartData] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const theme = useTheme();
   const fonts = useSelector((state) => state.font);
@@ -105,33 +63,42 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
   const cartData = useSelector((state) => state.customization.orderList);
   const { customerSysId } = useSelector((state) => state.customization);
 
-  useEffect(() => {}, [cartData]);
-
-  const removeCart = async (cartId) => {
-    try {
-      const response = await apiSSRV2DataService.Delete({
-        path: `kiosk/cart/${cartId}`,
-        param: { content: "customization", sys_id: 0 },
-        cookies: cookies,
-      });
-
-      if (response.data.complete) {
-        toast.success("Item successfully removed from cart!", {
-          position: "top-right",
-          style: {
-            background: "linear-gradient(45deg,rgb(44, 136, 13),rgb(24, 162, 19))",
-            color: "white",
-          },
-        });
-
-        // ✅ Wait for 800ms before fetching updated cart list
-        await new Promise((resolve) => setTimeout(resolve, 800));
-
-        await fetchOrderList(cookies, customerSysId, locale);
-      }
-    } catch (error) {
-      console.error("Failed to remove item from cart:", error);
+  // Initialize local cart data
+  useEffect(() => {
+    if (cartData) {
+      setLocalCartData(cartData);
     }
+  }, [cartData]);
+
+  // Language handling
+  useEffect(() => {
+    const path = router.asPath;
+    const langMatch = path.match(/-([a-z]{2})($|\/)/);
+    if (langMatch && langMatch[1]) {
+      setSelectedLanguage(langMatch[1]);
+    }
+  }, [router.asPath]);
+
+  const handleLanguageChange = (event) => {
+    const newLanguage = event.target.value;
+    const currentPath = router.asPath;
+    const currentQuery = router.query;
+    let countryCode = "uae";
+    const pathMatch = currentPath.match(/^\/([a-z]+)-[a-z]{2}/);
+    if (pathMatch && pathMatch[1]) {
+      countryCode = pathMatch[1];
+    }
+    const newPath = `/${countryCode}-${newLanguage}`;
+
+    setSelectedLanguage(newLanguage);
+    router.push(
+      {
+        pathname: newPath,
+        query: currentQuery,
+      },
+      undefined,
+      { shallow: false, locale: newLanguage }
+    );
   };
 
   const fetchOrderList = async (cookies, customerSysId, locale) => {
@@ -148,7 +115,6 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
         }
       );
 
-
       dispatch(
         setOrderList({
           complete: response.data.complete,
@@ -161,34 +127,92 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
     }
   };
 
-  const updateQuantity = async (cartId, updatedQty) => {
-    if (updatedQty < 1) return; 
+  const removeCart = async (cartId) => {
+    if (isUpdating) return;
+    
+    setIsUpdating(true);
+    try {
+      // Optimistic UI update - remove item immediately
+      const updatedCart = {
+        ...localCartData,
+        complete: localCartData.complete.filter(item => item.SOL_SYS_ID !== cartId),
+        cart_count: localCartData.cart_count - 1
+      };
+      setLocalCartData(updatedCart);
 
-    const response = await apiSSRV2DataService.post({
-      path: `kiosk/order/cart/updateLineTable/${cartId}`,
-      data: {
-        line_type: "ORDER_QTY",
-        line_value: updatedQty,
-        soh_sys_id: 0,
-        content: "customization",
-        sys_id: 0,
-      },
-      cookies: cookies,
-    });
-
-    if (response.data.complete) {
-      toast.success("Item quantity updated successfully!", {
-        position: "top-right",
-        style: {
-          background: "linear-gradient(45deg, #16a085, #1abc9c)",
-          color: "white",
-        },
+      const response = await apiSSRV2DataService.Delete({
+        path: `kiosk/cart/${cartId}`,
+        param: { content: "customization", sys_id: 0 },
+        cookies: cookies,
       });
 
-      // ✅ Wait for 800ms before fetching updated cart list
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      if (response.data.complete) {
+        toast.success("Item successfully removed from cart!", {
+          position: "top-right",
+          style: {
+            background: "linear-gradient(45deg,rgb(44, 136, 13),rgb(24, 162, 19))",
+            color: "white",
+          },
+        });
 
-      await fetchOrderList(cookies, customerSysId, locale);
+        // Fetch updated list in background
+        fetchOrderList(cookies, customerSysId, locale);
+      }
+    } catch (error) {
+      console.error("Failed to remove item from cart:", error);
+      // Revert optimistic update if API call fails
+      setLocalCartData(cartData);
+      toast.error("Failed to remove item. Please try again.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const updateQuantity = async (cartId, updatedQty) => {
+    if (updatedQty < 1 || isUpdating) return;
+    
+    setIsUpdating(true);
+    try {
+      // Optimistic UI update - update quantity immediately
+      const updatedCart = {
+        ...localCartData,
+        complete: localCartData.complete.map(item => 
+          item.SOL_SYS_ID === cartId ? { ...item, SOL_QTY: updatedQty } : item
+        )
+      };
+      setLocalCartData(updatedCart);
+
+      const response = await apiSSRV2DataService.post({
+        path: `kiosk/order/cart/updateLineTable/${cartId}`,
+        data: {
+          line_type: "ORDER_QTY",
+          line_value: updatedQty,
+          soh_sys_id: 0,
+          content: "customization",
+          sys_id: 0,
+        },
+        cookies: cookies,
+      });
+
+      if (response.data.complete) {
+        toast.success("Item quantity updated successfully!", {
+          position: "top-right",
+          style: {
+            background: "linear-gradient(45deg, #16a085, #1abc9c)",
+            color: "white",
+          },
+        });
+
+        // Fetch updated list in background
+        fetchOrderList(cookies, customerSysId, locale);
+      }
+    } catch (error) {
+      console.error("Failed to update quantity:", error);
+      // Revert optimistic update if API call fails
+      setLocalCartData(cartData);
+      toast.error("Failed to update quantity. Please try again.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -196,7 +220,6 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
     setOpen(newOpen);
   };
 
- 
   return (
     <Drawer
       variant="temporary"
@@ -222,7 +245,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#ffffff", // Light background for better contrast
+          backgroundColor: "#ffffff",
         },
       }}
     >
@@ -230,7 +253,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
         <DrawerHeader>
           <Typography
             sx={{
-              color: "#e67e22", // Lighter orange for better contrast
+              color: "#e67e22",
               fontFamily: fonts.Helvetica_Neue_Bold.style.fontFamily,
               fontWeight: "700",
               fontSize: "1.2rem",
@@ -240,8 +263,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
             Added to Your Cart!
           </Typography>
           <IconButton onClick={handleDrawerClose}>
-            <CloseIcon sx={{ color: "#2c3e50" }} />{" "}
-            {/* Dark icon for better visibility */}
+            <CloseIcon sx={{ color: "#2c3e50" }} />
           </IconButton>
         </DrawerHeader>
         <Divider sx={{ marginBottom: theme.spacing(2) }} />
@@ -252,8 +274,8 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
             padding: 0,
           }}
         >
-          {cartData !== null &&
-            cartData?.complete.map((item, index) => (
+          {localCartData !== null &&
+            localCartData?.complete?.map((item, index) => (
               <React.Fragment key={item.SOL_SYS_ID || index}>
                 <Grid
                   container
@@ -282,7 +304,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           marginBottom: "4px",
-                          color: "#333", // Darker text for better readability
+                          color: "#333",
                         }}
                       >
                         Code: {item?.info_data?.MEASUREMENT?.SOI_ITEM_CODE}
@@ -301,8 +323,8 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                             fontFamily:
                               fonts.Helvetica_Neue_Medium.style.fontFamily,
                             overflowWrap: "break-word",
-                            wordBreak: "keep-all", // prevent mid-word breaking
-                            whiteSpace: "pre-line", // enables \n rendering
+                            wordBreak: "keep-all",
+                            whiteSpace: "pre-line",
                             fontWeight: 600,
                             flexGrow: 1,
                           }}
@@ -316,25 +338,27 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                               ? title.slice(0, breakIndex) +
                                   "\n" +
                                   title.slice(breakIndex + 1)
-                              : title; // fallback if no space
+                              : title;
                           })()}
                         </Typography>
 
                         <Chip
-                          onClick={() => removeCart(item.SOL_SYS_ID)}
+                          onClick={() => !isUpdating && removeCart(item.SOL_SYS_ID)}
                           icon={
                             <DeleteIcon
                               style={{ color: "#fff", marginRight: "-20px" }}
                             />
                           }
                           sx={{
-                            backgroundColor: "#c0392b", // Red for delete, with better contrast
+                            backgroundColor: isUpdating ? "#95a5a6" : "#c0392b",
                             color: "#fff",
                             borderRadius: "12px",
                             fontWeight: "600",
-                            cursor: "pointer",
+                            cursor: isUpdating ? "not-allowed" : "pointer",
                             ml: 1,
-                            "&:hover": { backgroundColor: "#e74c3c" },
+                            "&:hover": { 
+                              backgroundColor: isUpdating ? "#95a5a6" : "#e74c3c" 
+                            },
                           }}
                         />
                       </Box>
@@ -354,7 +378,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                             fontFamily:
                               fonts.Helvetica_Neue_Medium.style.fontFamily,
                             marginRight: "10px",
-                            color: "#333", // Adjusted color for better readability
+                            color: "#333",
                           }}
                         >
                           QTY:
@@ -363,11 +387,12 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                           <Button
                             onClick={() =>
-                              updateQuantity(
+                              !isUpdating && updateQuantity(
                                 item.SOL_SYS_ID,
                                 Number(item?.SOL_QTY) - 1
                               )
                             }
+                            disabled={isUpdating}
                             variant="outlined"
                             sx={{
                               minWidth: "28px",
@@ -377,7 +402,8 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                               fontFamily:
                                 fonts.Helvetica_Neue_Medium.style.fontFamily,
                               borderRadius: "6px",
-                              borderColor: "#2c3e50", // Darker border for visibility
+                              borderColor: isUpdating ? "#bdc3c7" : "#2c3e50",
+                              color: isUpdating ? "#bdc3c7" : "inherit",
                             }}
                           >
                             -
@@ -393,7 +419,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                               textAlign: "center",
                               fontFamily:
                                 fonts.Helvetica_Neue_Medium.style.fontFamily,
-                              color: "#333", // Dark color for readability
+                              color: "#333",
                             }}
                           >
                             {item?.SOL_QTY}
@@ -401,11 +427,12 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
 
                           <Button
                             onClick={() =>
-                              updateQuantity(
+                              !isUpdating && updateQuantity(
                                 item.SOL_SYS_ID,
                                 Number(item?.SOL_QTY) + 1
                               )
                             }
+                            disabled={isUpdating}
                             variant="outlined"
                             sx={{
                               minWidth: "28px",
@@ -415,7 +442,8 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                               fontFamily:
                                 fonts.Helvetica_Neue_Medium.style.fontFamily,
                               borderRadius: "6px",
-                              borderColor: "#2c3e50", // Darker border for visibility
+                              borderColor: isUpdating ? "#bdc3c7" : "#2c3e50",
+                              color: isUpdating ? "#bdc3c7" : "inherit",
                             }}
                           >
                             +
@@ -427,7 +455,7 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
                         variant="body2"
                         sx={{
                           marginTop: "4px",
-                          color: "#2c3e50", // Darker text for better readability
+                          color: "#2c3e50",
                           fontFamily:
                             fonts.Helvetica_Neue_Medium.style.fontFamily,
                           fontWeight: 500,
@@ -452,9 +480,9 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
           left: 0,
           width: "100%",
           padding: theme.spacing(2),
-          backgroundColor: "#000000", // More vibrant yellow
+          backgroundColor: "#000000",
           color: "white",
-          borderTop: "1px solid white", // Set border color to white
+          borderTop: "1px solid white",
           boxShadow: "0 -2px 10px hsla(37, 78.60%, 52.40%, 0.10)",
           zIndex: 9999,
           display: "flex",
@@ -469,18 +497,17 @@ const CartManager = ({ open, handleDrawerClose,setOpen }) => {
             alignItems: "center",
             width: "100%",
             padding: theme.spacing(1),
-
             fontWeight: "bold",
           }}
         >
           <span>Total:</span>
-          <span>{cartData?.total_price?.SOL_VALUE || "AUD 0.00"}</span>
+          <span>{localCartData?.total_price?.SOL_VALUE || "AUD 0.00"}</span>
         </Box>
 
         <Box mt={2} sx={{ width: "100%" }}>
           <FormControl fullWidth>
             <Select
-              value={selectedLanguage} // Now properly synced with URL
+              value={selectedLanguage}
               onChange={handleLanguageChange}
               displayEmpty
               inputProps={{ "aria-label": "Select language" }}

@@ -97,7 +97,7 @@ const Step1 = ({ successValue, stepcount }) => {
   const handleChange = (link) => {
     // Add a short delay to let Joyride finish spotlight transition
     setTimeout(() => {
-      dispatch(resetState());
+      // dispatch(resetState());
       // dispatch(loadingfalse(true));
       setSelectedCategory(link);
       dispatch(updateSelectedCategory(link));
