@@ -310,7 +310,7 @@ const CartManager = ({ open, handleDrawerClose, setOpen }) => {
                           color: "#333",
                         }}
                       >
-                        Code: {item?.info_data?.MEASUREMENT?.SOI_ITEM_CODE}
+                        Code: {item?.info_data?.MEASUREMENT?.SOI_ITEM_ID}
                       </Typography>
 
                       <Box

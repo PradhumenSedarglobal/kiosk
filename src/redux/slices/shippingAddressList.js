@@ -28,7 +28,7 @@ const slice = createSlice({
     setShippingAddressList(state, action) {
       state.isShippingAddressLoading = false;
       state.shippingAddressList = action.payload;
-      action.payload && action.payload.result?.length > 0 && action.payload.result.forEach((element) => {
+      action.payload && action.payload.result?.length > 0 && action.payload.result?.forEach((element) => {
         if (element.cad_default_yn == 'Y') {
           state.defaultShippingAddress = element
         }

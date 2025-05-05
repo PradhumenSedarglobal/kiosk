@@ -35,12 +35,17 @@ const initialState = {
   categoryDefaultImg:null,
   stepChildCount:0,
   modalSliderImage:null,
+  thumbImage:["/360v.jpg"],
 };
 
 const slice = createSlice({
   name: "customization",
   initialState,
   reducers: {
+
+    setThumbSliderImage(state,action){
+      state.thumbImage = action.payload;
+    },
 
     setModalSliderImage(state,action){
       state.modalSliderImage = action.payload;
@@ -169,7 +174,7 @@ const slice = createSlice({
         action?.payload?.result &&
           action?.payload?.result?.COMPONENT &&
           action?.payload?.result?.COMPONENT?.length > 0 &&
-          action?.payload?.result?.COMPONENT.forEach((item) => {
+          action?.payload?.result?.COMPONENT?.forEach((item) => {
             if (
               item?.PARENT?.component_url ===
               "Component/Customization/CustomizationProduct"
@@ -339,7 +344,8 @@ export const {
   setCategoryDefaultImg,
   setStepChildCount,
   startMaterialCustomizationLoading,
-  setModalSliderImage
+  setModalSliderImage,
+  setThumbSliderImage
 } = slice.actions;
 
 

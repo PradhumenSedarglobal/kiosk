@@ -30,7 +30,7 @@ const slice = createSlice({
       let offerData = [];
       action.payload?.result &&
         action.payload?.result?.COMPONENT?.length > 0 &&
-        action.payload?.result?.COMPONENT.forEach((element) => {
+        action.payload?.result?.COMPONENT?.forEach((element) => {
           if (
             element?.PARENT &&
             element?.PARENT?.component_url ==
@@ -38,7 +38,7 @@ const slice = createSlice({
             element?.PARENT?.CHILD &&
             element?.PARENT?.CHILD?.length > 0
           ) {
-            element?.PARENT?.CHILD.forEach((childElement, childIndex) => {
+            element?.PARENT?.CHILD?.forEach((childElement, childIndex) => {
               offerData.push({
                 CHILD: [],
                 ...childElement?.MATERIAL_LIST,
@@ -48,7 +48,7 @@ const slice = createSlice({
                 childElement?.MATERIAL_LIST?.result &&
                 childElement?.MATERIAL_LIST?.result?.length > 0
               ) {
-                childElement?.MATERIAL_LIST?.result.forEach((grandChild) => {
+                childElement?.MATERIAL_LIST?.result?.forEach((grandChild) => {
                   offerData[childIndex]?.CHILD.push({
                     defaultSelectItem:
                       grandChild?.items && grandChild?.items?.length > 0
@@ -73,20 +73,20 @@ const slice = createSlice({
         state?.offerData &&
         state?.offerData?.length > 0
       ) {
-        state?.offerData.forEach((parentElement, parentIndex) => {
+        state?.offerData?.forEach((parentElement, parentIndex) => {
           customOfferData.push({
             ...parentElement,
             CHILD: [],
           });
           if (parentElement?.CHILD && parentElement?.CHILD?.length > 0) {
-            parentElement?.CHILD.forEach((childElement, childIndex) => {
+            parentElement?.CHILD?.forEach((childElement, childIndex) => {
               if (action.payload.SFI_CODE === childElement.SFI_CODE) {
                 customOfferData[parentIndex]?.CHILD.push({
                   ...childElement,
                   defaultSelectItem: null,
                 });
                 if (childElement?.items && childElement?.items?.length > 0) {
-                  childElement?.items.forEach((grandChildItem) => {
+                  childElement?.items?.forEach((grandChildItem) => {
                     if (action.payload.SII_CODE === grandChildItem?.SII_CODE) {
                       customOfferData[parentIndex].CHILD[
                         childIndex

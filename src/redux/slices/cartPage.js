@@ -60,7 +60,7 @@ const slice = createSlice({
 
       action.payload?.complete &&
         action.payload?.complete?.length > 0 &&
-        action.payload?.complete.forEach((element, index) => {
+        action.payload?.complete?.forEach((element, index) => {
           state.deliveryCount[element?.SOL_SYS_ID] = index + 1;
           if (element?.SOL_ITEM_LABEL != "SAMPLE") {
             cartDatas.complete.push(element);
@@ -158,7 +158,7 @@ export function getCartPageData(params = {}, isGoogleAnalytics) {
         var ad_products = [];
         response?.data?.complete &&
           response?.data?.complete.length > 0 &&
-          response?.data?.complete.forEach((item, index) => {
+          response?.data?.complete?.forEach((item, index) => {
             admitadOrderedItem(item); //ADMITAD Order add
             ad_products.push({
               id: item.brand_info.SII_CODE,

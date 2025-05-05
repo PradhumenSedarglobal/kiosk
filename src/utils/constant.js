@@ -822,7 +822,7 @@ export const getMonths = (translate) => {
     "Dec",
   ];
   let newMonths = [];
-  months.forEach((element, index) => {
+  months?.forEach((element, index) => {
     if (index < 9) {
       newMonths.push({
         label: translate(element),
@@ -1310,10 +1310,10 @@ export const selectWidthHeightOptionValidation = (
 ) => {
   let isError = false;
   if (values.STEPS && STEPS) {
-    Object.values(STEPS).forEach((parentValue) => {
+    Object.values(STEPS)?.forEach((parentValue) => {
       parentValue &&
         parentValue?.CHILD_STEP?.length > 0 &&
-        parentValue?.CHILD_STEP.forEach((childValue) => {
+        parentValue?.CHILD_STEP?.forEach((childValue) => {
           let SPS_MIN_WIDTH =
             values.measuring_unit == "inch"
               ? childValue.SPS_MIN_WIDTH * values.meas_unit_val

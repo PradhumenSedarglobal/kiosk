@@ -20,6 +20,7 @@ import {
   setCustomization,
   setHeaderResponse,
   setModalSliderImage,
+  setThumbSliderImage,
 } from "@/redux/slices/customization";
 import { useDispatch } from "@/redux/store";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
@@ -174,7 +175,8 @@ export default function ProductPage(props) {
   const [lastPage, setLastPage] = useState();
   const [tabChange, setTabChange] = useState("1");
   const [missingStep, setMissingStep] = useState({});
-  const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
+  // const [imageUrls, setImageUrls] = useState(["/360v.jpg"]);
+
   const [formClose, setFormClose] = useState(false);
   const [modalSliderImageLoading, setModalSliderImageLoading] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
@@ -224,6 +226,7 @@ export default function ProductPage(props) {
     categoryDefaultImg,
     modalData,
     modalSliderImage,
+    thumbImage
   } = useSelector((state) => state.customization);
 
   const scanner = useSelector((state) => state.scanner.value);
@@ -274,7 +277,7 @@ export default function ProductPage(props) {
     const arr = [];
     const mainCategory = result?.MAIN_CATEGORY || [];
 
-    filters.forEach((element) => {
+    filters?.forEach((element) => {
       const { SFT_CODE } = element;
       if (
         SFT_CODE === "012" ||
@@ -480,17 +483,17 @@ export default function ProductPage(props) {
       (item) => item.SLI_IMAGE_PATH
     );
 
-    const firstImage = imageUrls.length > 0 ? imageUrls[0] : "/360v.jpg";
+    const firstImage = thumbImage.length > 0 ? thumbImage[0] : "/360v.jpg";
     const updatedImageUrls = [firstImage, ...newImageUrls];
 
-    if (JSON.stringify(imageUrls) !== JSON.stringify(updatedImageUrls)) {
-      setImageUrls(updatedImageUrls);
+    if (JSON.stringify(thumbImage) !== JSON.stringify(updatedImageUrls)) {
+      dispatch(setThumbSliderImage(updatedImageUrls));
     }
 
     if (thumbsSwiper) {
       thumbsSwiper.update();
     }
-  }, [materialList, selectedItemCode, imageUrls, thumbsSwiper]);
+  }, [materialList, selectedItemCode, thumbImage, thumbsSwiper]);
 
   useEffect(() => {
     if (stepCount === 0) {
@@ -749,7 +752,7 @@ export default function ProductPage(props) {
               initialSlide={activeIndex} // Sync with activeIndex
               onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)} // Update activeIndex on slide change
             >
-              {imageUrls.map((src, index) => (
+              {thumbImage?.map((src, index) => (
                 <SwiperSlide key={index}>
                   {index === 0 ? (
                     <>
@@ -868,7 +871,7 @@ export default function ProductPage(props) {
               {stepCount !== 0 &&
                 stepCount !== 1 &&
                 !isCustomizationLoading &&
-                imageUrls.map((src, index) => (
+                thumbImage?.map((src, index) => (
                   <SwiperSlide key={index}>
                     <ThumbnailImage
                       src={src}

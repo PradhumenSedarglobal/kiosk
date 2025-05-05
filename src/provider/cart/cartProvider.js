@@ -55,7 +55,7 @@ const reducer = (state, action) => {
       const deliveryCounts = {};
       action.payload?.complete &&
         action.payload?.complete?.length > 0 &&
-        action.payload?.complete.forEach((element, index) => {
+        action.payload?.complete?.forEach((element, index) => {
           deliveryCounts[element?.SOL_SYS_ID] = index + 1;
           if (element?.SOL_ITEM_LABEL != "SAMPLE") {
             cartDatas.complete.push(element);
@@ -151,7 +151,7 @@ const CartProvider = ({ children }) => {
           var ad_products = [];
           response?.data?.complete &&
             response?.data?.complete.length > 0 &&
-            response?.data?.complete.forEach((item, index) => {
+            response?.data?.complete?.forEach((item, index) => {
               admitadOrderedItem(item); //ADMITAD Order add
               ad_products.push({
                 id: item.brand_info.SII_CODE,

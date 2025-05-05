@@ -107,7 +107,7 @@ export function getMapData(params = {}) {
       );
       dispatch(slice.actions.setShowRoom(response?.data?.result));
       let position = [];
-      Object.entries(response?.data?.position).forEach(([key, value]) => {
+      Object.entries(response?.data?.position)?.forEach(([key, value]) => {
         position.push({
           lat: parseFloat(value.SSA_LATITUDE),
           lng: parseFloat(value.SSA_LONGITUDE),

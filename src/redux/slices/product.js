@@ -248,7 +248,7 @@ const slice = createSlice({
         });
       };
 
-      filters.forEach((element) => {
+      filters?.forEach((element) => {
         const { SFT_CODE } = element;
         if (
           SFT_CODE === "012" ||
@@ -345,7 +345,7 @@ const slice = createSlice({
         }
 
         LINK_PATHS &&
-          LINK_PATHS.forEach((item, index) => {
+          LINK_PATHS?.forEach((item, index) => {
             if (index == 0) {
               breadcrumb.push({
                 label: item,
@@ -405,7 +405,7 @@ const slice = createSlice({
         state?.productDetails?.LISTING?.items &&
         state?.productDetails?.LISTING?.items?.length > 0
       ) {
-        state?.productDetails?.LISTING?.items.forEach((parentItem) => {
+        state?.productDetails?.LISTING?.items?.forEach((parentItem) => {
           if (action.payload.SII_CODE === parentItem?.SII_CODE) {
             setDefaultSelectItem.defaultSelectItem = parentItem;
           }
@@ -430,7 +430,7 @@ const slice = createSlice({
         state?.products?.result &&
         state?.products?.result?.length > 0
       ) {
-        state?.products?.result.forEach((parentItem, parentIndex) => {
+        state?.products?.result?.forEach((parentItem, parentIndex) => {
           if (action.payload.SFI_CODE === parentItem.SFI_CODE) {
             customProducts.result.push({
               ...parentItem,
@@ -438,7 +438,7 @@ const slice = createSlice({
               items: [],
             });
             if (parentItem?.items && parentItem?.items?.length > 0) {
-              parentItem?.items.forEach((childItem) => {
+              parentItem?.items?.forEach((childItem) => {
                 if (action.payload.SII_CODE === childItem?.SII_CODE) {
                   state.productSelectDialogDetail = {
                     ...parentItem,
@@ -486,7 +486,7 @@ const slice = createSlice({
         state?.products?.result &&
         state?.products?.result?.length > 0
       ) {
-        state?.products?.result.forEach((parentItem, parentIndex) => {
+        state?.products?.result?.forEach((parentItem, parentIndex) => {
           if (action.payload.SFI_CODE === parentItem.SFI_CODE) {
             customProducts.result.push({
               ...parentItem,
@@ -494,7 +494,7 @@ const slice = createSlice({
               items: [],
             });
             if (parentItem?.items && parentItem?.items?.length > 0) {
-              parentItem?.items.forEach((childItem) => {
+              parentItem?.items?.forEach((childItem) => {
                 if (action.payload.SII_CODE === childItem?.SII_CODE) {
                   state.productSelectDialogDetail = {
                     ...parentItem,
@@ -545,7 +545,7 @@ const slice = createSlice({
         state?.productDetails?.LISTING?.items &&
         state?.productDetails?.LISTING?.items?.length > 0
       ) {
-        state?.productDetails?.LISTING?.items.forEach((parentItem) => {
+        state?.productDetails?.LISTING?.items?.forEach((parentItem) => {
           if (action.payload.SII_CODE === parentItem?.SII_CODE) {
             setDefaultSelectItem.defaultSelectItem = {
               ...parentItem,
@@ -584,7 +584,7 @@ const slice = createSlice({
         state?.productDetails?.LISTING?.items &&
         state?.productDetails?.LISTING?.items?.length > 0
       ) {
-        state?.productDetails?.LISTING?.items.forEach((parentItem) => {
+        state?.productDetails?.LISTING?.items?.forEach((parentItem) => {
           if (action.payload.SII_CODE === parentItem?.SII_CODE) {
             setDefaultSelectItem.defaultSelectItem = {
               ...parentItem,

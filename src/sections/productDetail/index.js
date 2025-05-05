@@ -27,7 +27,7 @@ const ProductDetailSection = ({
       }
 
       LINK_PATHS &&
-        LINK_PATHS.forEach((item, index) => {
+        LINK_PATHS?.forEach((item, index) => {
           if (index == 0) {
             breadcrumb.push({
               label: item,
