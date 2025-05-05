@@ -35,7 +35,6 @@ const Modal = ({ getModalGallary }) => {
   const modalData = useSelector((state) => state.customization.ModalData);
 
   const [modal, setModal] = useState();
-
   const [selectedModal, setSelectedModal] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +47,7 @@ const Modal = ({ getModalGallary }) => {
   const hasFetchedSteps = useRef(false);
   const isInitialMount = useRef(true);
 
-  // ✅ Memoized fetch function
+  // Memoized fetch function
   const fetchModalData = useCallback(async () => {
     if (!selectedCategory) return;
 
@@ -105,7 +104,7 @@ const Modal = ({ getModalGallary }) => {
     productCode,
   ]);
 
-  // ✅ Fetch modal data when category changes (only once)
+  // Fetch modal data when category changes (only once)
   useEffect(() => {
     if (isInitialMount.current && selectedCategory) {
       isInitialMount.current = false;
@@ -113,32 +112,35 @@ const Modal = ({ getModalGallary }) => {
     }
   }, [selectedCategory, fetchModalData]);
 
-  // ✅ Fetch steps data for selected modal (Only once when data is available)
+  // Fetch steps data for selected modal (Only when needed)
   const getStep = useCallback(
     async (modalData) => {
       if (!modalData) return;
 
       try {
-        const customizationRes = await apiSSRV2DataService.getAll({
-          path: `kiosk/get_steps`,
-          param: {
-            content: "customization",
-            slug_url: modalData,
-            category: selectedCategory,
-            sys_id: 0,
-          },
-          locale: "uae-en",
-        });
-
-        const headerResponse = await apiSSRV2DataService.getAll({
-          path: `v2/getHeaderData`,
-          param: {
-            content: "Contact Info",
-            column_name: "SH_LINK_URL",
-            column_value: "tel:",
-          },
-          locale: "uae-en",
-        });
+        dispatch(startCustomizationLoading());
+        
+        const [customizationRes, headerResponse] = await Promise.all([
+          apiSSRV2DataService.getAll({
+            path: `kiosk/get_steps`,
+            param: {
+              content: "customization",
+              slug_url: modalData,
+              category: selectedCategory,
+              sys_id: 0,
+            },
+            locale: "uae-en",
+          }),
+          apiSSRV2DataService.getAll({
+            path: `v2/getHeaderData`,
+            param: {
+              content: "Contact Info",
+              column_name: "SH_LINK_URL",
+              column_value: "tel:",
+            },
+            locale: "uae-en",
+          })
+        ]);
 
         if (customizationRes) {
           dispatch(setCustomization(customizationRes));
@@ -151,17 +153,7 @@ const Modal = ({ getModalGallary }) => {
     [selectedCategory, dispatch]
   );
 
-  // useEffect(() => {
-  //   if (!modalData?.model || hasFetchedSteps.current) return;
-
-  //   const firstModal = selectedModalData || modalData.model[0]?.SPI_LINK_URL;
-  //   if (firstModal) {
-  //     hasFetchedSteps.current = true;
-  //     getStep(firstModal);
-  //   }
-  // }, [modalData, selectedModalData, getStep]);
-
-  // ✅ Handle modal change and state reset
+  // Handle modal change
   const handleChange = useCallback(
     async (link, selectedItemCode, productCode) => {
       dispatch(
@@ -178,13 +170,25 @@ const Modal = ({ getModalGallary }) => {
       if (selectedModalData !== link) {
         dispatch(removecart());
         dispatch(updateSelectedModal(link));
-        // await getStep(link);
-        hasFetchedSteps.current = true;
+        // Don't fetch steps here - will be fetched when next button is clicked
       }
     },
-    [dispatch, selectedModalData, getStep]
+    [dispatch, selectedModalData]
   );
 
+  // Fetch steps only when modal is selected and next button is clicked
+  const handleNextButtonClick = useCallback(async () => {
+    if (selectedModalData) {
+      await getStep(selectedModalData);
+    }
+  }, [selectedModalData, getStep]);
+
+  // Expose the handleNextButtonClick to parent component
+  useEffect(() => {
+    if (getModalGallary) {
+      getModalGallary.handleNextButtonClick = handleNextButtonClick;
+    }
+  }, [handleNextButtonClick, getModalGallary]);
 
   useEffect(() => {
     dispatch(removecart());
@@ -193,9 +197,6 @@ const Modal = ({ getModalGallary }) => {
   useEffect(() => {
     setTimeout(() => {
       const firstItem = modalData?.model?.[0];
-     
-      // return false;
-
       const fpc = firstItem?.SPI_PR_ITEM_CODE;
       const fic = firstItem?.SII_CODE;
 
