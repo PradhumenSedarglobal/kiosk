@@ -59,7 +59,6 @@ export default function ScanModal() {
         }}
       >
         <Box
-          className="starterPoint"
           sx={{
             maxWidth: "90vw",
             maxHeight: "90vh",
@@ -109,6 +108,7 @@ export default function ScanModal() {
               ) : (
                 <Card
                   onClick={()=>{
+                    dispatch(skipTour());
                     handleBarCodeClick();
                     dispatch(setStepIndex(1));
                   }}
@@ -142,7 +142,9 @@ export default function ScanModal() {
             </Grid>
 
             {!scaner && (
-              <Grid item xs={6} md={6} display="flex" justifyContent="center">
+              <Grid 
+                className="starterPoint"
+                item xs={6} md={6} display="flex" justifyContent="center">
                 <Card
                   onClick={() => {
                     handleManualClick(); 
