@@ -25,7 +25,8 @@ import { useAuthContext } from "@/auth/useAuthContext";
 import PopupModal from "@/app/components/PopupModal";
 import { decrementStep } from "@/redux/slices/stepSlice";
 import { setStepIndex } from "@/redux/slices/tourSlice";
-import { removecart, resetState } from "@/redux/slices/customization";
+import { removecart, resetState, setStepPreviousFunction, setTabChangeValue } from "@/redux/slices/customization";
+import TourGuideButton from "@/app/components/TourGuideButton";
 
 
 const SceneCanvas3D = dynamic(() => import("../sceneCanvas3D"), {
@@ -102,6 +103,7 @@ const TabinationStepsSection = ({
   
     if (tabChange != "6") {
       setTabChange((tabChange) => Number(tabChange) + 1);
+      dispatch(setTabChangeValue(Number(tabChange) + 1));
     }
   
     if (tabChange == 4 && missing_step.length > 0) {
@@ -141,8 +143,10 @@ const TabinationStepsSection = ({
   
     if (tabChange != "1") {
       setTabChange((tabChange) => Number(tabChange) - 1);
+      dispatch(setTabChangeValue((Number(tabChange) - 1)));
     } else {
       setTabChange(0);
+      dispatch(setTabChangeValue(0));
       dispatch(decrementStep(1));
     }
   };
@@ -296,6 +300,8 @@ const TabinationStepsSection = ({
   useEffect(()=>{
 
       setHasInitializedCart(false);
+      dispatch(setTabChangeValue(1));
+      dispatch(setStepPreviousFunction(onPreviousHandle));
   
   },[]);
 
@@ -316,6 +322,8 @@ const TabinationStepsSection = ({
           setAddToCartShow={setAddToCartShow}
         />
       )}
+
+      <TourGuideButton previousStep2={onPreviousHandle} />
 
       {tabChange != "preview" && (
         <Box

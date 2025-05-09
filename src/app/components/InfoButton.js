@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Typography, Box, useMediaQuery } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector, useDispatch } from "react-redux";
-import { startTour } from "../../redux/slices/tourSlice";
+import { setStepIndex, skipTour, startTour } from "../../redux/slices/tourSlice";
 
 const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
   const fonts = useSelector((state) => state.font);
@@ -11,7 +11,20 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   const handleClick = () => {
-    dispatch(startTour(Number(step)));
+    // Fire custom event to notify TourGuideButton to ignore back
+    window.dispatchEvent(new Event("ignore-next-back"));
+
+    // Ensure tour is reset before starting
+    dispatch(skipTour());
+
+    // Force state update in order to re-trigger Joyride from fresh
+    setTimeout(() => {
+      dispatch(setStepIndex(Number(step)));
+    }, 0);
+
+    setTimeout(() => {
+      dispatch(startTour(Number(step)));
+    }, 100); // Short delay is enough
   };
 
   return (
@@ -38,7 +51,7 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
         <Box
           sx={{
             position: "absolute",
-            right: "100%", // grow to the left
+            right: "100%",
             backgroundColor: "orange",
             borderRadius: "8px 0 0 8px",
             height: "40px",

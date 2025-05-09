@@ -28,7 +28,6 @@ import {
   setGeoLocationDetails,
   setOrderList,
   loadingfalse,
-  orderList,
 } from "@/redux/slices/customization";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -56,6 +55,7 @@ const BottomBarTabination = ({
   const { t: translate } = useTranslation();
   const { locale, query } = useRouter();
   const router = useRouter();
+  const {orderList} = useSelector((state)=> state.customization);
   const { slug } = query;
   const sys_id = slug && slug.length === 7 ? slug[6] : 0;
   const { state } = useAuthContext();

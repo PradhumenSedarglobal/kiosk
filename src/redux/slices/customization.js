@@ -36,12 +36,22 @@ const initialState = {
   stepChildCount:0,
   modalSliderImage:null,
   thumbImage:["/360v.jpg"],
+  tabChangeValue:0,
+  stepPreviousFunction: null,
 };
 
 const slice = createSlice({
   name: "customization",
   initialState,
   reducers: {
+
+    setStepPreviousFunction(state, action) {
+      state.stepPreviousFunction = action.payload;
+    },
+
+    setTabChangeValue(state, action) {
+      state.tabChangeValue = action.payload; 
+    },
 
     setThumbSliderImage(state,action){
       state.thumbImage = action.payload;
@@ -116,7 +126,8 @@ const slice = createSlice({
         customerSysId: state.customerSysId,
         categoryDefaultImg: state.categoryDefaultImg,
         ModalData: state.ModalData,
-        modalDefaultItem:state.modalDefaultItem
+        modalDefaultItem:state.modalDefaultItem,
+        tabChangeValue:state.tabChangeValue,
       }
     },
 
@@ -345,7 +356,9 @@ export const {
   setStepChildCount,
   startMaterialCustomizationLoading,
   setModalSliderImage,
-  setThumbSliderImage
+  setThumbSliderImage,
+  setTabChangeValue,
+  setStepPreviousFunction
 } = slice.actions;
 
 

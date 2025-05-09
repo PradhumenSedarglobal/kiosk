@@ -1,54 +1,165 @@
-import React from "react";
+import React, { useRef, useCallback, useEffect, useState } from "react";
 import Joyride from "react-joyride";
 import { useDispatch, useSelector } from "react-redux";
 import { skipTour, setStepIndex } from "../../redux/slices/tourSlice";
 
-const TourGuideButton = () => {
+const waitForElement = async (selector, timeout = 2000) => {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(selector)) {
+      return resolve(true);
+    }
+
+    const interval = 100;
+    let elapsed = 0;
+
+    const check = setInterval(() => {
+      elapsed += interval;
+      
+      const element = document.querySelector(selector);
+      if (element) {
+        clearInterval(check);
+        resolve(true);
+      } else if (elapsed >= timeout) {
+        clearInterval(check);
+        reject(new Error(`Element ${selector} not found`));
+      }
+    }, interval);
+  });
+};
+
+const TourGuideButton = ({ previousStep, previousStep2 }) => {
   const dispatch = useDispatch();
   const tourState = useSelector((state) => state.tour);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const { tabChangeValue } = useSelector((state) => state.customization);
+  const stepCount = useSelector((state) => state.step.value);
 
-  const handleJoyrideCallback = (data) => {
-    const { action, index, status, type } = data;
+  const ignoreBackRef = useRef(false);
+  const previousStep2Ref = useRef(null);
+  const lastTabChangeValue = useRef(null);
 
-    // Handle all side effects here before step transitions
-    if (type === "step:before") {
-      // Call your additional functions here
-      if (typeof tourState.steps[index]?.beforeStep === 'function') {
-        tourState.steps[index].beforeStep();
+  useEffect(() => {
+    previousStep2Ref.current = previousStep2;
+  }, [previousStep2]);
+
+  useEffect(() => {
+    // Only update step index when tabChangeValue actually changes
+    if (tabChangeValue !== lastTabChangeValue.current) {
+      lastTabChangeValue.current = tabChangeValue;
+      
+      let newStepIndex;
+      switch (tabChangeValue) {
+        case 0:
+          newStepIndex = 3;
+          break;
+        case 1:
+          newStepIndex = 5;
+          break;
+        case 2:
+          newStepIndex = 7;
+          break;
+        case 3:
+          newStepIndex = 9;
+          break;
+        case 4:
+          newStepIndex = 11;
+          break;
+        default:
+          newStepIndex = stepCount === 0 ? 1 : 3;
       }
+
+      dispatch(setStepIndex(newStepIndex));
     }
+  }, [tabChangeValue, dispatch, stepCount]);
 
-    if (type === "step:after") {
-      // Call your additional functions here
-      if (typeof tourState.steps[index]?.afterStep === 'function') {
-        tourState.steps[index].afterStep();
-      }
+  const handleBackButton = useCallback(
+    async (index) => {
+      if (isTransitioning) return;
+      
+      setIsTransitioning(true);
+      const prevIndex = index - 1;
+      
+      if (!ignoreBackRef.current && prevIndex >= 0) {
+        const prevStep = tourState.steps[prevIndex];
+        const selector = prevStep?.target;
 
-      if (action === "next") {
-        const isLastStep = index === tourState.steps.length - 1;
-        if (isLastStep) {
-          dispatch(skipTour());
-        } else {
-          dispatch(setStepIndex(index + 1));
+        try {
+          if (selector) {
+            await waitForElement(selector).catch(err => {
+              console.warn(err.message);
+            });
+          }
+
+          // Dispatch before any potential DOM manipulations
+          dispatch(setStepIndex(prevIndex));
+
+          // Special cases for custom back handlers
+          if (typeof previousStep === "function" && index === 3) {
+            await Promise.resolve(previousStep());
+          }
+
+          if (previousStep2Ref.current && [5, 7, 9, 11].includes(index)) {
+            await Promise.resolve(previousStep2Ref.current());
+          }
+        } catch (error) {
+          console.error("Error during back navigation:", error);
+        } finally {
+          setIsTransitioning(false);
         }
-      } else if (action === "prev") {
-        dispatch(setStepIndex(index - 1));
+      } else {
+        setIsTransitioning(false);
       }
-    }
+    },
+    [dispatch, tourState.steps, previousStep, isTransitioning]
+  );
 
-    if (
-      action === "skip" ||
-      action === "close" ||
-      (action === "next" && index === tourState.steps.length - 1) ||
-      status === "skipped" ||
-      status === "finished"
-    ) {
-      dispatch(skipTour());
-    }
-  };
+  const handleJoyrideCallback = useCallback(
+    async (data) => {
+      const { action, index, status, type } = data;
+
+      if (type === "step:before") {
+        const beforeFn = tourState.steps[index]?.beforeStep;
+        if (typeof beforeFn === "function") {
+          try {
+            await Promise.resolve(beforeFn());
+          } catch (error) {
+            console.error("Error in beforeStep:", error);
+          }
+        }
+      }
+
+      if (type === "step:after") {
+        const afterFn = tourState.steps[index]?.afterStep;
+        if (typeof afterFn === "function") {
+          try {
+            await Promise.resolve(afterFn());
+          } catch (error) {
+            console.error("Error in afterStep:", error);
+          }
+        }
+
+        if (action === "next") {
+          const isLastStep = index === tourState.steps.length - 1;
+          if (!isLastStep) {
+            dispatch(setStepIndex(index + 1));
+          }
+        }
+
+        if (action === "prev") {
+          await handleBackButton(index);
+        }
+      }
+
+      if (action === "skip" || status === "skipped" || status === "finished") {
+        dispatch(skipTour());
+      }
+    },
+    [dispatch, tourState.steps, handleBackButton]
+  );
 
   return (
     <Joyride
+      key={`joyride-${tourState.stepIndex}-${tourState.run}`}
       steps={tourState.steps}
       stepIndex={tourState.stepIndex}
       run={tourState.run}
@@ -74,7 +185,6 @@ const TourGuideButton = () => {
         beacon: {
           display: "none",
         },
-        
       }}
       callback={handleJoyrideCallback}
     />

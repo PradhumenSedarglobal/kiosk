@@ -7,10 +7,13 @@ import { useTranslation } from "next-i18next";
 import { useDispatch, useSelector } from "@/redux/store";
 import MainHeading from "@/app/components/MainHeading";
 import SubHeading from "@/app/components/SubHeading";
+import { setTabChangeValue } from "@/redux/slices/customization";
 
 
 const SummarySteps = ({ data, setTabChange }) => {
   const { t: translate } = useTranslation();
+
+  const dispatch = useDispatch();
 
   const { customization, stepsArray } = useSelector((state) => state.customization);
   let steps_data = Object.keys(stepsArray);
@@ -27,6 +30,7 @@ const SummarySteps = ({ data, setTabChange }) => {
       curElem.CHILD_STEP.filter((childElem) => {
         if (childElem.SS_CODE_NAME == step_name) {
           setTabChange(i + 1)
+          dispatch(setTabChangeValue(i + 1));
           // customizeDispatch({ type: 'PRESENT-STEP', value: i });
           is_found = false;
         } else if (childElem.SUB_CHILD && childElem.SUB_CHILD.length > 0 && is_found) {
@@ -42,7 +46,7 @@ const SummarySteps = ({ data, setTabChange }) => {
       data.filter((childElem) => {
         if (childElem.SS_CODE_NAME == step_name) {
           //customizeDispatch({ type: 'PRESENT-STEP', value: index });
-
+          dispatch(setTabChangeValue(index + 1));
           setTabChange(index + 1)
           is_found = false;
         } else if (childElem.SUB_CHILD && childElem.SUB_CHILD.length > 0) {

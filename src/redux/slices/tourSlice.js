@@ -27,7 +27,9 @@ const initialState = {
       content: "Now select Modal!",
       placement: "left",
       spotlightPadding: 10,
-      
+      beforeStep: () => {
+        document.querySelector(".selectMaterial")?.scrollIntoView({ behavior: "smooth" });
+      }
     },
     {
       target: ".continue2",
@@ -53,6 +55,7 @@ const initialState = {
       placement: "top",
       spotlightPadding: 10,
       spotlightClicks: true,
+      
     },
     {
       target: ".continue4",
@@ -92,9 +95,9 @@ const tourSlice = createSlice({
   name: "tour",
   initialState,
   reducers: {
-    startTour: (state,action) => {
+    startTour: (state, action) => {
       state.run = true;
-      state.stepIndex = action.payload || 0; // Restart tour when starting
+      state.stepIndex = action.payload || 0; // Accept step index
     },
    
     tourNextStep: (state) => {
@@ -106,8 +109,10 @@ const tourSlice = createSlice({
       const newIndex = action.payload;
       if (newIndex >= 0 && newIndex < state.steps.length) {
         state.stepIndex = newIndex;
+        // Do not forcibly set run=true here; it's managed already
       }
     },
+    
     skipTour: (state) => {
       state.run = false;
       state.stepIndex = 0; // Reset to the initial step

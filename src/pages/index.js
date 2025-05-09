@@ -226,7 +226,8 @@ export default function ProductPage(props) {
     categoryDefaultImg,
     modalData,
     modalSliderImage,
-    thumbImage
+    thumbImage,
+    tabChangeValue
   } = useSelector((state) => state.customization);
 
   const scanner = useSelector((state) => state.scanner.value);
@@ -400,9 +401,7 @@ export default function ProductPage(props) {
     [dispatch]
   );
 
-  const howToUse = useCallback(() => {
-    dispatch(startTour(2));
-  }, [dispatch]);
+  
 
   const formatCategory = useCallback((category) => {
     return category
@@ -665,11 +664,27 @@ export default function ProductPage(props) {
     />
   );
 
+
+  const getStepValue = (tab, stepCount) => {
+    switch (tab) {
+      case 1:
+        return "5";
+      case 2:
+        return "7";
+      case 3:
+        return "9";
+      case 11:
+        return "3";
+      default:
+        return stepCount === 0 && stepCount <= 1  ? "1" : "3";
+    }
+  };
+
   return (
     <>
-      <TourGuideButton />
+      <TourGuideButton previousStep={previousStep} />
 
-      <InfoButton howToUse={howToUse} step={stepCount == 0 ? "1" : "3"} />
+      <InfoButton step={getStepValue(tabChangeValue, stepCount)} />
 
       <Head>
         <title>Customization List Page</title>
