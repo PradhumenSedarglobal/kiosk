@@ -366,7 +366,7 @@ const BottomBarTabination = ({
                 }}
                 startIcon={<ArrowCircleLeftIcon color="black" />}
               >
-                Previous
+                {translate("Previous")}
               </Button>
             )}
 
@@ -377,7 +377,7 @@ const BottomBarTabination = ({
                 onClick={() => router.push("/")}
                 startIcon={<HomeIcon color="black" />}
               >
-                Home
+                {translate("Home")}
               </Button>
             )}
           </Grid>
@@ -404,7 +404,7 @@ const BottomBarTabination = ({
                 }}
                 endIcon={<ArrowCircleRightIcon color="black" />}
               >
-                Next
+                {translate("Next")}
               </Button>
             )}
 

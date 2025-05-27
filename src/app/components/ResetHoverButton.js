@@ -15,7 +15,7 @@ const ResetHoverButton = ({ text = "RESET", resetCanvasScene }) => {
         position: "absolute",
         top: "60px",
         left: isMobile ? "87vw" : "54vw",
-        zIndex: 9999,
+        zIndex: 99998,
         cursor: "pointer",
       }}
     >

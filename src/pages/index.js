@@ -45,7 +45,6 @@ import ProductLists from "@/sections/slug/product";
 import ProductDetail from "@/sections/slug/productDetail";
 import ProductSlug from "@/sections/slug/ProductSlug";
 import { isEmpty, split } from "lodash";
-import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import ScanModal from "@/app/components/ScanModal";
@@ -90,6 +89,7 @@ import InfoButton from "@/app/components/InfoButton";
 import ResetHoverButton from "@/app/components/ResetHoverButton";
 import Loader2 from "@/app/components/Loader2";
 import DotLoading from "@/app/components/DotLoading";
+import { useTranslation } from "next-i18next";
 
 // Dynamically import Joyride to prevent SSR issues
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
@@ -229,7 +229,9 @@ export default function ProductPage(props) {
     modalData,
     modalSliderImage,
     thumbImage,
-    tabChangeValue
+    tabChangeValue,
+    SelectedCategoryName,
+    SelectedModalName
   } = useSelector((state) => state.customization);
 
   const scanner = useSelector((state) => state.scanner.value);
@@ -404,15 +406,6 @@ export default function ProductPage(props) {
     [dispatch]
   );
 
-  
-
-  const formatCategory = useCallback((category) => {
-    return category
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase())
-      .replace(/\s+/g, " ")
-      .trim();
-  }, []);
 
   // API calls and effects
   const getModalGallary = useCallback(
@@ -1007,11 +1000,11 @@ export default function ProductPage(props) {
                       component="div"
                     >
                       {stepCount == 0
-                        ? SelectedCategory
-                          ? formatCategory(SelectedCategory)
+                        ? SelectedCategoryName
+                          ? SelectedCategoryName
                           : null
-                        : SelectedModal
-                        ? formatCategory(SelectedModal)
+                        : SelectedModalName
+                        ? SelectedModalName
                         : null}
                     </Typography>
                   </Grid>
@@ -1054,7 +1047,7 @@ export default function ProductPage(props) {
                     }}
                     startIcon={<ArrowCircleLeftIcon />}
                   >
-                    Previous
+                    {translate("Previous")}
                   </Button>
                 ) : (
                   <Button
@@ -1063,7 +1056,7 @@ export default function ProductPage(props) {
                     onClick={handleHome}
                     startIcon={<ArrowCircleLeftIcon />}
                   >
-                    Home
+                    {translate("Home")}
                   </Button>
                 )}
 
@@ -1090,7 +1083,7 @@ export default function ProductPage(props) {
                     }}
                     endIcon={<ArrowCircleRightIcon />}
                   >
-                    Next
+                    {translate("NextStep")}
                   </Button>
                 ) : (
                   <Button
@@ -1103,7 +1096,7 @@ export default function ProductPage(props) {
                     variant="contained"
                     endIcon={<LocalMallIcon />}
                   >
-                    Add To Cart
+                    {translate("AddtoCart")}
                   </Button>
                 )}
               </Box>

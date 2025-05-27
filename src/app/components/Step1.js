@@ -10,6 +10,7 @@ import {
   updateSelectedCategory,
   setCategoryGallary,
   setCategoryDefaultImg,
+  setSelectedCategoryName,
 } from "@/redux/slices/customization";
 
 import MainHeading from "./MainHeading";
@@ -43,8 +44,6 @@ const Step1 = ({ successValue, stepcount }) => {
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
-
-  const tourState = useSelector((state) => state.tour);
 
   const fetchCategory = async () => {
     try {
@@ -81,6 +80,7 @@ const Step1 = ({ successValue, stepcount }) => {
         setSelectedCategory(initialCategory);
         dispatch(removecart());
         dispatch(updateSelectedCategory(initialCategory));
+        dispatch(setSelectedCategoryName(data.result[0].link_title));
         dispatch(setCategoryGallary(data.result));
       })
       .catch((error) => {
@@ -94,13 +94,14 @@ const Step1 = ({ successValue, stepcount }) => {
 
   
 
-  const handleChange = (link) => {
+  const handleChange = (link,name) => {
     // Add a short delay to let Joyride finish spotlight transition
     setTimeout(() => {
       // dispatch(resetState());
       // dispatch(loadingfalse(true));
       setSelectedCategory(link);
       dispatch(updateSelectedCategory(link));
+      dispatch(setSelectedCategoryName(name));
   
       const filteredGallery = categoryGallary?.filter(
         (item) => item.link_url === link

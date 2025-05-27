@@ -20,7 +20,9 @@ const initialState = {
   headerData: [],
   ShowformModal: false,
   SelectedCategory: null,
+  SelectedCategoryName: null,
   SelectedModal: null,
+  SelectedModalName: null,
   ModalData: [],
   ip:null,
   geoLocationDetails:null,
@@ -149,9 +151,21 @@ const slice = createSlice({
       state.ShowformModal = action.payload;
     },
 
+    setSelectedModalName(state, action) {
+      if (state.SelectedModalName !== action.payload) {
+        state.SelectedModalName = action.payload;
+      }
+    },
+
     updateSelectedCategory(state, action) {
       if (state.SelectedCategory !== action.payload) {
         state.SelectedCategory = action.payload;
+      }
+    },
+
+    setSelectedCategoryName(state, action) {
+      if (state.SelectedCategoryName !== action.payload) {
+        state.SelectedCategoryName = action.payload;
       }
     },
 
@@ -358,7 +372,9 @@ export const {
   setModalSliderImage,
   setThumbSliderImage,
   setTabChangeValue,
-  setStepPreviousFunction
+  setStepPreviousFunction,
+  setSelectedCategoryName,
+  setSelectedModalName
 } = slice.actions;
 
 

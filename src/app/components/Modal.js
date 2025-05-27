@@ -8,6 +8,7 @@ import {
   setHeaderResponse,
   setMaterialCustomization,
   setModalDefaultItem,
+  setSelectedModalName,
   startCustomizationLoading,
   updateModalData,
   updateSelectedModal,
@@ -80,6 +81,8 @@ const Modal = ({ getModalGallary }) => {
 
         setSelectedModal(firstModal);
         dispatch(updateSelectedModal(firstModal));
+        console.log("response.result.model[0]",response.result.model[0]);
+        dispatch(setSelectedModalName(name));
       } else {
         dispatch(updateModalData([]));
       }
@@ -155,7 +158,7 @@ const Modal = ({ getModalGallary }) => {
 
   // Handle modal change
   const handleChange = useCallback(
-    async (link, selectedItemCode, productCode) => {
+    async (link, selectedItemCode, productCode,name) => {
       dispatch(
         setModalDefaultItem({
           itemId: selectedItemCode,
@@ -170,6 +173,7 @@ const Modal = ({ getModalGallary }) => {
       if (selectedModalData !== link) {
         dispatch(removecart());
         dispatch(updateSelectedModal(link));
+        dispatch(setSelectedModalName(name));
         // Don't fetch steps here - will be fetched when next button is clicked
       }
     },
