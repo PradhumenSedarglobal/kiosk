@@ -108,9 +108,9 @@ export default function ScanModal() {
               ) : (
                 <Card
                   onClick={()=>{
-                    dispatch(skipTour());
+                    // dispatch(skipTour());
                     handleBarCodeClick();
-                    dispatch(setStepIndex(1));
+                    // dispatch(setStepIndex(1));
                   }}
                   variant="outlined"
                   sx={{
@@ -148,7 +148,7 @@ export default function ScanModal() {
                 <Card
                   onClick={() => {
                     handleManualClick(); 
-                    dispatch(setStepIndex(1));
+                    // dispatch(setStepIndex(1));
                   }}
                   variant="outlined"
                   sx={{
