@@ -330,7 +330,7 @@ export default function Loader2() {
           position: 'absolute',
           inset: 0,
           opacity: 0.9,
-          zIndex: 1,
+          zIndex: 99998,
         }}
       />
       <div
@@ -338,7 +338,7 @@ export default function Loader2() {
           position: 'absolute',
           bottom: '8%',
           right: '8%',
-          zIndex: 2,
+          zIndex: 99998,
           fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
           color: '#5A4A42',
           fontFamily: fonts.Helvetica_Neue_Bold?.style?.fontFamily || 'sans-serif',

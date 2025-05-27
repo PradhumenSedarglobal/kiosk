@@ -11,6 +11,7 @@ import React, {
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
 import TourIcon from "@mui/icons-material/Tour";
 import Tooltip from "@mui/material/Tooltip";
+import CircularProgress from '@mui/material/CircularProgress';
 
 import {
   removecart,
@@ -88,6 +89,7 @@ import TourGuideButton from "@/app/components/TourGuideButton";
 import InfoButton from "@/app/components/InfoButton";
 import ResetHoverButton from "@/app/components/ResetHoverButton";
 import Loader2 from "@/app/components/Loader2";
+import DotLoading from "@/app/components/DotLoading";
 
 // Dynamically import Joyride to prevent SSR issues
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
@@ -233,6 +235,7 @@ export default function ProductPage(props) {
   const scanner = useSelector((state) => state.scanner.value);
   const fonts = useSelector((state) => state.font);
   const tourState = useSelector((state) => state.tour);
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   // Memoized derived values
   const selectedItemCode = useMemo(
@@ -486,7 +489,11 @@ export default function ProductPage(props) {
     const updatedImageUrls = [firstImage, ...newImageUrls];
 
     if (JSON.stringify(thumbImage) !== JSON.stringify(updatedImageUrls)) {
+      setIsImageLoading(true);
       dispatch(setThumbSliderImage(updatedImageUrls));
+      setTimeout(()=>{
+        setIsImageLoading(false);
+      },2000);
     }
 
     if (thumbsSwiper) {
@@ -885,7 +892,7 @@ export default function ProductPage(props) {
               {/* 3D modal thumb images */}
               {stepCount !== 0 &&
                 stepCount !== 1 &&
-                !isCustomizationLoading &&
+                !isCustomizationLoading && !isImageLoading &&
                 thumbImage?.map((src, index) => (
                   <SwiperSlide key={index}>
                     <ThumbnailImage
@@ -900,7 +907,16 @@ export default function ProductPage(props) {
                     />
                   </SwiperSlide>
                 ))}
+
+                {isImageLoading && (
+                  <Box sx={{p:"4px",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <DotLoading />
+                  </Box>
+                 
+                )}
             </Swiper>
+
+            
           </main>
           {/* Swiper Slider with 3D Render Section End */}
         </Grid>

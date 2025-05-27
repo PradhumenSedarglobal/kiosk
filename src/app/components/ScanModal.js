@@ -79,7 +79,7 @@ export default function ScanModal() {
               position: "absolute",
               top: 10,
               right: 10,
-              zIndex: 10,
+              zIndex: 99999,
             }}
           >
             <CloseIcon />

@@ -161,12 +161,14 @@ const Step1 = ({ successValue, stepcount }) => {
       )}
 
       {loading && !isMobile ? (
-        <Box
+        <>
+       {/*  <Box
           sx={{
             position: "relative",
             justifyContent: "center",
             alignItems: "center",
             height: "calc(100vh - 130px)",
+            zIndex:"99998"
           }}
         >
           <div className="loader2">
@@ -180,7 +182,8 @@ const Step1 = ({ successValue, stepcount }) => {
               <li className="hexagon hex_7"></li>
             </ul>
           </div>
-        </Box>
+        </Box>*/}
+        </>
       ) : (
         <>
           <MainHeading title="Category Selection" />
