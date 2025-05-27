@@ -17,7 +17,6 @@ const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
     // Ensure tour is reset before starting
     dispatch(skipTour());
 
-    // Force state update in order to re-trigger Joyride from fresh
     setTimeout(() => {
       dispatch(setStepIndex(Number(step)));
     }, 0);

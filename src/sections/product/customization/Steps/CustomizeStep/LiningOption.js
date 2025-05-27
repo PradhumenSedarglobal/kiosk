@@ -31,7 +31,11 @@ const LiningOption = ({ data, formik }) => {
         </Typography>
       </Box> */}
       <Box py={2}>
-        <Grid container spacing={1}>
+        <Grid 
+        container 
+        spacing={1}
+        style={{ "overflow-y": "none", height: "200px" }}
+        >
           {data &&
             data?.SUB_CHILD.map((elem, index) => {
               if (elem.SPS_CODE == 'LO01' && sfi_blackout_lining_app_yn == 'N') {
