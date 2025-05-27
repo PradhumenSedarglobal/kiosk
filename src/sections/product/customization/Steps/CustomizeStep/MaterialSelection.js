@@ -346,6 +346,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
                       sx={{
                         boxSizing: "border-box",
                         mt: 2,
+                        ml:"2px",
                         mb: { md: 2, sm: 0, xs: 0, xxs: 0 },
                         "& .splide": {
                           padding: "0em!important",
