@@ -23,7 +23,7 @@ import InstructionTooltip from "./InstructionTooltip";
 import { useRouter } from "next/router";
 import { setStepIndex } from "@/redux/slices/tourSlice";
 
-const Modal = ({ getModalGallary,categoryScrollRef }) => {
+const Modal = ({ getModalGallary, categoryScrollRef }) => {
   const dispatch = useDispatch();
   const [isTooltipOpen, setIsTooltipOpen] = useState(true);
   const ModalSelection = "Step 2: Now you need to select modal!";
@@ -43,6 +43,7 @@ const Modal = ({ getModalGallary,categoryScrollRef }) => {
   const { locale, query } = useRouter();
   const [selectedItemCode, setSelectedItemCode] = useState();
   const [productCode, setProductCode] = useState();
+  const [tempValue,setTempValue] = useState(0);
   const hasDispatchedRef = useRef(true);
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
@@ -175,7 +176,10 @@ const Modal = ({ getModalGallary,categoryScrollRef }) => {
 
       if (hasDispatchedRef.current) {
         dispatch(setStepIndex(tourState.stepIndex + 1));
+        setTempValue(tourState.stepIndex + 1);
         hasDispatchedRef.current = false;
+      } else {
+        dispatch(setStepIndex(tempValue));
       }
 
       if (selectedModalData !== link) {

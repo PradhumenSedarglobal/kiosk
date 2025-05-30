@@ -26,6 +26,7 @@ const Step1 = ({ successValue, stepcount,categoryScrollRef }) => {
 
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [tempValue,setTempValue] = useState(0);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -99,16 +100,15 @@ const Step1 = ({ successValue, stepcount,categoryScrollRef }) => {
   }, [tourState.stepIndex]);
 
   const handleChange = (link, name) => {
+  
+
     if (hasDispatchedRef?.current) {
-      console.log(
-        "Dispatching setStepIndex because hasDispatchedRef.current is true"
-      );
-
       const nextStep = tourState?.stepIndex + 2;
-      console.log("kya aya", nextStep);
       dispatch(setStepIndex(nextStep));
-
+      setTempValue(nextStep);
       hasDispatchedRef.current = false;
+    }else{
+      dispatch(setStepIndex(tempValue));
     }
 
     // Add a short delay to let Joyride finish spotlight transition
