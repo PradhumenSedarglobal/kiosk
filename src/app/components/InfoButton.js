@@ -4,13 +4,16 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector, useDispatch } from "react-redux";
 import { setStepIndex, skipTour, startTour } from "../../redux/slices/tourSlice";
 
-const InfoHoverButton = ({ text = "HOW TO USE", step }) => {
+const InfoHoverButton = ({ text = "HOW TO USE", step,onInfoClick }) => {
   const fonts = useSelector((state) => state.font);
   const dispatch = useDispatch();
   const [hovered, setHovered] = useState(false);
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   const handleClick = () => {
+
+    onInfoClick();
+
     // Fire custom event to notify TourGuideButton to ignore back
     window.dispatchEvent(new Event("ignore-next-back"));
 

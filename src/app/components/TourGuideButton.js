@@ -68,7 +68,7 @@ const TourGuideButton = ({ previousStep, previousStep2 }) => {
           newStepIndex = stepCount === 0 ? 1 : 3;
       }
 
-      dispatch(setStepIndex(newStepIndex));
+      // dispatch(setStepIndex(newStepIndex));
     }
   }, [tabChangeValue, dispatch, stepCount]);
 
@@ -113,49 +113,59 @@ const TourGuideButton = ({ previousStep, previousStep2 }) => {
     [dispatch, tourState.steps, previousStep, isTransitioning]
   );
 
-  const handleJoyrideCallback = useCallback(
-    async (data) => {
-      const { action, index, status, type } = data;
+ const handleJoyrideCallback = useCallback(
+  async (data) => {
+    const { action, index, status, type } = data;
 
-      if (type === "step:before") {
-        const beforeFn = tourState.steps[index]?.beforeStep;
-        if (typeof beforeFn === "function") {
-          try {
-            await Promise.resolve(beforeFn());
-          } catch (error) {
-            console.error("Error in beforeStep:", error);
-          }
+    // Before step action
+    if (type === "step:before") {
+      const beforeFn = tourState.steps[index]?.beforeStep;
+      if (typeof beforeFn === "function") {
+        try {
+          await Promise.resolve(beforeFn());
+        } catch (error) {
+          console.error("Error in beforeStep:", error);
+        }
+      }
+    }
+
+    // After step action
+    if (type === "step:after") {
+      const afterFn = tourState.steps[index]?.afterStep;
+      if (typeof afterFn === "function") {
+        try {
+          await Promise.resolve(afterFn());
+        } catch (error) {
+          console.error("Error in afterStep:", error);
         }
       }
 
-      if (type === "step:after") {
-        const afterFn = tourState.steps[index]?.afterStep;
-        if (typeof afterFn === "function") {
-          try {
-            await Promise.resolve(afterFn());
-          } catch (error) {
-            console.error("Error in afterStep:", error);
-          }
-        }
-
-        if (action === "next") {
-          const isLastStep = index === tourState.steps.length - 1;
-          if (!isLastStep) {
-            dispatch(setStepIndex(index + 1));
-          }
-        }
-
-        if (action === "prev") {
-          await handleBackButton(index);
+      if (action === "next") {
+        const isLastStep = index === tourState.steps.length - 1;
+        if (!isLastStep) {
+          dispatch(setStepIndex(index + 1));
+        } else {
+          // If last step, mark tour as completed
+          dispatch(completeTour());  // Dispatch any action that marks the tour as completed
         }
       }
 
-      if (action === "skip" || status === "skipped" || status === "finished") {
-        dispatch(skipTour());
+      if (action === "prev") {
+        await handleBackButton(index);
       }
-    },
-    [dispatch, tourState.steps, handleBackButton]
-  );
+    }
+
+    // Handle skip or tour completion
+    if (action === "skip" || status === "skipped" || status === "finished") {
+      const isLastStep = tourState.steps.length - 1;
+      // Skip directly to the last step
+      dispatch(setStepIndex(isLastStep));
+      dispatch(skipTour());  // Dispatch an action to handle skipping or tour completion
+    }
+  },
+  [dispatch, tourState.steps, handleBackButton]
+);
+
 
   return (
     <Joyride

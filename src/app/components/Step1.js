@@ -20,7 +20,7 @@ import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import { useRouter } from "next/router";
 import { setStepIndex } from "@/redux/slices/tourSlice";
 
-const Step1 = ({ successValue, stepcount }) => {
+const Step1 = ({ successValue, stepcount,categoryScrollRef }) => {
   const { state } = useAuthContext();
   const { cookies } = state;
 
@@ -30,6 +30,7 @@ const Step1 = ({ successValue, stepcount }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
+  const hasDispatchedRef = useRef(true);
 
   const dispatch = useDispatch();
   const { locale } = useRouter();
@@ -41,6 +42,7 @@ const Step1 = ({ successValue, stepcount }) => {
     (state) => state.customization.categoryGallary
   );
   const stepCount = useSelector((state) => state.step.value);
+  const tourState = useSelector((state) => state.tour);
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
@@ -92,9 +94,23 @@ const Step1 = ({ successValue, stepcount }) => {
     return () => cancelToken.cancel();
   }, []);
 
-  
+  useEffect(() => {
+    console.log("Redux stepIndex:", tourState.stepIndex);
+  }, [tourState.stepIndex]);
 
-  const handleChange = (link,name) => {
+  const handleChange = (link, name) => {
+    if (hasDispatchedRef?.current) {
+      console.log(
+        "Dispatching setStepIndex because hasDispatchedRef.current is true"
+      );
+
+      const nextStep = tourState?.stepIndex + 2;
+      console.log("kya aya", nextStep);
+      dispatch(setStepIndex(nextStep));
+
+      hasDispatchedRef.current = false;
+    }
+
     // Add a short delay to let Joyride finish spotlight transition
     setTimeout(() => {
       // dispatch(resetState());
@@ -102,17 +118,16 @@ const Step1 = ({ successValue, stepcount }) => {
       setSelectedCategory(link);
       dispatch(updateSelectedCategory(link));
       dispatch(setSelectedCategoryName(name));
-  
+
       const filteredGallery = categoryGallary?.filter(
         (item) => item.link_url === link
       );
-  
+
       if (filteredGallery?.length > 0) {
         dispatch(setCategoryDefaultImg(filteredGallery[0].image_path));
       }
     }, 100); // 100ms delay helps Joyride and Redux sync up
   };
-  
 
   const categoryList = useMemo(
     () =>
@@ -163,7 +178,7 @@ const Step1 = ({ successValue, stepcount }) => {
 
       {loading && !isMobile ? (
         <>
-       {/*  <Box
+          {/*  <Box
           sx={{
             position: "relative",
             justifyContent: "center",
@@ -188,8 +203,15 @@ const Step1 = ({ successValue, stepcount }) => {
       ) : (
         <>
           <MainHeading title="Category Selection" />
-          <Box px={3} sx={{ userSelect: "none", paddingBottom: isMobile ? "130px" : "1.5rem" }}>
+          <Box
+            px={3}
+            sx={{
+              userSelect: "none",
+              paddingBottom: isMobile ? "130px" : "1.5rem",
+            }}
+          >
             <Box
+              ref={categoryScrollRef}
               sx={{
                 height: { lg: "calc(100vh - 180px)" },
                 overflow: "auto",

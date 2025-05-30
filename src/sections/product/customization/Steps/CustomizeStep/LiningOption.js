@@ -34,7 +34,7 @@ const LiningOption = ({ data, formik }) => {
         <Grid 
         container 
         spacing={1}
-        style={{ "overflow-y": "none", height: "200px" }}
+        style={{ "overflow-y": "scroll", height: "200px" }}
         >
           {data &&
             data?.SUB_CHILD.map((elem, index) => {

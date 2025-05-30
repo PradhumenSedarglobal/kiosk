@@ -85,6 +85,7 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
   let SPI_PR_ITEM_CODE = productInfo.SPI_PR_ITEM_CODE
     ? productInfo.SPI_PR_ITEM_CODE
     : 0;
+  const [hasDispatched, setHasDispatched] = useState(false);
 
 
   const updateTextureFun = async (val) => {
@@ -300,7 +301,10 @@ const MaterialSelection = ({ data, formik, elem, setTabChange }) => {
                     <a
                       className="matrial_class"
                       onClick={(e) => {
-                        dispatch(setStepIndex(tourState.stepIndex + 1));
+                        if(!hasDispatched){
+                          dispatch(setStepIndex(tourState.stepIndex + 1));
+                          setHasDispatched(true);
+                        }
                         updateTextureFun(elem);
                       }}
                       style={{ cursor: "pointer" }}

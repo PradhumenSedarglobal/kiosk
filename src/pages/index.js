@@ -239,6 +239,15 @@ export default function ProductPage(props) {
   const tourState = useSelector((state) => state.tour);
   const [isImageLoading, setIsImageLoading] = useState(false);
 
+  const categoryScrollRef = useRef(null);
+
+  const scrollCategoryToTop = () => {
+    if (categoryScrollRef.current) {
+      categoryScrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+
   // Memoized derived values
   const selectedItemCode = useMemo(
     () => stepsArray?.MATERIAL_SELECTION?.material_info?.SII_CODE || null,
@@ -344,7 +353,10 @@ export default function ProductPage(props) {
 
   // Handlers
   const handleOpen = () => setOpen(!open);
-  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerOpen = () => {
+    dispatch(skipTour());
+    setOpen(true);
+  };
   const handleDrawerClose = () => setOpen(false);
 
   const handleThumbnailClick = useCallback(
@@ -437,9 +449,9 @@ export default function ProductPage(props) {
   );
 
   // Effects
-  useEffect(() => {
-    dispatch(startTour());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(startTour());
+  // }, [dispatch]);
 
   useEffect(() => {
     if (modalDefaultItem?.productId) {
@@ -564,12 +576,13 @@ export default function ProductPage(props) {
   const renderStep = useCallback(() => {
     switch (stepCount) {
       case 0:
-        return <Step1 />;
+        return <Step1 categoryScrollRef={categoryScrollRef} />;
       case 1:
-        return <Modal getModalGallary={getModalGallary} />;
+        return <Modal categoryScrollRef={categoryScrollRef} getModalGallary={getModalGallary} />;
       case 2:
         return (
           <TabinationStepsSection
+            categoryScrollRef={categoryScrollRef}
             handleOpen={handleOpen}
             open={open}
             formik={formik}
@@ -684,7 +697,7 @@ export default function ProductPage(props) {
     <>
       <TourGuideButton previousStep={previousStep} />
 
-      <InfoButton step={getStepValue(tabChangeValue, stepCount)} />
+      <InfoButton onInfoClick={scrollCategoryToTop} step={getStepValue(tabChangeValue, stepCount)} />
 
       <Head>
         <title>Customization List Page</title>
@@ -905,7 +918,6 @@ export default function ProductPage(props) {
                   <Box sx={{p:"4px",display:"flex",alignItems:"center",justifyContent:"center"}}>
                     <DotLoading />
                   </Box>
-                 
                 )}
             </Swiper>
 

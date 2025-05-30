@@ -41,6 +41,7 @@ const TabinationStepsSection = ({
   handleSubmit,
   formClose,
   setFormClose,
+  categoryScrollRef
 }) => {
   const { t: translate } = useTranslation();
   const dispatch = useDispatch();
@@ -333,6 +334,7 @@ const TabinationStepsSection = ({
           }}
         >
           <Box
+            ref={categoryScrollRef}
             className="bigipads"
             sx={{
               height: { lg: "calc(100vh - 170px)", overflow: "auto" },

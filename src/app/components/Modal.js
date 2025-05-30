@@ -21,8 +21,9 @@ import axios from "axios";
 import { apiSSRV2DataService } from "@/utils/apiSSRV2DataService";
 import InstructionTooltip from "./InstructionTooltip";
 import { useRouter } from "next/router";
+import { setStepIndex } from "@/redux/slices/tourSlice";
 
-const Modal = ({ getModalGallary }) => {
+const Modal = ({ getModalGallary,categoryScrollRef }) => {
   const dispatch = useDispatch();
   const [isTooltipOpen, setIsTooltipOpen] = useState(true);
   const ModalSelection = "Step 2: Now you need to select modal!";
@@ -42,11 +43,13 @@ const Modal = ({ getModalGallary }) => {
   const { locale, query } = useRouter();
   const [selectedItemCode, setSelectedItemCode] = useState();
   const [productCode, setProductCode] = useState();
+  const hasDispatchedRef = useRef(true);
 
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1037px)");
   const isMobile = useMediaQuery("(min-width: 320px) and (max-width: 767px)");
   const hasFetchedSteps = useRef(false);
   const isInitialMount = useRef(true);
+  const tourState = useSelector((state) => state.tour);
 
   // Memoized fetch function
   const fetchModalData = useCallback(async () => {
@@ -81,7 +84,7 @@ const Modal = ({ getModalGallary }) => {
 
         setSelectedModal(firstModal);
         dispatch(updateSelectedModal(firstModal));
-        console.log("response.result.model[0]",response.result.model[0]);
+        console.log("response.result.model[0]", response.result.model[0]);
         dispatch(setSelectedModalName(name));
       } else {
         dispatch(updateModalData([]));
@@ -122,7 +125,7 @@ const Modal = ({ getModalGallary }) => {
 
       try {
         dispatch(startCustomizationLoading());
-        
+
         const [customizationRes, headerResponse] = await Promise.all([
           apiSSRV2DataService.getAll({
             path: `kiosk/get_steps`,
@@ -142,7 +145,7 @@ const Modal = ({ getModalGallary }) => {
               column_value: "tel:",
             },
             locale: "uae-en",
-          })
+          }),
         ]);
 
         if (customizationRes) {
@@ -158,7 +161,7 @@ const Modal = ({ getModalGallary }) => {
 
   // Handle modal change
   const handleChange = useCallback(
-    async (link, selectedItemCode, productCode,name) => {
+    async (link, selectedItemCode, productCode, name) => {
       dispatch(
         setModalDefaultItem({
           itemId: selectedItemCode,
@@ -169,6 +172,11 @@ const Modal = ({ getModalGallary }) => {
       setModal(link);
       setProductCode(productCode);
       setSelectedItemCode(selectedItemCode);
+
+      if (hasDispatchedRef.current) {
+        dispatch(setStepIndex(tourState.stepIndex + 1));
+        hasDispatchedRef.current = false;
+      }
 
       if (selectedModalData !== link) {
         dispatch(removecart());
@@ -242,6 +250,7 @@ const Modal = ({ getModalGallary }) => {
             }}
           >
             <Box
+              ref={categoryScrollRef}
               className="bigipads"
               sx={{ height: { lg: "calc(100vh - 180px)" }, overflow: "auto" }}
             >
@@ -306,7 +315,7 @@ const Modal = ({ getModalGallary }) => {
                       }}
                     >
                       <ImageCard
-                        TourClass={index == 0 ? "selectModal2" : ''}
+                        TourClass={index == 0 ? "selectModal2" : ""}
                         category={selectedCategory}
                         index={index}
                         name={item.SPI_TOOLTIP}
